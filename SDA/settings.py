@@ -36,6 +36,7 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'eit',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,6 +65,13 @@ DATABASES = {
 		'HOST': '127.0.0.1',
 		'PORT': '5432',
 	},
+	'eit': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'eit',
+		'HOST': '127.0.0.1',
+		'PORT': '5432',
+	}
 }
 
 DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
