@@ -1,3 +1,5 @@
+from SDA.settings import DATABASES
+
 class DataSetRouteur(object):
 	"""
 	A router to control all database operations on models of the different data set applications.
@@ -6,7 +8,7 @@ class DataSetRouteur(object):
 		"""
 		Redirect each dataset read to it's database.
 		"""
-		if model._meta.app_label == 'auth':
+		if model._meta.app_label not in DATABASES:
 			return 'default'
 		return model._meta.app_label
 	
@@ -14,7 +16,7 @@ class DataSetRouteur(object):
 		"""
 		Redirect each dataset write to it's database.
 		"""
-		if model._meta.app_label == 'auth':
+		if model._meta.app_label not in DATABASES:
 			return 'default'
 		return model._meta.app_label
 	
@@ -22,14 +24,17 @@ class DataSetRouteur(object):
 		"""
 		Allow relations only between same dataset.
 		"""
-		if obj1._meta.app_label == obj2._meta.app_label:
-		   return True
-		return None
+		if obj1._meta.app_label not in DATABASES or obj2._meta.app_label not in DATABASES:
+			return True
+		else:
+			return obj1._meta.app_label == obj2._meta.app_label
 	
 	def allow_migrate(self, db, model):
 		"""
 		Make sure the dataset app only appears in the corresponding database.
 		"""
-		if db == model._meta.app_label:
+		if model._meta.app_label not in DATABASES:
 			return True
-		return None
+		else:
+			return db == model._meta.app_label
+
