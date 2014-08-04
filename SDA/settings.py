@@ -109,3 +109,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# Mails config
+EMAIL_HOST = "smtp.oma.be"
+ADMINS = [("Benjamin Mampaey", "benjamin.mampaey@oma.be")]
+SERVER_EMAIL = "SOLARNET@" + socket.getfqdn(socket.gethostname())
+DEFAULT_FROM_EMAIL = "SOLARNET@oma.be"
+
