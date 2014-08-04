@@ -63,8 +63,10 @@ DATABASES = {
 		'USER': 'postgres',
 		'HOST': '127.0.0.1',
 		'PORT': '5432',
-	}
+	},
 }
+
+DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
