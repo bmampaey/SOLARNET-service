@@ -4,10 +4,12 @@ from django.db import models
 
 class DataSet(models.Model):
 	name = models.CharField("Data set name.", max_length=20, primary_key = True)
+	description = models.TextField("Data set description", blank=True, null=True)
 	contact = models.CharField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50)
-	instrument = models.CharField(help_text = "Contact email for the data set.", blank=False, null=False, max_length=70)
-	euv = models.BooleanField(help_text = "Data is EUV.", default = False, blank=True)
-	image = models.BooleanField(help_text = "Data are images.", default = False, blank=True)
+	instrument = models.CharField(help_text = "The instrument.", blank=True, null=True, max_length=20)
+	telescope = models.CharField(help_text = "The telescope.", blank=True, null=True, max_length=20)
+	euv = models.BooleanField(help_text = "Data is EUV.", default = False, blank=True, null=False)
+	image = models.BooleanField(help_text = "Data are images.", default = False, blank=False)
 	
 	class Meta:
 		db_table = "data_set"
