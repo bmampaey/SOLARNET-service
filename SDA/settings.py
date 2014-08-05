@@ -111,6 +111,8 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+TEMPLATE_DIRS = ("SDA/templates/",)
+
 # Mails config
 EMAIL_HOST = "smtp.oma.be"
 ADMINS = [("Benjamin Mampaey", "benjamin.mampaey@oma.be")]
