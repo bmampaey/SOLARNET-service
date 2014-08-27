@@ -10,11 +10,11 @@ class Keyword(models.Model):
 		("float", "float"),
 		("datetime", "datetime (iso format)"),
 	)
-	column = models.CharField("Column name of the corresponding keyword in the meta_data table.", max_length=30, primary_key = True)
-	name = models.CharField(help_text = "Fits like name of the keyword. Can contain space and dashes.", blank=True, null=True, max_length=70)
-	python_type = models.CharField(help_text = "Python type of the keyword.", blank=True, null=False, max_length=12, default = "string", choices = PYTHON_TYPE_CHOICES)
-	unit = models.CharField(help_text = "Physical unit (SI compliant) of the keyword.", blank=True, null=True, max_length=10)
-	description = models.CharField(help_text = "Full description of the keyword.", blank=True, null=True, max_length=70)
+	db_column = models.TextField("Column name of the corresponding keyword in the meta_data table.", max_length=30, primary_key = True)
+	name = models.TextField(help_text = "Fits like name of the keyword. Can contain space and dashes.", blank=True, null=True, max_length=70)
+	python_type = models.TextField(help_text = "Python type of the keyword.", blank=True, null=False, max_length=12, default = "string", choices = PYTHON_TYPE_CHOICES)
+	unit = models.TextField(help_text = "Physical unit (SI compliant) of the keyword.", blank=True, null=True, max_length=10)
+	description = models.TextField(help_text = "Full description of the keyword.", blank=True, null=True, max_length=70)
 	
 	class Meta:
 		abstract = True
@@ -26,7 +26,7 @@ class Keyword(models.Model):
 
 class DataLocation(models.Model):
 	
-	path = models.CharField(help_text = "Path of the data at the data site.", max_length=255, blank=True, null=True)
+	path = models.TextField(help_text = "Path of the data at the data site.", max_length=255, blank=True, null=True)
 	
 	class Meta:
 		abstract = True

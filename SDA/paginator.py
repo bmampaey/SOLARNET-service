@@ -9,6 +9,11 @@ class EstimatedCountPaginator(Paginator):
 	connection_name = "default"
 	
 	@classmethod
+	def setup(cls, max_estimate = 1000, connection_name = "default"):
+		cls.max_estimate = max_estimate
+		cls.connection_name = connection_name
+	
+	@classmethod
 	def with_setup(cls, max_estimate = 1000, connection_name = "default"):
 		cls.max_estimate = max_estimate
 		cls.connection_name = connection_name

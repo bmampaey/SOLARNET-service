@@ -51,6 +51,7 @@ INSTALLED_APPS = (
 	'tastypie',
 	'dataset',
 	'eit',
+	'swap',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,7 +86,14 @@ DATABASES = {
 		'USER': 'eit',
 		'HOST': '127.0.0.1',
 		'PORT': '5432',
-	}
+	},
+	'swap': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'swap',
+		'HOST': '127.0.0.1',
+		'PORT': '5432',
+	},
 }
 
 DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
