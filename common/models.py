@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Keyword(models.Model):
+class BaseKeyword(models.Model):
 	PYTHON_TYPE_CHOICES = (
 		("str", "string"),
 		("bool", "bool"),
@@ -24,13 +24,13 @@ class Keyword(models.Model):
 		return unicode(self.name)
 
 
-class DataLocation(models.Model):
+class BaseDataLocation(models.Model):
 	
-	path = models.TextField(help_text = "Path of the data at the data site.", max_length=255, blank=True, null=True)
+	url = models.TextField(help_text = "URL of the data at the data site.", max_length=255, blank=True, null=True)
 	
 	class Meta:
 		abstract = True
 		db_table = "data_location"
 	
 	def __unicode__(self):
-		return unicode(self.path)
+		return unicode(self.url)

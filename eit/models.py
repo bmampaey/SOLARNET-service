@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-import SDA.models
+from common.models import BaseKeyword, BaseDataLocation
 
 class MetaData(models.Model):
 	id = models.BigIntegerField(primary_key=True)
@@ -48,14 +48,14 @@ class MetaData(models.Model):
 		db_table = 'meta_data'
 
 
-class Keyword(SDA.models.Keyword):
+class Keyword(BaseKeyword):
 	
-	class Meta(SDA.models.Keyword.Meta):
+	class Meta(BaseKeyword.Meta):
 		pass
 
 
-class DataLocation(SDA.models.DataLocation):
+class DataLocation(BaseDataLocation):
 	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
 	
-	class Meta(SDA.models.DataLocation.Meta):
+	class Meta(BaseDataLocation.Meta):
 		pass

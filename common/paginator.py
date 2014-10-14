@@ -1,3 +1,5 @@
+# See http://django-tastypie.readthedocs.org/en/latest/paginator.html why it is important for postgres to have a special paginator
+
 import json
 
 from django.db import connections
