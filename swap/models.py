@@ -11,7 +11,6 @@ class MetaData(models.Model):
 	creator = models.TextField(blank=True)
 	exptime = models.FloatField(blank=True, null=True)
 	level = models.FloatField(blank=True, null=True)
-	filepath = models.TextField(blank=True)
 	origin = models.TextField(blank=True)
 	swavint = models.FloatField(blank=True, null=True)
 	pav_rot0 = models.FloatField(blank=True, null=True)
@@ -125,7 +124,7 @@ class Keyword(BaseKeyword):
 
 
 class DataLocation(BaseDataLocation):
-	id = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE)
+	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
 	
 	class Meta(BaseDataLocation.Meta):
 		pass
