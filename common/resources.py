@@ -2,8 +2,13 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS, url
 from tastypie.authorization import DjangoAuthorization
 from tastypie.utils import trailing_slash
+from taggit.models import Tag
 
 from common.paginator import EstimatedCountPaginator
+
+class TagResource(ModelResource):
+	class Meta:
+		queryset = Tag.objects.all()
 
 class BaseDataSetResource(ModelResource):
 	"""Base class to set common parameters to all resources"""
@@ -67,8 +72,8 @@ def MetaDataResource_for(data_set_name, MetaData):
 	"""Create a MetaDataResource class for a specific data_set"""
 	
 	class MetaDataResource(BaseDataSetResource):
-		data_location = fields.OneToOneField(data_set_name+'.resources.DataLocationResource', 'data_location', related_name='meta_data', null=True, blank=True)
-	
+		data_location = fields.OneToOneField(data_set_name+'.resources.DataLocationResource', 'data_location', related_name='meta_data', full=True, null=True, blank=True)
+		tags = fields.ToManyField(TagResource, 'tags', full=True)
 		class Meta(BaseDataSetResource.Meta):
 			queryset = MetaData.objects.all()
 			resource_name = data_set_name + '_meta_data'

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from SDA.admin import KeywordAdmin
+from common.admin import KeywordAdmin
 
 # Register your models here.
 

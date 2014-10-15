@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from common.models import BaseKeyword, BaseDataLocation
+from taggit.managers import TaggableManager
+from common.models import BaseMataData, BaseKeyword, BaseDataLocation
 
-class MetaData(models.Model):
+class MetaData(BaseMataData):
 	id = models.BigIntegerField(primary_key=True)
 	filename = models.TextField()
 	date_obs = models.DateTimeField(db_column='date-obs', blank=True, null=True)  # Field renamed to remove unsuitable characters.
@@ -112,9 +113,10 @@ class MetaData(models.Model):
 	nprescr = models.IntegerField(blank=True, null=True)
 	pga_gain = models.IntegerField(blank=True, null=True)
 	
-	class Meta:
-		managed = False
-		db_table = 'meta_data'
+	tags = TaggableManager(related_name="swap_tags")
+	
+	class Meta(BaseMataData.Meta):
+		pass
 
 
 class Keyword(BaseKeyword):

@@ -1,15 +1,14 @@
 from django.db import models
-
-# Create your models here.
+from taggit.managers import TaggableManager
 
 class DataSet(models.Model):
-	name = models.TextField("Data set name.", max_length=20, primary_key = True)
+	name = models.TextField("Data set name.", max_length=20)
 	description = models.TextField("Data set description", blank=True, null=True)
 	contact = models.TextField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50)
 	instrument = models.TextField(help_text = "The instrument.", blank=True, null=True, max_length=20)
 	telescope = models.TextField(help_text = "The telescope.", blank=True, null=True, max_length=20)
-	euv = models.BooleanField(help_text = "Data is EUV.", default = False, blank=True, null=False)
-	image = models.BooleanField(help_text = "Data are images.", default = False, blank=False)
+	tags = TaggableManager()
+	
 	
 	class Meta:
 		db_table = "data_set"

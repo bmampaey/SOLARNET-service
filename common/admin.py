@@ -5,5 +5,5 @@ class KeywordAdmin(admin.ModelAdmin):
 	
 	def get_readonly_fields(self, request, obj=None):
 		if obj:
-			return self.readonly_fields + ("column",)
+			return self.readonly_fields + ("db_column",)
 		return self.readonly_fields

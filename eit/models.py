@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from common.models import BaseKeyword, BaseDataLocation
+from taggit.managers import TaggableManager
+from common.models import BaseMataData, BaseKeyword, BaseDataLocation
 
-class MetaData(models.Model):
+class MetaData(BaseMataData):
 	id = models.BigIntegerField(primary_key=True)
 	filename = models.TextField(max_length=18, blank=True)
 	date_obs = models.DateTimeField(blank=True, null=True)
@@ -43,9 +44,10 @@ class MetaData(models.Model):
 	sci_obj = models.TextField(max_length=30, blank=True)
 	date = models.DateTimeField(blank=True, null=True)
 	
-	class Meta:
-		managed = True
-		db_table = 'meta_data'
+	tags = TaggableManager(related_name="eit_tags")
+	
+	class Meta(BaseMataData.Meta):
+		pass
 
 
 class Keyword(BaseKeyword):
