@@ -1,0 +1,160 @@
+/* TODO Try to center thr panels */
+
+body {
+	padding: 1em 0.5em;
+}
+
+/* Tab elements and content */
+
+li#user_tab {
+	/* Push user tab to the right */
+	/* important to avoid jquery to override it */
+	float: right !important;
+}
+
+
+div.search_panel {
+	/* Put the 2 panels side by side if possible */
+	display: inline-block;
+	vertical-align: top;
+}
+
+div.search_result_panel {
+	/* Put the 2 panels side by side if possible */
+	display: inline-block;
+	vertical-align: top;
+}
+
+
+/* Section elements */
+div.section {
+	margin: 0.5em;
+	padding: .2em;
+}
+
+div.section_title {
+	padding: 0.5em 1em;
+}
+
+div.section_content {
+	padding: 0.5em 1em;
+}
+
+div.actions {
+	text-align: center;
+	padding: 0.5em 0;
+}
+
+
+/* Forms */
+
+form p * {
+	vertical-align: middle;
+}
+
+form label {
+	width: 10em;
+	display: inline-block;
+	margin: 0.5em;
+	text-align: right;
+}
+
+img.ui-datepicker-trigger {
+	margin: 0 0.5em;
+}
+
+select#id_cadence_multiplier{
+	height: 1.5em;
+	margin: 0 0.3em;
+}
+
+form.data_search_form select[multiple] {
+	min-width: 4em;
+}
+
+/* Search results actions forms */
+
+div.search_result_actions form{
+ display: inline;
+}
+
+/* Tables */
+
+table>thead th{
+	min-height: 1em;
+	text-align: left;
+	padding: 0.2em 0.5em;
+}
+
+table>tbody td{
+	text-align: right;
+	padding: 0.2em 0.5em;
+	border-right: 1px dotted black;
+	border-left: 1px dotted black;
+}
+
+/* Search result table buttons */
+div.page_navigation {
+	/* Push Select all and Unselect all buttons to the center */
+	text-align: center;
+	margin: 1em 0em;
+}
+
+button.select_all>span.ui-button-text, button.unselect_all>span.ui-button-text {
+	/* Make the buttons narrower */
+	padding-top: 0em;
+	padding-bottom: 0em;
+	font-size: small;
+}
+
+
+a.previous_page {
+	/* Push buttons to the left */
+	margin-right: 1em;
+}
+
+a.next_page {
+	/* Push buttons to the right */
+	margin-left: 1em;
+}
+
+/* Make icon buttons tiny squares */
+.small_button {
+	/* important to avoid jquery to override it */
+	height: 1em !important;
+	width: 1em !important;
+}
+
+/* Dialog boxes */
+
+div.dialog_box {
+	max-width: 40em;
+}
+
+div.dialog_box p{
+	margin-bottom: 1em;
+}
+
+
+div.preview_data {
+	text-align: center;
+}
+
+div.preview_data > img {
+	height: 512px;
+	width: 512px;
+}
+
+/* Create a loading button icon float: left;*/
+/* important to avoid jquery to override it */
+.ui-icon-loading { background-image: url(images/loading.gif) !important; }
+
+/* Visual indicator */
+span.visual_indicator {
+	margin-right: 0.3em;
+	display: inline-block;
+	overflow: hidden;
+}
+
+
+

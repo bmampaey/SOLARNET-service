@@ -50,6 +50,8 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
 	'tastypie',
 	'taggit',
+	'taggit_templatetags',
+	'wizard',
 	'dataset',
 	'eit',
 	'swap',
