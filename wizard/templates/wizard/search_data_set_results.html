@@ -1,40 +1,22 @@
-{% load staticfiles %}
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Search data set</title>
-		
-		<!-- Include jquery libraries and plugins -->
-		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-		<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-		
-		<!-- Include stylesheets -->
-		<link rel="stylesheet" href="{% static 'wizard/css/reset.css' %}" type="text/css">
-		<link rel="stylesheet" href="{% static 'wizard/css/jquery-ui-1.10.4.custom.css' %}" type="text/css">
-		<link rel="stylesheet" href="{% static 'wizard/css/wizard.css' %}" type="text/css">
-	</head>
-	<body>
-		<div class="result_panel">
-			<table class="search_result_table" summary="Search results" search_query="{{ search_query }}">
-				<thead>
-					<tr>
-						{% for header in headers %}
-						<th>{{ header }}</th>
-						{% endfor %}
-					</tr>
-				</thead>
-				<tbody>
-					{% for row in rows %}
-					<tr class='clickable_row' href='url://some-other-link/'>
-						{% for field in row %}
-						<td>{{ field }}</td>
-						{% endfor %}
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</body>
-</html>
+{% block content %}
+<div class="result_panel">
+	<table class="search_result_table" summary="Search results" search_query="{{ search_query }}">
+		<thead>
+			<tr>
+				{% for header in headers %}
+				<th>{{ header }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in rows %}
+			<tr class='clickable' href='url://some-other-link/'>
+				{% for field in row %}
+				<td>{{ field }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
