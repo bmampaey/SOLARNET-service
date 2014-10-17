@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from dataset.models import DataSet
+from dataset.models import Dataset
 # Register your models here.
 
-class DataSetAdmin(admin.ModelAdmin):
+class DatasetAdmin(admin.ModelAdmin):
 	list_display = ("name", "instrument", "contact")
 	
 	def get_readonly_fields(self, request, obj=None):
@@ -31,12 +31,12 @@ class DataSetAdmin(admin.ModelAdmin):
 		return request.user.is_superuser
 	
 	def get_queryset(self, request):
-		queryset = super(DataSetAdmin, self).get_queryset(request)
+		queryset = super(DatasetAdmin, self).get_queryset(request)
 		if request.user.is_superuser:
 			return queryset
 		else:
 			groups = [group.name for group in request.user.groups.all()]
 			return queryset.filter(name__in=groups)
 
-admin.site.register(DataSet, DataSetAdmin)
+admin.site.register(Dataset, DatasetAdmin)
 

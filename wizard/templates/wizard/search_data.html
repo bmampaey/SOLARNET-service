@@ -1,0 +1,30 @@
+{% extends "wizard/base.html" %}
+
+{% block content %}
+<div class="search_panel">
+	<form action="{% url 'search_dataset' %}" method="get">
+		{{ search_form.as_p }}
+		<button type="submit" class="search" title="Search data sets">Search data sets</button>
+	</form>
+</div>
+<div class="result_panel">
+	<table class="search_result_table" summary="Search results">
+		<thead>
+			<tr>
+				{% for header in headers %}
+				<th>{{ header }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in rows %}
+			<tr class='clickable' href="{{ row.href }}">
+				{% for field in row.fields %}
+				<td>{{ field }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

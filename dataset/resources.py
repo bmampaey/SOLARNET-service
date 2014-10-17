@@ -7,13 +7,13 @@ from tastypie.utils import trailing_slash
 # See http://django-tastypie.readthedocs.org/en/latest/paginator.html why it is important for postgres to have a special paginator
 from common.paginator import EstimatedCountPaginator
 from common.resources import TagResource
-from dataset.models import DataSet
+from dataset.models import Dataset
 
-class DataSetResource(ModelResource):
+class DatasetResource(ModelResource):
 	tags = fields.ToManyField(TagResource, 'tags', full = True)
 	class Meta:
-		queryset = DataSet.objects.all()
-		resource_name = 'data_set'
+		queryset = Dataset.objects.all()
+		resource_name = 'dataset'
 		limit = None
 		paginator_class = EstimatedCountPaginator
 		authorization = DjangoAuthorization()
