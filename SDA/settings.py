@@ -106,14 +106,15 @@ DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Brussels'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
+SHORT_DATETIME_FORMAT = DATETIME_FORMAT = 'Y-m-d H:i:s'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/

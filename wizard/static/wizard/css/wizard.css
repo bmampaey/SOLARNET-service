@@ -156,5 +156,7 @@ span.visual_indicator {
 	overflow: hidden;
 }
 
-
+.clickable:hover {
+	cursor: pointer;
+}
 

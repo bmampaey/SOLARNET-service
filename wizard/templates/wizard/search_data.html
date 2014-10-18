@@ -4,24 +4,34 @@
 <div class="search_panel">
 	<form action="{% url 'search_dataset' %}" method="get">
 		{{ search_form.as_p }}
-		<button type="submit" class="search" title="Search data sets">Search data sets</button>
+		<button type="submit" class="search" title="Search data">Search data</button>
 	</form>
 </div>
 <div class="result_panel">
 	<table class="search_result_table" summary="Search results">
 		<thead>
 			<tr>
+				<th></th><!-- checkbox column -->
+				<th></th><!-- download_data column -->
 				{% for header in headers %}
 				<th>{{ header }}</th>
 				{% endfor %}
+				<th>Tags</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for row in rows %}
-			<tr class='clickable' href="{{ row.href }}">
+			<tr>
+				<td>
+					<input type="checkbox" value="{{ row.data_id }}" name="data_id"></input>
+				</td>
+				<td>
+					<a class="download_data small_button" title="Download data" href="{{ row.data_location }}">Download</a>
+				</td>
 				{% for field in row.fields %}
 				<td>{{ field }}</td>
 				{% endfor %}
+				<td>{{ row.tags|join:", " }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

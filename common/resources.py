@@ -4,7 +4,7 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.utils import trailing_slash
 from taggit.models import Tag
 
-from common.paginator import EstimatedCountPaginator
+from common.tastypie_paginator import EstimatedCountPaginator
 
 class TagResource(ModelResource):
 	class Meta:

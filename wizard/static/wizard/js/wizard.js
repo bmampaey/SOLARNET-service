@@ -49,6 +49,45 @@ function load_events_handlers()
 			log("Clickable was clicked");
 			window.document.location = $(this).attr("href");
 	});
+	/*
+		// Set defaults for all datetime pickers
+	$.datepicker.setDefaults(
+		{
+			buttonImage: CALENDAR_IMAGE_URL,
+			buttonImageOnly: true,
+			buttonText: "Click to open date picker",
+			showOn: "button",
+			changeYear: true,
+			changeMonth: true,
+			dateFormat: 'yy-mm-dd',
+		}
+	);
+	*/
+	// Attach datetime picker to date_time_inputs
+	
+	$("input.date_time_input").datetimepicker(
+		{
+			buttonImage: CALENDAR_IMAGE_URL,
+			buttonImageOnly: true,
+			buttonText: "Click to open date picker",
+			showOn: "button",
+			changeYear: true,
+			changeMonth: true,
+			dateFormat: 'yy-mm-dd',
+			//minDateTime: new Date(2010,02,29), //Find a way to specialize this
+			//maxDateTime: new Date(),
+			timeFormat: 'HH:mm:ss', 
+			hourGrid: 6,
+			minuteGrid: 10,
+			showSecond: false,
+		}
+	);
+	
+	// Transform download_data anchors to button
+	$('a.download_data').button({icons: {primary: "ui-icon-arrowthickstop-1-s"}, text:false}).click(function(e){
+		// Change the color of the icon so user knows what he already downloaded
+		$(this).addClass('ui-button-disabled ui-state-disabled');
+	});
 }
 
 
