@@ -23,13 +23,16 @@
 		<!-- Include jquery plugins and application javascripts -->
 		<script src="{% static 'wizard/js/jquery-ui-timepicker-addon.js' %}" type="text/javascript"></script>
 		<script src="{% static 'wizard/js/jquery.cookie.js' %}" type="text/javascript"></script>
+		<script src="{% static 'wizard/js/jquery.multiple.select.js' %}" type="text/javascript"></script>
 		<script src="{% static 'wizard/js/wizard.js' %}" type="text/javascript"></script>
+
 		
 		
 		<!-- Include stylesheets -->
 		<link rel="stylesheet" href="{% static 'wizard/css/reset.css' %}" type="text/css">
 		<link rel="stylesheet" href="{% static 'wizard/css/jquery-ui-1.10.4.custom.css' %}" type="text/css">
-		<link rel="stylesheet" href="{% static 'wizard/css/wizard.css' %}" type="text/css">
+		<link rel="stylesheet" href="{% static 'wizard/css/multiple-select.css' %}" type="text/css">
+		<!--<link rel="stylesheet" href="{% static 'wizard/css/wizard.css' %}" type="text/css">-->
 	</head>
 	<body>
 		{% block content %} Welcome to the SOLARNET Virtual Observatory Web Application

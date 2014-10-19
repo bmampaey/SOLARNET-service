@@ -7,6 +7,13 @@ from django.core import urlresolvers
 
 # Assert we only have get
 @require_safe
+def index(request):
+	"""TODO"""
+	return render(request, 'wizard/index.html', {})
+
+
+# Assert we only have get
+@require_safe
 def search_data(request, dataset_name):
 	"""Call the appropriate view"""
 	if dataset_name == "eit":

@@ -16,12 +16,13 @@ def search_dataset(request):
 	search_form = DatasetSearchForm(request.GET)
 	if search_form.is_valid():
 		selection_criteria = dict()
-		if search_form.cleaned_data['telescope']:
-			selection_criteria["telescope__in"]=search_form.cleaned_data['telescope']
 		
 		# Not necessary at the moment as we have only one dataset per instrument
-		# if search_form.cleaned_data['instrument']:
-		#	selection_criteria["instrument__in"]=search_form.cleaned_data['instrument']
+		# if search_form.cleaned_data['telescope']:
+		#	selection_criteria["telescope__in"]=search_form.cleaned_data['telescope']
+		
+		if search_form.cleaned_data['instrument']:
+			selection_criteria["instrument__in"]=search_form.cleaned_data['instrument']
 		
 		if search_form.cleaned_data['tags']:
 			selection_criteria["tags__name__in"]=search_form.cleaned_data['tags']
