@@ -1,7 +1,8 @@
 from django.db import models
-from taggit.managers import TaggableManager
+from taggit.models import GenericTaggedItemBase
 
 class BaseMataData(models.Model):
+	id = models.BigIntegerField(primary_key=True)
 	
 	class Meta:
 		abstract = True
@@ -42,3 +43,4 @@ class BaseDataLocation(models.Model):
 	
 	def __unicode__(self):
 		return unicode(self.url)
+

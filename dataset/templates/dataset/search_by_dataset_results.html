@@ -1,0 +1,29 @@
+{% block content %}
+{% if rows %}
+<table class="search_results_table" summary="Search results"">
+	<thead>
+		<tr>
+			{% for header in headers %}
+			<th>{{ header }}</th>
+			{% endfor %}
+			<th>Characteristics</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in rows %}
+		<tr class='clickable' href="{{ row.href }}">
+			{% for field in row.fields %}
+			<td>{{ field }}</td>
+			{% endfor %}
+			<td>{{ row.characteristics|join:", " }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% elif message %}
+<p>{{ message }}</p>
+{% else %}
+<p>Nothing correspond to your search criteria.</p>
+{% endif %}
+
+{% endblock %}

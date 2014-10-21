@@ -1,0 +1,55 @@
+{% block content %}
+<table class="search_results_table" summary="Search results">
+	<thead>
+		<tr>
+			<th></th><!-- checkbox column -->
+			<th></th><!-- download_data column -->
+			{% for header in headers %}
+			<th>{{ header }}</th>
+			{% endfor %}
+			<th>Tags</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in rows %}
+		<tr>
+			<td>
+				<input type="checkbox" value="{{ row.data_id }}" name="data_id"></input>
+			</td>
+			<td>
+				<a class="download_data small_button" title="Download data" href="{{ row.data_location }}">Download</a>
+			</td>
+			{% for field in row.fields %}
+			<td>{{ field }}</td>
+			{% endfor %}
+			<td>{{ row.tags|join:", " }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<div class="page_navigation">
+	{% if first_page_url_query %}
+	<a class="first_page small_button" title="Go to first page" href="{% url dataset_name|add:':search_data_results' %}?{{ first_page_url_query }}">First page</a>
+	{% else %}
+	<a class="first_page small_button" title="Go to first page">First page</a>
+	{% endif %}
+	{% if previous_page_url_query %}
+	<a class="previous_page small_button" title="Go to previous page" href="{% url dataset_name|add:':search_data_results' %}?{{ previous_page_url_query }}">Previous page</a>
+	{% else %}
+	<a class="previous_page small_button" title="Go to previous page">Previous page</a>
+	{% endif %}
+	<!-- Select all and none buttons -->
+	<button class="select_all" title="Select all">Select all</button>
+	<button class="unselect_all" title="Unselect all">Unselect all</button>
+	{% if next_page_url_query %}
+	<a class="next_page small_button" title="Go to next page" href="{% url dataset_name|add:':search_data_results' %}?{{ next_page_url_query }}">Next page</a>
+	{% else %}
+	<a class="next_page small_button" title="Go to next page">Next page</a>
+	{% endif %}
+	{% if last_page_url_query %}
+	<a class="last_page small_button" title="Go to last page" href="{% url dataset_name|add:':search_data_results' %}?{{ last_page_url_query }}">Last page</a>
+	{% else %}
+	<a class="last_page small_button" title="Go to last page">Last page</a>
+	{% endif %}
+</div>
+{% endblock %}

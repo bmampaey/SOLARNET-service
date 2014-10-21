@@ -7,7 +7,7 @@ class Dataset(models.Model):
 	contact = models.TextField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50)
 	instrument = models.TextField(help_text = "The instrument.", blank=True, null=True, max_length=20)
 	telescope = models.TextField(help_text = "The telescope.", blank=True, null=True, max_length=20)
-	tags = TaggableManager()
+	characteristics = TaggableManager()
 	
 	
 	class Meta:

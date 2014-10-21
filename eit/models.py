@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 from django.db import models
 from taggit.managers import TaggableManager
 from common.models import BaseMataData, BaseKeyword, BaseDataLocation
+from common.TaggedMetaData import TaggedMetaData
 
 class MetaData(BaseMataData):
-	id = models.BigIntegerField(primary_key=True)
 	filename = models.TextField(max_length=18, blank=True)
 	date_obs = models.DateTimeField(blank=True, null=True)
 	corrected_date_obs = models.DateTimeField(blank=True, null=True)

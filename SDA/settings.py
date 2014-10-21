@@ -52,6 +52,7 @@ INSTALLED_APPS = (
 	'taggit',
 	'taggit_templatetags',
 	'wizard',
+	'common',
 	'dataset',
 	'eit',
 	'swap',
