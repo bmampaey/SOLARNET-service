@@ -1,8 +1,9 @@
 from django.db import models
-from taggit.models import GenericTaggedItemBase
+from taggit.managers import TaggableManager
 
 class BaseMataData(models.Model):
 	id = models.BigIntegerField(primary_key=True)
+	tags = TaggableManager(related_name='+')
 	
 	class Meta:
 		abstract = True

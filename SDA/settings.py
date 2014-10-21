@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 	'dataset',
 	'eit',
 	'swap',
+	'testMM'
 )
 
 MIDDLEWARE_CLASSES = (

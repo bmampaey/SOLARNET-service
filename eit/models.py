@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from taggit.managers import TaggableManager
+
 from common.models import BaseMataData, BaseKeyword, BaseDataLocation
-from common.TaggedMetaData import TaggedMetaData
 
 class MetaData(BaseMataData):
 	filename = models.TextField(max_length=18, blank=True)
@@ -43,8 +43,6 @@ class MetaData(BaseMataData):
 	shutter_close_time = models.TextField(max_length=8, blank=True)
 	sci_obj = models.TextField(max_length=30, blank=True)
 	date = models.DateTimeField(blank=True, null=True)
-	
-	tags = TaggableManager(related_name="eit_tags")
 	
 	class Meta(BaseMataData.Meta):
 		pass

@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from taggit.managers import TaggableManager
 from common.models import BaseMataData, BaseKeyword, BaseDataLocation
-from common.TaggedMetaData import TaggedMetaData
+
 
 class MetaData(BaseMataData):
 	filename = models.TextField()
@@ -112,8 +111,6 @@ class MetaData(BaseMataData):
 	eacqtime = models.FloatField(blank=True, null=True)
 	nprescr = models.IntegerField(blank=True, null=True)
 	pga_gain = models.IntegerField(blank=True, null=True)
-	
-	tags = TaggableManager(related_name="swap_tags")
 	
 	class Meta(BaseMataData.Meta):
 		pass
