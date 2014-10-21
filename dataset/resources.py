@@ -10,7 +10,7 @@ from common.resources import TagResource
 from dataset.models import Dataset
 
 class DatasetResource(ModelResource):
-	tags = fields.ToManyField(TagResource, 'tags', full = True)
+	characteristics = fields.ToManyField(TagResource, 'characteristics', full = True)
 	class Meta:
 		queryset = Dataset.objects.all()
 		resource_name = 'dataset'

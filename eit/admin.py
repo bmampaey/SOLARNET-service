@@ -1,9 +1,7 @@
 from django.contrib import admin
-from common.admin import KeywordAdmin
-
-# Register your models here.
 
 from eit.models import Keyword
+from common.admin import KeywordAdmin
 
 admin.site.register(Keyword, KeywordAdmin)
 

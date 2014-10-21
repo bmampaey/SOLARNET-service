@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 from django import forms
-from django.contrib.contenttypes.models import ContentType
 
 from common.forms import BaseForm
 from eit.models import MetaData

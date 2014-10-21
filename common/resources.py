@@ -10,7 +10,7 @@ class TagResource(ModelResource):
 	class Meta:
 		queryset = Tag.objects.all()
 
-class BaseDataSetResource(ModelResource):
+class BaseResource(ModelResource):
 	"""Base class to set common parameters to all resources"""
 	class Meta:
 		limit = 20
@@ -34,9 +34,9 @@ class BaseDataSetResource(ModelResource):
 def KeywordResource_for(dataset_name, Keyword):
 	"""Create a KeywordResource class for a specific dataset"""
 	
-	class KeywordResource(BaseDataSetResource):
+	class KeywordResource(BaseResource):
 		
-		class Meta(BaseDataSetResource.Meta):
+		class Meta(BaseResource.Meta):
 			queryset = Keyword.objects.all()
 			resource_name = dataset_name + '_keyword'
 			resource_type = 'keyword'
@@ -52,10 +52,10 @@ def KeywordResource_for(dataset_name, Keyword):
 def DataLocationResource_for(dataset_name, DataLocation):
 	"""Create a DataLocationResource class for a specific dataset"""
 	
-	class DataLocationResource(BaseDataSetResource):
+	class DataLocationResource(BaseResource):
 		meta_data = fields.OneToOneField(dataset_name+'.resources.MetaDataResource', 'meta_data', related_name='data_location', null=True, blank=True)
 	
-		class Meta(BaseDataSetResource.Meta):
+		class Meta(BaseResource.Meta):
 			queryset = DataLocation.objects.all()
 			resource_name = dataset_name + '_data_location'
 			resource_type = 'data_location'
@@ -71,10 +71,10 @@ def DataLocationResource_for(dataset_name, DataLocation):
 def MetaDataResource_for(dataset_name, MetaData):
 	"""Create a MetaDataResource class for a specific dataset"""
 	
-	class MetaDataResource(BaseDataSetResource):
+	class MetaDataResource(BaseResource):
 		data_location = fields.OneToOneField(dataset_name+'.resources.DataLocationResource', 'data_location', related_name='meta_data', full=True, null=True, blank=True)
 		tags = fields.ToManyField(TagResource, 'tags', full=True)
-		class Meta(BaseDataSetResource.Meta):
+		class Meta(BaseResource.Meta):
 			queryset = MetaData.objects.all()
 			resource_name = dataset_name + '_meta_data'
 			resource_type = 'meta_data'
