@@ -6,8 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from common.forms import BaseForm
 from swap.models import MetaData
 
-class SearchForm(BaseForm):
-	"""Form to search the dataset"""
+class SearchData(BaseForm):
+	"""Form to search the data"""
 	FIRST_DATE_OBS = MetaData.objects.order_by("date_obs").first().date_obs
 	LAST_DATE_OBS = MetaData.objects.order_by("date_obs").last().date_obs
 	start_date = forms.DateTimeField(required=False, initial = FIRST_DATE_OBS, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))

@@ -1,90 +1,85 @@
 import logging
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseForbidden, HttpResponseNotFound
-from django.views.decorators.http import require_safe, require_POST, require_http_methods
+from collections import OrderedDict
+
+from django.views.generic import TemplateView, ListView
 from django.core import urlresolvers
 
-from dataset.forms import SearchByDatasetForm, SearchAcrossDatasetsForm
+from dataset.forms import SearchByDataset, SearchAcrossDatasets
 from dataset.models import Dataset
 
-# Assert we only have get
-@require_safe
-def search_by_dataset_form(request):
-	""" Generate the form to search dataset """
+
+# See links below for some explanations on class based views
+# http://georgebrock.github.io/talks/intro-to-class-based-generic-views/
+# https://blog.safaribooksonline.com/2013/10/28/class-based-views-in-django/
+# https://github.com/django/django/blob/master/django/views/generic/list.py
+
+class SearchByDatasetForm(TemplateView):
+	search_form_class = SearchByDataset
+	template_name = 'dataset/search_by_dataset_form.html'
 	
-	return render(request, 'dataset/search_by_dataset_form.html', {"search_form": SearchByDatasetForm()})
+	def get_context_data(self, **kwargs):
+		context = super(SearchByDatasetForm, self).get_context_data(**kwargs)
+		context['search_form'] = self.search_form_class()
+		return context
 
-
-# Assert we only have get
-@require_safe
-def search_by_dataset_results(request):
-	#import pdb; pdb.set_trace()
-	search_form = SearchByDatasetForm(request.GET)
-	if search_form.is_valid():
-		selection_criteria = dict()
-		
-		if search_form.cleaned_data['instrument']:
-			selection_criteria["instrument__in"]=search_form.cleaned_data['instrument']
-		
-		if search_form.cleaned_data['characteristics']:
-			selection_criteria["characteristics__name__in"]=search_form.cleaned_data['characteristics']
-		
-		datasets = Dataset.objects.filter(**selection_criteria)
-		headers = ["Data set", "Instrument", "Telescope", "Characteristics"]
-		rows = list()
-		for dataset in datasets:
-			row = dict()
-			try:
-				row['href'] = urlresolvers.reverse('search_data_form', current_app = dataset.name)
-				row['fields'] = [dataset.name, dataset.instrument, dataset.telescope, ", ".join(dataset.characteristics.names())]
-				rows.append(row)
-			except urlresolvers.NoReverseMatch, why:
-				logging.error("No view found to search data for %s: %s", dataset.name, why)
-		
-		return render(request, 'dataset/search_by_dataset_results.html', {"headers": headers, "rows": rows})
+class SearchAcrossDatasetsForm(TemplateView):
+	search_form_class = SearchAcrossDatasets
+	template_name = 'dataset/search_across_datasets_form.html'
 	
-	else:
-		return HttpResponseBadRequest(str(search_form.errors))
+	def get_context_data(self, **kwargs):
+		context = super(SearchAcrossDatasetsForm, self).get_context_data(**kwargs)
+		context['search_form'] = self.search_form_class()
+		return context
 
-
-# Assert we only have get
-@require_safe
-def search_across_datasets_form(request):
-	""" Generate the form to search dataset """
+class SearchByDatasetResults(ListView):
+	model = Dataset
+	search_form_class = SearchByDataset
+	table_columns = OrderedDict([('name', 'Dataset'), ('instrument', 'Instrument'), ('telescope', 'Telescope')])
+	paginate_by = None # We do not paginate for datasets
+	context_object_name = 'dataset_list'
+	ordering = 'name'
+	template_name = 'dataset/search_by_dataset_results.html'
 	
-	return render(request, 'dataset/search_across_datasets_form.html', {"search_form": SearchByDatasetForm()})
-
-
-# Assert we only have get
-@require_safe
-def search_across_datasets_results(request):
-	#import pdb; pdb.set_trace()
-	search_form = SearchByDatasetForm(request.GET)
-	if search_form.is_valid():
-		selection_criteria = dict()
-		
-		if search_form.cleaned_data['characteristics']:
-			selection_criteria["characteristics__name__in"]=search_form.cleaned_data['characteristics']
-		
-		if search_form.cleaned_data['tags']:
-			#tag for tags in TaggedItem.objects.filter(content_type_id = ContentType.objects.get(model = 'metadata', app_label=dataset.name).id).values_list('tag__name', flat=True).distinct() for dataset in Dataset.objects.all()
-			selection_criteria["tags__name__in"]=search_form.cleaned_data['tags']
-		
-		datasets = Dataset.objects.filter(**selection_criteria)
-		headers = ["Count", "Data set", "Instrument", "Telescope", "Characteristics"]
-		rows = list()
-		for dataset in datasets:
-			row = dict()
-			try:
-				row['href'] = urlresolvers.reverse('search_data_form', current_app = dataset.name)
-				row['fields'] = [dataset.name, dataset.instrument, dataset.telescope, ", ".join(dataset.tags.names())]
-				rows.append(row)
-			except urlresolvers.NoReverseMatch, why:
-				logging.error("No view found to search data for %s: %s", dataset.name, why)
-		
-		return render(request, 'dataset/search_across_datasets_results.html', {"headers": headers, "rows": rows})
 	
-	else:
-		return HttpResponseBadRequest(str(search_form.errors))
+	def get_queryset(self):
+		# Get the cleaned data from the form
+		cleaned_data = self.search_form_class.get_cleaned_data(self.request.GET)
+		
+		# Make up the selection criteria from the cleaned data
+		selection_criteria = self.search_form_class.get_selection_criteria(cleaned_data)
+	
+		# Return the the QuerySet for the datasets
+		return self.model.objects.filter(**selection_criteria).distinct()
+	
+	def get_context_data(self, **kwargs):
+		context = super(SearchByDatasetResults, self).get_context_data(**kwargs)
+		context['table_columns'] = self.table_columns
+		return context
+
+class SearchAcrossDatasetsResults(ListView):
+	model = Dataset
+	search_form_class = SearchAcrossDatasets
+	table_columns = OrderedDict([('name', 'Dataset'), ('instrument', 'Instrument'), ('telescope', 'Telescope')])
+	paginate_by = None # We do not paginate for datasets
+	context_object_name = 'dataset_list'
+	ordering = 'name'
+	template_name = 'dataset/search_across_datasets_results.html'
+	
+	
+	def get_queryset(self):
+		# Get the cleaned data from the form
+		cleaned_data = self.search_form_class.get_cleaned_data(self.request.GET)
+		
+		# Make up the selection criteria from the cleaned data
+		selection_criteria = self.search_form_class.get_selection_criteria(cleaned_data)
+	
+		# Return the the QuerySet for the datasets
+		return self.model.objects.filter(**selection_criteria).distinct()
+	
+	def get_context_data(self, **kwargs):
+		context = super(SearchAcrossDatasetsResults, self).get_context_data(**kwargs)
+		context['table_columns'] = self.table_columns
+		return context
+
 
 

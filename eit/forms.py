@@ -7,8 +7,8 @@ from common.forms import BaseForm
 from eit.models import MetaData
 
 
-class SearchForm(BaseForm):
-	"""Form to search the dataset"""
+class SearchData(BaseForm):
+	"""Form to search the data"""
 	FIRST_DATE_OBS = MetaData.objects.order_by("date_obs").first().date_obs
 	LAST_DATE_OBS = MetaData.objects.order_by("date_obs").last().date_obs
 	EIT_WAVELENGTHS = [171, 195, 284, 304]

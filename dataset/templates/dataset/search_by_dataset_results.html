@@ -1,21 +1,22 @@
 {% block content %}
-{% if rows %}
+{% load getattr %}
+{% if dataset_list %}
 <table class="search_results_table" summary="Search results"">
 	<thead>
 		<tr>
-			{% for header in headers %}
+			{% for keyword, header in table_columns.items %}
 			<th>{{ header }}</th>
 			{% endfor %}
 			<th>Characteristics</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for row in rows %}
-		<tr class='clickable' href="{{ row.href }}">
-			{% for field in row.fields %}
-			<td>{{ field }}</td>
+		{% for dataset in dataset_list %}
+		<tr class='clickable' href="{% url dataset.name|add:':search_data_form' %}">
+			{% for keyword, header in table_columns.items %}
+			<td>{{ dataset|getattr:keyword }}</td>
 			{% endfor %}
-			<td>{{ row.characteristics|join:", " }}</td>
+			<td>{{ dataset.characteristics.names|join:", " }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
@@ -27,3 +28,4 @@
 {% endif %}
 
 {% endblock %}
+
