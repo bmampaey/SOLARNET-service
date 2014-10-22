@@ -24,7 +24,7 @@
 			{% for keyword, header in table_columns.items %}
 			<td>{{ data|getattr:keyword }}</td>
 			{% endfor %}
-			<td>{{ data.tags.names|join:", " }}</td>
+			<td>{{ data.tags_names|join:", " }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
@@ -54,6 +54,8 @@
 	<a class="last_page small_button" title="Go to last page">Last page</a>
 	{% endif %}
 </div>
+
+
 {% elif message %}
 <p>{{ message }}</p>
 {% else %}

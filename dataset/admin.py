@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from dataset.models import Dataset
-# Register your models here.
+from dataset.models import Dataset, Characteristic
+
 # For this class to work there must be for each dataset a group with the same name
 class DatasetAdmin(admin.ModelAdmin):
 	list_display = ("name", "instrument", "contact")
+	filter_horizontal = ("characteristics",)
 	
 	def get_readonly_fields(self, request, obj=None):
 		# Do not allow to change the name of the dataset
@@ -42,4 +43,5 @@ class DatasetAdmin(admin.ModelAdmin):
 			return queryset.filter(name__in=groups)
 
 admin.site.register(Dataset, DatasetAdmin)
+admin.site.register(Characteristic)
 

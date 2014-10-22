@@ -4,6 +4,8 @@
 <table class="search_results_table" summary="Search results"">
 	<thead>
 		<tr>
+			<th></th><!-- checkbox column -->
+			<th># Items</th>
 			{% for keyword, header in table_columns.items %}
 			<th>{{ header }}</th>
 			{% endfor %}
@@ -13,6 +15,10 @@
 	<tbody>
 		{% for dataset in dataset_list %}
 		<tr class='clickable' href="{% url dataset.name|add:':search_data_form' %}">
+			<td>
+				<input type="checkbox" value="{{ data.id }}" name="data_id"></input>
+			</td>
+			<td>{{ dataset.item_count }}</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ dataset|getattr:keyword }}</td>
 			{% endfor %}

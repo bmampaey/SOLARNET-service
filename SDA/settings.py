@@ -49,14 +49,11 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'tastypie',
-	'taggit',
-	'taggit_templatetags',
 	'wizard',
 	'common',
 	'dataset',
 	'eit',
 	'swap',
-	'testMM'
 )
 
 MIDDLEWARE_CLASSES = (

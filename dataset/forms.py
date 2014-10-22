@@ -5,7 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from taggit.models import TaggedItem
 
 from common.forms import BaseForm
-from dataset.models import Dataset, DatasetCharacteristic
+from common.models import BaseTag
+from dataset.models import Dataset, Characteristic
 
 
 class SearchByDataset(BaseForm):
@@ -13,7 +14,7 @@ class SearchByDataset(BaseForm):
 	TELESCOPES = Dataset.objects.order_by().values_list('telescope', flat = True).distinct()
 	INSTRUMENTS = Dataset.objects.order_by().values_list('instrument', flat = True).distinct()
 	INSTRUMENTS_BY_TELESCOPE = [(t, [(i, u'%s'%i) for i in Dataset.objects.order_by().filter(telescope = t).values_list('instrument', flat = True).distinct()]) for t in TELESCOPES]
-	CHARACTERISTICS = DatasetCharacteristic.objects.values_list('tag__name', flat=True).distinct()
+	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
 	instrument = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = INSTRUMENTS, choices=INSTRUMENTS_BY_TELESCOPE)
 	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = CHARACTERISTICS, choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
 	
@@ -32,9 +33,9 @@ class SearchByDataset(BaseForm):
 
 class SearchAcrossDatasets(BaseForm):
 	"""Form to search across datasets"""
-	CHARACTERISTICS = DatasetCharacteristic.objects.values_list('tag__name', flat=True).distinct()
+	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
 	# Absolutely all tags from all datasets
-	TAGS = set([tag for tags in [ TaggedItem.objects.filter(content_type_id = ContentType.objects.get(model = 'metadata', app_label=dataset.name).id).values_list('tag__name', flat=True).distinct() for dataset in  Dataset.objects.all()] for tag in tags])
+	TAGS = BaseTag.all_tags()
 	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = CHARACTERISTICS, choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
 	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = TAGS, choices=[(t, u'%s'%t) for t in TAGS])
 	
@@ -45,9 +46,5 @@ class SearchAcrossDatasets(BaseForm):
 		
 		if cleaned_data['characteristics']:
 			selection_criteria["characteristics__name__in"]=cleaned_data['characteristics']
-		
-		if cleaned_data['tags']:
-			dataset_ids = 
-			selection_criteria["tags__name__in"]=cleaned_data['tags']
 		
 		return selection_criteria

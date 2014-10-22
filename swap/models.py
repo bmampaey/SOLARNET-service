@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from common.models import BaseMataData, BaseKeyword, BaseDataLocation
+from common.models import BaseMetaData, BaseKeyword, BaseDataLocation, BaseTag
 
 
-class MetaData(BaseMataData):
+class MetaData(BaseMetaData):
 	filename = models.TextField()
 	date_obs = models.DateTimeField(db_column='date-obs', blank=True, null=True)  # Field renamed to remove unsuitable characters.
 	wavelnth = models.IntegerField(blank=True, null=True)
@@ -112,7 +112,14 @@ class MetaData(BaseMataData):
 	nprescr = models.IntegerField(blank=True, null=True)
 	pga_gain = models.IntegerField(blank=True, null=True)
 	
-	class Meta(BaseMataData.Meta):
+	class Meta(BaseMetaData.Meta):
+		pass
+
+
+class DataLocation(BaseDataLocation):
+	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
+	
+	class Meta(BaseDataLocation.Meta):
 		pass
 
 
@@ -122,8 +129,7 @@ class Keyword(BaseKeyword):
 		pass
 
 
-class DataLocation(BaseDataLocation):
-	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
+class Tag(BaseTag):	
 	
-	class Meta(BaseDataLocation.Meta):
+	class Meta(BaseTag.Meta):
 		pass

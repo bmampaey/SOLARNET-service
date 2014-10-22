@@ -8,6 +8,7 @@ class DataSetRouteur(object):
 		"""
 		Redirect each dataset read to it's database.
 		"""
+		#import pdb; pdb.set_trace() 
 		if model._meta.app_label not in DATABASES:
 			return 'default'
 		return model._meta.app_label

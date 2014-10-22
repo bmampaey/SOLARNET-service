@@ -72,9 +72,16 @@ class SearchAcrossDatasetsResults(ListView):
 		
 		# Make up the selection criteria from the cleaned data
 		selection_criteria = self.search_form_class.get_selection_criteria(cleaned_data)
-	
+		
 		# Return the the QuerySet for the datasets
-		return self.model.objects.filter(**selection_criteria).distinct()
+		datasets = list()
+		for dataset in self.model.objects.filter(**selection_criteria).distinct():
+			item_count = dataset.tag_model.objects.filter(name__in=cleaned_data['tags']).count()
+			if item_count > 0:
+				dataset.item_count = item_count
+				datasets.append(dataset)
+		
+		return datasets
 	
 	def get_context_data(self, **kwargs):
 		context = super(SearchAcrossDatasetsResults, self).get_context_data(**kwargs)
