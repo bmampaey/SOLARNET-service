@@ -1,12 +1,8 @@
 {% block content %}
 <form id="login_form" action="{% url 'login_form' %}" method="post">
 	{% csrf_token %}
-	<div class="section_title">
-		Please specify your email address to save your data selections.
-	</div>
-	<div class="section_content">
-		{{ form.as_p }}
-	</div>
+	Please specify your email address to save your data selections
+	{{ form.as_p }}
 	<div class="actions">
 		<button type="submit" id="login" title="Log in the application">Login</button>
 	</div>

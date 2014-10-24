@@ -12,7 +12,7 @@
 	</thead>
 	<tbody>
 		{% for dataset in dataset_list %}
-		<tr class='clickable' href="{% url dataset.name|add:':search_data_form' %}">
+		<tr class='open_data_search' dataset_name="{{ dataset.name }}" search_data_form_href="{% url dataset.name|add:':search_data_form' %}" search_data_results_href="{% url dataset.name|add:':search_data_results' %}" dataset_description="{{ dataset.description }}">
 			{% for keyword, header in table_columns.items %}
 			<td>{{ dataset|getattr:keyword }}</td>
 			{% endfor %}

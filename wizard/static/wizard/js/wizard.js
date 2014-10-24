@@ -34,6 +34,67 @@ function log(a, b, c, d, e)
 	}
 }
 
+// Display a pop up with an error message or write it to the box if provided.
+function alert_user(message, box)
+{
+	log("alert_user message: ", message);
+	if(box == null)
+	{
+		box = $('<div><span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;">Alert:</span>' + message + '</div>');
+		box.dialog({
+			modal: true,
+			draggable: false,
+			title: "Error",
+			resizable: false,
+			width: "auto",
+			dialogClass: "ui-state-error dialog_box",
+			buttons: {
+				Ok: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
+	else
+	{
+		box.removeClass("ui-state-highlight").addClass("ui-state-error");
+		box.html('<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;">Note:</span><strong>' + message + '</strong></p>');
+	}
+}
+
+// Display a pop up with a informational message or write it to the box if provided
+function inform_user(message, box)
+{
+	log("inform_user message: ", message);
+	if(box == null)
+	{
+		box = $('<div><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;">Info:</span>' + message + '</div>');
+		box.dialog({
+			modal: false,
+			draggable: false,
+			title: "Note",
+			resizable: false,
+			width: "auto",
+			dialogClass: "ui-state-highlight dialog_box",
+			buttons: [
+				{
+					text: "Ok",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			]
+		});
+		//box.remove();
+	}
+	else
+	{
+		box.removeClass("ui-state-error").addClass("ui-state-highlight");
+		box.html('<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;">Note:</span>' + message + '</p>').effect("highlight", {}, 2000);
+	}
+}
+
+
 function load_section(section, url, indicator)
 {
 	log("GET request for url", url);
@@ -73,12 +134,20 @@ function load_section(section, url, indicator)
 
 function post_load_section(section)
 {
-	// Make clickable things clickable
-	$(".clickable[href]", section).click(function() {
+	// Make dataset row openable
+	$("tr.open_data_search", section).click(function() {
 			log("Clickable was clicked");
-			window.document.location = $(this).attr("href");
+			add_accordion_panel('<div class="section search_form_section" href="'+$(this).attr("search_data_form_href")+'">Please wait for the search form to load</div><div class="section search_results_section" href="'+$(this).attr("search_data_results_href")+'">You can search for data using the form on the left</div>', $(this).attr("dataset_name") + '_search_data', 'Search data ' + $(this).attr("dataset_name") + "  <button type='button' class='help small_button' title='" + $(this).attr("dataset_description") + "'>Help</button>", true);
+	}).hover(function(){
+		$(this).toggleClass('ui-state-hover');
+	})
+	
+	// Transform help text in ? button
+	$("span.helptext", section).replaceWith(function() {return "<button type='button' class='help small_button' title='" + $(this).text() + "'>Help</button>";});
+	$("button.help").button({icons: {primary: "ui-icon-help"}, text:false}).addClass('ui-state-highlight').click(function(e){
+		inform_user($(this).attr("title"));
 	});
-
+	
 	// Attach datetimepicker picker to date_time_inputs
 	$("input.date_time_input", section).datetimepicker(
 		{
@@ -123,12 +192,12 @@ function add_accordion_panel(content, id, title, closeable)
 {
 	log("Adding accordion panel with id", id)
 	// Check if an element with that id exists already
-	existing_element = $("#"+id);
-	if(existing_element.length)
+	content_element = $("#"+id);
+	if(content_element.length)
 	{
 		// If the element exists already, we just replace it's content
-		log("Element with id", id,"already exists, uppdating content", existing_element.html());
-		existing_element.html(content);
+		log("Element with id", id,"already exists, uppdating content", content_element.html());
+		content_element.html(content);
 	}
 	else
 	{
@@ -136,8 +205,7 @@ function add_accordion_panel(content, id, title, closeable)
 		log("Creating new element with id", id, "and title", title)
 		title_element = $("<h3>/", {
 			id: id+'_title',
-			text: title
-		});
+		}).append(title);
 		content_element = $("<div/>", {
 			id: id,
 		}).append(content);
@@ -161,9 +229,13 @@ function add_accordion_panel(content, id, title, closeable)
 		}
 		$("#accordion").append(title_element, content_element);
 	}
+	//Load the loadable_sections with href with the content at the url 
+	$('.section[href]').each(function(){
+		load_section($(this), $(this).attr( 'href' ));
+	});
 	// We need to refresh the accordion to adjust the panel sizes
 	$("#accordion").accordion("refresh");
-	$("#accordion").accordion("option", "active", "#"+id+'_title');
+	$("#accordion").accordion("option", "active", $("#accordion>div").index(content_element));
 	
 }
 
@@ -184,7 +256,6 @@ function load_events_handlers()
 	// Make the accordion
 	$("#accordion").accordion({ heightStyle: "content" });
 	
-	add_accordion_panel('<div class="section search_form_section" href="">Eit search form</div><div class="section search_results_section" href="">Eit search results</div>', 'eit_search_data', 'Search eit dataset', true);
 	
 }
 

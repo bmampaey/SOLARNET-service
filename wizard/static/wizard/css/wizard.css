@@ -46,7 +46,7 @@ form p * {
 	vertical-align: middle;
 }
 
-form label {
+form p > label {
 	width: 10em;
 	display: inline-block;
 	margin: 0.5em;
@@ -142,7 +142,4 @@ span.visual_indicator {
 	overflow: hidden;
 }
 
-.clickable:hover {
-	cursor: pointer;
-}
 
