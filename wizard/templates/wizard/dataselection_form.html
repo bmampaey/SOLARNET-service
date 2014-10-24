@@ -1,0 +1,11 @@
+{% extends "wizard/base.html" %}
+
+{% block content %}
+<div class="search_panel">
+	<form action="{% url 'data_selection_create' %}" method="post">
+	{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit" class="search" title="Search data">Create data selection</button>
+	</form>
+</div>
+{% endblock %}

@@ -16,7 +16,7 @@
 		{% for data in data_list %}
 		<tr>
 			<td>
-				<input type="checkbox" value="{{ data.id }}" name="data_id"></input>
+				<input type="checkbox" name="data_id" value="{{ data.id }}"></input>
 			</td>
 			<td>
 				<a class="download_data small_button" title="Download data" href="{% url dataset_name|add:':download_data' data.id %}">Download</a>
@@ -55,6 +55,18 @@
 	{% endif %}
 </div>
 
+<div class="actions search_results_actions">
+	<form action="{% url 'data_selection_create' %}" method="post">
+		{% csrf_token %}
+		<input type="hidden" name="user_data_selection" value="{{ dataset_name }}">
+		<input type="hidden" name="dataset_name" value="{{ dataset_name }}">
+		<input type="hidden" name="query_string" value="{{ query_string }}">
+		<input type="hidden" name="all_selected" value="false">
+		<input type="hidden" name="data_ids">
+		
+		<button class="add_to_selection" title="Add the selected data to selection">Add to selection</button>
+	</form>
+</div>
 
 {% elif message %}
 <p>{{ message }}</p>

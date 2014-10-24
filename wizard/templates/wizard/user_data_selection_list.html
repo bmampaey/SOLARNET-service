@@ -1,7 +1,7 @@
 {% block content %}
 {% load getattr %}
-{% if dataset_list %}
-<table class="search_results_table" summary="Search results">
+{% if user_data_selection_list %}
+<table class="search_results_table" summary="User Data Selection List">
 	<thead>
 		<tr>
 			<th></th><!-- checkbox column -->
@@ -9,20 +9,20 @@
 			{% for keyword, header in table_columns.items %}
 			<th>{{ header }}</th>
 			{% endfor %}
-			<th>Characteristics</th>
+			<th>Datasets</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for dataset in dataset_list %}
-		<tr class='clickable' href="{% url dataset.name|add:':search_data_form' %}">
+		{% for user_data_selection in user_data_selection_list %}
+		<tr class='clickable' href="{% url user_data_selection.name|add:':search_data_form' %}">
 			<td>
 				<input type="checkbox" value="{{ data.id }}" name="data_id"></input>
 			</td>
-			<td>{{ dataset.item_count }}</td>
+			<td>{{ user_data_selection.number_items }}</td>
 			{% for keyword, header in table_columns.items %}
-			<td>{{ dataset|getattr:keyword }}</td>
+			<td>{{ user_data_selection|getattr:keyword }}</td>
 			{% endfor %}
-			<td>{{ dataset.characteristics_names|join:", " }}</td>
+			<td>{{ user_data_selection.datasets_names|join:", " }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
@@ -30,7 +30,7 @@
 {% elif message %}
 <p>{{ message }}</p>
 {% else %}
-<p>Nothing correspond to your search criteria.</p>
+<p>You haven't made any data selection yet.</p>
 {% endif %}
 
 {% endblock %}

@@ -124,6 +124,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 TEMPLATE_DIRS = ("SDA/templates/",)
 
+# Login Logout
+LOGIN_URL = 'wizard/login'
+LOGOUT_URL = 'wizard/logout'
+
 # Mails config
 EMAIL_HOST = "smtp.oma.be"
 ADMINS = [("Benjamin Mampaey", "benjamin.mampaey@oma.be")]

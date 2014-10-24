@@ -13,13 +13,13 @@ li#user_tab {
 }
 
 
-div.search_panel {
+div.search_form_section {
 	/* Put the 2 panels side by side if possible */
 	display: inline-block;
 	vertical-align: top;
 }
 
-div.search_result_panel {
+div.search_results_section {
 	/* Put the 2 panels side by side if possible */
 	display: inline-block;
 	vertical-align: top;
@@ -29,16 +29,10 @@ div.search_result_panel {
 /* Section elements */
 div.section {
 	margin: 0.5em;
-	padding: .2em;
+	padding: 0.5em;
 }
 
-div.section_title {
-	padding: 0.5em 1em;
-}
 
-div.section_content {
-	padding: 0.5em 1em;
-}
 
 div.actions {
 	text-align: center;
@@ -63,14 +57,6 @@ img.ui-datepicker-trigger {
 	margin: 0 0.5em;
 }
 
-select#id_cadence_multiplier{
-	height: 1.5em;
-	margin: 0 0.3em;
-}
-
-form.data_search_form select[multiple] {
-	min-width: 4em;
-}
 
 /* Search results actions forms */
 

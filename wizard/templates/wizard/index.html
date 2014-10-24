@@ -2,36 +2,41 @@
 
 {% block content %}
 <div id="accordion">
-   <h3>Login</h3>
-   <div>
-    	Login form
-   </div>
-   <h3>Search by dataset</h3>
-   <div>
-    	search by dataset form
-   </div>
-      <h3>Search across datases</h3>
-   <div>
-    	search across dataset form
-   </div>
-   <h3>Search eit dataset
-		<span style="float:right;" class="close_button">Close</span>
-   </h3>
-   <div>
-    eit search form
-   </div>
+	<h3>Search by dataset</h3>
+	<div id="search_by_dataset_panel">
+		<div id="search_by_dataset_form" class="section search_form_section" href="{% url 'search_by_dataset_form' %}">
+			Search by dataset form
+		</div>
+		<div id="search_by_dataset_results" class="section search_results_section" href="{% url 'search_by_dataset_results' %}">
+			Search by dataset results
+		</div>
+	</div>
+	
+	<h3>Search across datasets</h3>
+	<div id="search_across_datasets_panel">
+		<div id="search_across_datasets_form" class="section search_form_section" href="{% url 'search_across_datasets_form' %}">
+			Search by dataset form
+		</div>
+		<div id="search_across_datasets_results" class="section search_results_section" href="{% url 'search_across_datasets_results' %}">
+			Search by dataset results
+		</div>
+	</div>
+	
+	{% if user.is_authenticated %}
+	<h3>{{user.username}}'s data selections</h3>
+	<div>
+		<div class="section" href="{% url 'user_data_selection_list' %}" >
+			User data selection list
+		</div>
+		<a id="logout" title="Log out of the application" href="{% url 'logout' %}?next={% url 'index' %}">Logout</a>
+	</div>
+	{% else %}
+	<h3>Login</h3>
+	<div>
+		<div class="section" href="{% url 'login_form' %}">
+			Login form
+		</div>
+	<div>
+	{% endif %}
 </div>
-<script type="text/javascript">
- $("#accordion").accordion();
-
- $(".toolbar a").live("click", function() { 
-  window.location($(this).attr("href")); 
- }); 
- $( ".close_button" ).button({
-      icons: {
-        primary: "ui-icon-closethick"
-      },
-      text: false
-    });
-</script>
 {% endblock %}
