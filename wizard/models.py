@@ -18,7 +18,7 @@ class UserDataSelection(models.Model):
 	
 	@property
 	def number_items(self):
-		return sum(data_selection.number_items for data_selection in seld.data_selections.all())
+		return sum(data_selection.number_items for data_selection in self.data_selections.all())
 
 class DataSelection(models.Model):
 	user_data_selection = models.ForeignKey(UserDataSelection, related_name = "data_selections", on_delete=models.CASCADE) # If the UserDataSelection is deleted, delete also the DataSelection

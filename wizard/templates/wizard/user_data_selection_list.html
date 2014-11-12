@@ -14,15 +14,19 @@
 	</thead>
 	<tbody>
 		{% for user_data_selection in user_data_selection_list %}
-		<tr class='clickable' href="{% url user_data_selection.name|add:':search_data_form' %}">
+		<tr class='clickable' href="{% url 'user_data_selection' user_data_selection.id %}">
 			<td>
-				<input type="checkbox" value="{{ data.id }}" name="data_id"></input>
+				<input type="checkbox" value="{{ user_data_selection.id }}" name="user_data_selection_id"></input>
 			</td>
 			<td>{{ user_data_selection.number_items }}</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ user_data_selection|getattr:keyword }}</td>
 			{% endfor %}
-			<td>{{ user_data_selection.datasets_names|join:", " }}</td>
+			<td>
+			{% for data_selection in user_data_selection.data_selections.all %}
+			{{ data_selection.dataset_name }} 
+			{% endfor %}
+			</td>
 		</tr>
 		{% endfor %}
 	</tbody>

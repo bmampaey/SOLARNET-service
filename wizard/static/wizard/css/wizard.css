@@ -13,13 +13,13 @@ li#user_tab {
 }
 
 
-div.search_form_section {
+div.search_dataset_form_section, div.search_dataset_form_section {
 	/* Put the 2 panels side by side if possible */
 	display: inline-block;
 	vertical-align: top;
 }
 
-div.search_results_section {
+div.search_dataset_results_section, div.search_data_results_section {
 	/* Put the 2 panels side by side if possible */
 	display: inline-block;
 	vertical-align: top;

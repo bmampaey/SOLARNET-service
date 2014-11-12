@@ -3,40 +3,50 @@
 {% block content %}
 <div id="accordion">
 	<h3>Search by dataset</h3>
-	<div id="search_by_dataset_panel">
-		<div id="search_by_dataset_form" class="section search_form_section" href="{% url 'search_by_dataset_form' %}">
+	<div id="search_by_dataset_panel" class="panel">
+		<div id="search_by_dataset_form" class="section search_dataset_form_section" href="{% url 'search_by_dataset_form' %}">
 			Search by dataset form
 		</div>
-		<div id="search_by_dataset_results" class="section search_results_section" href="{% url 'search_by_dataset_results' %}">
+		<div id="search_by_dataset_results" class="section search_dataset_results_section" href="{% url 'search_by_dataset_results' %}">
 			Search by dataset results
 		</div>
 	</div>
 	
 	<h3>Search across datasets</h3>
-	<div id="search_across_datasets_panel">
-		<div id="search_across_datasets_form" class="section search_form_section" href="{% url 'search_across_datasets_form' %}">
+	<div id="search_across_datasets_panel" class="panel">
+		<div id="search_across_datasets_form" class="section search_dataset_form_section" href="{% url 'search_across_datasets_form' %}">
 			Search by dataset form
 		</div>
-		<div id="search_across_datasets_results" class="section search_results_section" href="{% url 'search_across_datasets_results' %}">
+		<div id="search_across_datasets_results" class="section search_dataset_results_section" href="{% url 'search_across_datasets_results' %}">
 			Search by dataset results
 		</div>
 	</div>
 	
 	{% if user.is_authenticated %}
-	<h3>{{user.username}}'s data selections</h3>
-	<div>
+	<h3 id="user_panel_title">{{user.username}}'s data selections</h3>
+	<div id="user_panel" class="panel">
 		<div class="section" href="{% url 'user_data_selection_list' %}" >
 			User data selection list
 		</div>
-		<a id="logout" title="Log out of the application" href="{% url 'logout' %}?next={% url 'index' %}">Logout</a>
+		<div class="actions">
+			<a id="logout" title="Log out of the application" href="{% url 'logout' %}?next={% url 'index' %}">Logout</a>
+		</div>
 	</div>
 	{% else %}
-	<h3>Login</h3>
-	<div>
-		<div class="section search_form_section" href="{% url 'login_form' %}">
+	<h3 id="user_panel_title">Login</h3>
+	<div id="user_panel" class="panel">
+		<div class="section" href="{% url 'login_form' %}">
 			Login form
 		</div>
 	<div>
 	{% endif %}
 </div>
+
+<!-- All of the dialogs, they are hidden by default -->
+<div id="post_user_data_selection" class="dialog_box ui-state-highlight" title="Data Selection Name" style="display:none;">
+	<p>Please, provide a name for the data selection
+	</p>
+	<input name="user_data_selection" type="text">
+</div>
+
 {% endblock %}

@@ -22,7 +22,7 @@ class BaseSearchDataForm(TemplateView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(BaseSearchDataForm, self).get_context_data(**kwargs)
-		context['search_form'] = self.search_form_class()
+		context['search_form'] = self.search_form_class(auto_id=self.dataset_name+'_%s')
 		context['dataset_name'] = self.dataset_name
 		return context
 

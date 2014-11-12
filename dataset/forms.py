@@ -15,8 +15,8 @@ class SearchByDataset(BaseForm):
 	INSTRUMENTS = Dataset.objects.order_by().values_list('instrument', flat = True).distinct()
 	INSTRUMENTS_BY_TELESCOPE = [(t, [(i, u'%s'%i) for i in Dataset.objects.order_by().filter(telescope = t).values_list('instrument', flat = True).distinct()]) for t in TELESCOPES]
 	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
-	instrument = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = INSTRUMENTS, choices=INSTRUMENTS_BY_TELESCOPE)
-	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = CHARACTERISTICS, choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
+	instrument = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=INSTRUMENTS_BY_TELESCOPE)
+	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
 	
 	@classmethod
 	def get_selection_criteria(cls, cleaned_data):
@@ -36,8 +36,8 @@ class SearchAcrossDatasets(BaseForm):
 	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
 	# Absolutely all tags from all datasets
 	TAGS = BaseTag.all_tags()
-	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = CHARACTERISTICS, choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
-	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), initial = TAGS, choices=[(t, u'%s'%t) for t in TAGS])
+	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
+	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in TAGS])
 	
 	@classmethod
 	def get_selection_criteria(cls, cleaned_data):

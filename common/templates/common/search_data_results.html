@@ -1,7 +1,7 @@
 {% block content %}
 {% load getattr %}
 {% if data_list %}
-<table class="search_results_table" summary="Search results">
+<table class="search_results_table" dataset_name="{{ dataset_name }}" summary="Search results">
 	<thead>
 		<tr>
 			<th></th><!-- checkbox column -->
