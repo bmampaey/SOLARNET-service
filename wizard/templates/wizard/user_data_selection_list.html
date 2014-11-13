@@ -13,7 +13,7 @@
 	</thead>
 	<tbody>
 		{% for user_data_selection in user_data_selection_list %}
-		<tr class='clickable' href="{% url 'user_data_selection' user_data_selection.id %}">
+		<tr class='open_user_data_selection' href="{% url 'user_data_selection' user_data_selection.id %}" name="{{ user_data_selection.name }}">
 			<td>{{ user_data_selection.number_items }}</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ user_data_selection|getattr:keyword }}</td>

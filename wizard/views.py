@@ -106,3 +106,8 @@ class UserDataSelectionDetail(DetailView):
 	model = UserDataSelection
 	context_object_name = 'user_data_selection'
 	template_name = 'wizard/user_data_selection.html'
+
+class DataSelectionDetail(DetailView):
+	model = DataSelection
+	context_object_name = 'data_selection'
+	template_name = 'wizard/data_selection.html'

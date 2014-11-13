@@ -119,6 +119,7 @@ function unselect_all(table)
 function update_selection_from_table(table)
 {
 	var selection = selections[table.attr("dataset_name")];
+	
 	if(selection.all_selected)
 	{
 		$("input:checkbox:not(:checked)", table).each(function(){selection.selected.add(this.value);});
@@ -133,23 +134,26 @@ function update_selection_from_table(table)
 function update_table_from_selection(table)
 {
 	var selection = selections[table.attr("dataset_name")];
-	if(selection.all_selected)
+	if (selection)
 	{
-		$("input:checkbox", table).prop("checked", true).each(function(){
-			if(this.value in selection.selected)
-			{
-				$(this).prop("checked", false);
-			}
-		});
-	}
-	else // Do the opposite
-	{
-		$("input:checkbox", table).prop("checked", false).each(function(){
-			if(this.value in selection.selected)
-			{
-				$(this).prop("checked", true);
-			}
-		});
+		if(selection.all_selected)
+		{
+			$("input:checkbox", table).prop("checked", true).each(function(){
+				if(this.value in selection.selected)
+				{
+					$(this).prop("checked", false);
+				}
+			});
+		}
+		else // Do the opposite
+		{
+			$("input:checkbox", table).prop("checked", false).each(function(){
+				if(this.value in selection.selected)
+				{
+					$(this).prop("checked", true);
+				}
+			});
+		}
 	}
 }
 
@@ -198,6 +202,14 @@ function load_section(section, url, post_load_section, indicator)
 function post_load_search_section(section)
 {
 	log("post_load_search_section: ", section.attr("id"));
+	
+	// Transform search button
+	$('button.search', section).button({
+			icons: {
+				primary: "ui-icon-search"
+			},
+			text: true,
+	});
 	
 	// Transform help text in ? button
 	$("span.helptext", section).replaceWith(function() {return "<button type='button' class='help small_button' title='" + $(this).text() + "'>Help</button>";});
@@ -290,7 +302,7 @@ function post_load_search_data_form_section(section)
 		selections[form.attr("dataset_name")] = {
 			all_selected: false,
 			selected: new Set(),
-			search_query: undefined,
+			search_query: form.serialize(),
 		};
 		
 		// Make the search and load the table
@@ -301,7 +313,7 @@ function post_load_search_data_form_section(section)
 	selections[$("form", section).attr("dataset_name")] = {
 		all_selected: false,
 		selected: new Set(),
-		search_query: undefined,
+		search_query: $("form", section).serialize(),
 	};
 	
 	// Set some JQuery classes to make sections pretty
@@ -357,6 +369,15 @@ function post_load_search_data_result_section(section)
 	// Mark as checked the checkboxes from previous selection
 	update_table_from_selection($("table.search_results_table", section));
 	
+	// Transform add button
+	$('button.add_to_selection', section).button({
+			icons: {
+				primary: "ui-icon-cart"
+			},
+			text: true,
+	});
+	
+
 	// Transform action submit form to do ajax request instead
 	$("form", section).submit(function(e){
 		e.preventDefault();
@@ -378,7 +399,7 @@ function post_load_search_data_result_section(section)
 						log("POST succeded, response: ", response);
 							//Load the user section with href with the content at the url 
 							$('#user_panel > .section[href]').each(function(){
-								load_section($(this), $(this).attr('href'));
+								load_section($(this), $(this).attr('href'), post_load_user_section);
 							});
 							$("#accordion").accordion("option", "active", $("#accordion>div").index($('#user_panel')));
 					})
@@ -393,12 +414,14 @@ function post_load_search_data_result_section(section)
 				}
 			}
 		}).dialog('open');
-		
-		
 	});
+	
+	// Set some JQuery classes to make sections pretty
+	section.addClass("ui-widget ui-widget-content ui-corner-all");
+	
 }
 
-function post_load_user_section(section)
+function post_load_login_section(section)
 {
 	// Transform the login form to do ajax request instead
 	$("form#login_form").submit(function(e){
@@ -409,14 +432,16 @@ function post_load_user_section(section)
 		$.post(form.attr("action"), form.serialize())
 		.done(function(response){
 			log("login SUCCEEDED response: ", response);
-			username = response;
-			// Update the panel with user data selection list and logout button
-			add_accordion_panel(
-				'<div class="section search_results_section" href="user_data_selection_list/">Please wait for the data selection list to load</div>\
-				<div class="actions"><a id="logout" title="Log out of the application" href="logout?next=/wizard/">Logout</a></div>',
-				'user_panel',
-				username+ "'s data selections",
-				false);
+			USERNAME = response;
+			// Update the user panel title
+			$('#user_panel_title').html(USERNAME+"'s data selections");
+			// Load the section of the user panel
+			$('#user_panel > .section[href]').each(function(){
+					load_section($(this), $(this).attr('href'), post_load_user_section);
+				});
+			// Hide the login panel and title and show the user panel
+			$('#login_panel_title, #login_panel').hide();
+			$('#user_panel_title, #user_panel').show();
 		})
 		.fail(function(request, status){
 			log("login FAILED response: ", request.responseText);
@@ -425,14 +450,50 @@ function post_load_user_section(section)
 	});
 }
 
+function open_user_data_selection(href, name)
+{
+	log("Open user_data_selection for", name);
+	var dialog = $("<div/>", {
+	'class': "section",
+	});
+	load_section(dialog, 	href);
+	dialog.dialog({
+		title: name,
+	});
+}
+
+function post_load_user_section(section)
+{
+	log("post_load_user_section");
+
+	// Make dataset row openable
+	$("tr.open_user_data_selection", section).hover(function(){
+		$(this).toggleClass('ui-state-hover');
+	}).each(function(){
+		var row =$(this);
+		$("td:not(:has(input))", row).click(function(){open_user_data_selection(row.attr("href"), row.attr("name"));});
+	});
+	
+	// Transform the logout to a button
+	$('#logout').button({
+		icons: {
+			primary: "ui-icon-eject"
+		},
+		text: true,
+	}).click(function(){
+			log("Logging out of the application. Href:", $('#logout').attr('href'));
+			window.location.href = $('#logout').attr('href');
+	});
+}
+
 // TODO make this more pretty
 function add_search_data_panel(dataset_name, search_data_form_href, search_data_results_href, dataset_description)
 {
 	log("Adding search data panel for", dataset_name)
 	
-	content = '<div class="section search_data_form_section" href="'+search_data_form_href+'">Please wait for the search form to load</div>\
+	var content = '<div class="section search_data_form_section" href="'+search_data_form_href+'">Please wait for the search form to load</div>\
 				<div class="section search_data_results_section" href="'+search_data_results_href+'">You can search for data using the form on the left</div>';
-	title = 'Search data ' + dataset_name + ' <button type="button" class="help small_button" title="' + dataset_description + '">Help</button>';
+	var title = 'Search data ' + dataset_name + ' <button type="button" class="help small_button" title="' + dataset_description + '">Help</button>';
 	
 	// Check if a panel with that id exists already
 	var content_element = $("#"+dataset_name);
@@ -452,7 +513,7 @@ function add_search_data_panel(dataset_name, search_data_form_href, search_data_
 	{
 		// Else we append the title and the content to the accordion
 		log("Creating new search data panel for", dataset_name, "and title", title)
-		title_element = $("<h3>/", {
+		title_element = $("<h3/>", {
 			id: dataset_name+'_title',
 		}).append(title);
 		content_element = $("<div/>", {
@@ -492,65 +553,6 @@ function add_search_data_panel(dataset_name, search_data_form_href, search_data_
 	
 }
 
-
-function add_accordion_panel(content, id, title, closeable)
-{
-	log("Adding accordion panel with id", id)
-	// Check if an element with that id exists already
-	var content_element = $("#"+id);
-	if(content_element.length)
-	{
-		// If the element exists already, we replace it's content
-		log("Element with id", id,"already exists, uppdating content", content_element.html());
-		content_element.html(content);
-		// If the title is provided we replace it
-		var title_element = $("#"+id+"_title");
-		if(title && title_element.length)
-		{
-			title_element.html(title);
-		}
-	}
-	else
-	{
-		// Else we append the title and the content to the accordion
-		log("Creating new element with id", id, "and title", title)
-		title_element = $("<h3>/", {
-			id: id+'_title',
-		}).append(title);
-		content_element = $("<div/>", {
-			id: id,
-			'class': "panel"
-		}).append(content);
-		if(closeable)
-		{
-			// Add a close button to the title
-			$("<span/>", {
-				text: "Close",
-				'class': 'small_button',
-				style: 'float: right;',
-				click: function() {
-					title_element.remove();
-					content_element.remove();
-				}
-			}).button({
-				icons: {
-					primary: "ui-icon-closethick"
-				},
-				text: false,
-			}).appendTo(title_element);
-		}
-		$("#accordion").append(title_element, content_element);
-	}
-	//Load the loadable_sections with href with the content at the url 
-	$('.section[href]', content_element).each(function(){
-		load_section($(this), $(this).attr( 'href' ));
-	});
-	// We need to refresh the accordion to adjust the panel sizes
-	$("#accordion").accordion("refresh");
-	$("#accordion").accordion("option", "active", $("#accordion>div").index(content_element));
-	
-}
-
 // Things to do at the very beginning
 function load_events_handlers()
 {
@@ -569,11 +571,20 @@ function load_events_handlers()
 	$('.search_dataset_results_section[href]').each(function(){
 		load_section($(this), $(this).attr('href'), post_load_search_dataset_result_section);
 	});
-	
-	//Load the user section with href with the content at the url 
-	$('#user_panel > .section[href]').each(function(){
-		load_section($(this), $(this).attr('href'), post_load_user_section);
-	});
+	if (USERNAME)
+	{
+		//Load the user section with href with the content at the url 
+		$('#user_panel > .section[href]').each(function(){
+			load_section($(this), $(this).attr('href'), post_load_user_section);
+		});
+	}
+	else
+	{
+		//Load the login section
+		$('#login_panel > .section[href]').each(function(){
+			load_section($(this), $(this).attr('href'), post_load_login_section);
+		});
+	}
 	
 	// Make the accordion
 	$("#accordion").accordion({ heightStyle: "content" });

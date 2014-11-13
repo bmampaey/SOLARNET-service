@@ -1,0 +1,21 @@
+{% block content %}
+{% load getattr %}
+<table class="data_selections" summary="Data Selection List">
+	<thead>
+		<tr>
+			<th># Items</th>
+			<th>Dataset</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for data_selection in user_data_selection.data_selections.all %}
+		<tr class='clickable' href="{% url 'data_selection' data_selection.id %}">
+			<td>{{ data_selection.number_items }}</td>
+			<td>{{ data_selection.dataset_name }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}
+

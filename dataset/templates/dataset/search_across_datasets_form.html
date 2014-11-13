@@ -1,7 +1,9 @@
 {% block content %}
 <form action="{% url 'search_across_datasets_results' %}" method="get">
 		{{ search_form.as_p }}
-		<button type="submit" class="search" title="Search dataset">Search dataset</button>
+		<div class="actions">
+			<button type="submit" class="search" title="Search dataset">Search dataset</button>
+		</div>
 </form>
 {% endblock %}
 
