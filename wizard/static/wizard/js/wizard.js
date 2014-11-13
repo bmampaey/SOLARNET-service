@@ -265,7 +265,7 @@ function post_load_search_dataset_result_section(section)
 		$(this).toggleClass('ui-state-hover');
 	}).each(function(){
 		var row =$(this);
-		row.children().slice(1).click(function() {
+		$("td:not(:has(input))", row).click(function() {
 			log("Row for dataset",row.attr("dataset_name"), "was clicked");
 			add_search_data_panel(row.attr("dataset_name"), row.attr("search_data_form_href"), row.attr("search_data_results_href"), row.attr("dataset_description"));
 		});
@@ -376,7 +376,11 @@ function post_load_search_data_result_section(section)
 					$.post(form.attr("action"), form.serialize())
 					.done(function(response){
 						log("POST succeded, response: ", response);
-						inform_user(response.responseText);
+							//Load the user section with href with the content at the url 
+							$('#user_panel > .section[href]').each(function(){
+								load_section($(this), $(this).attr('href'));
+							});
+							$("#accordion").accordion("option", "active", $("#accordion>div").index($('#user_panel')));
 					})
 					.fail(function(request, status){
 						log("POST FAILED, response: ", request.responseText);
