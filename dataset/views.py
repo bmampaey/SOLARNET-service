@@ -70,7 +70,7 @@ class SearchAcrossDatasetsResults(ListView):
 	
 	
 	def get_queryset(self):
-		import pdb; pdb.set_trace()
+		#import pdb; pdb.set_trace()
 		
 		# Get the cleaned data from the form
 		cleaned_data = self.search_form_class.get_cleaned_data(self.request.GET)
@@ -83,8 +83,8 @@ class SearchAcrossDatasetsResults(ListView):
 		for dataset in self.model.objects.filter(**selection_criteria).distinct():
 			query = QueryDict("",mutable=True)
 			if(cleaned_data['tags']):
-				# TODO make sure that the records with more than 1 tags are not duplicated and make sure that a data location exists
-				item_count = dataset.tag_model.objects.filter(name__in=cleaned_data['tags']).count()
+				# TODO make sure that a data location exists
+				item_count = dataset.meta_data_model.objects.filter(tags__in=cleaned_data['tags']).distinct().count()
 				query['tags'] = cleaned_data['tags']
 			else:
 				item_count = dataset.data_location_model.objects.count()
