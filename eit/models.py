@@ -59,7 +59,7 @@ class Keyword(BaseKeyword):
 		pass
 
 
-class Tag(BaseTag):	
+class Tag(BaseTag):
 	
 	class Meta(BaseTag.Meta):
 		pass

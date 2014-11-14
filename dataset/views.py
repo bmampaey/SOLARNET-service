@@ -70,7 +70,7 @@ class SearchAcrossDatasetsResults(ListView):
 	
 	
 	def get_queryset(self):
-		#import pdb; pdb.set_trace()
+		import pdb; pdb.set_trace()
 		
 		# Get the cleaned data from the form
 		cleaned_data = self.search_form_class.get_cleaned_data(self.request.GET)

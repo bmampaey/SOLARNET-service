@@ -9,4 +9,6 @@ urlpatterns = patterns('',
 	url(r'^dataset/', include('dataset.urls')),
 	url(r'^eit/', include('eit.urls', namespace='eit')),
 	url(r'^swap/', include('swap.urls', namespace='swap')),
+	url(r'^aia_lev1/', include('aia_lev1.urls', namespace='aia_lev1')),
+	url(r'^hmi_magnetogram/', include('hmi_magnetogram.urls', namespace='hmi_magnetogram')),
 )

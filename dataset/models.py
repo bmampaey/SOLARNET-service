@@ -1,6 +1,4 @@
 from django.db import models
-from taggit.managers import TaggableManager
-from taggit.models import TaggedItemBase
 from common.models import BaseMetaData, BaseDataLocation, BaseTag
 
 

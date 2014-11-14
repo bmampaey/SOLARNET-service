@@ -54,6 +54,8 @@ INSTALLED_APPS = (
 	'dataset',
 	'eit',
 	'swap',
+	'aia_lev1',
+	'hmi_magnetogram'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,6 +95,20 @@ DATABASES = {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'swap',
+		'HOST': '127.0.0.1',
+		'PORT': '5432',
+	},
+	'aia_lev1': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'aia_lev1',
+		'HOST': '127.0.0.1',
+		'PORT': '5432',
+	},
+	'hmi_magnetogram': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'hmi_magnetogram',
 		'HOST': '127.0.0.1',
 		'PORT': '5432',
 	},

@@ -2,7 +2,6 @@
 from datetime import datetime, timedelta
 from django import forms
 from django.contrib.contenttypes.models import ContentType
-from taggit.models import TaggedItem
 
 from common.forms import BaseForm
 from common.models import BaseTag

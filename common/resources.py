@@ -2,13 +2,9 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS, url
 from tastypie.authorization import DjangoAuthorization
 from tastypie.utils import trailing_slash
-from taggit.models import Tag
+
 
 from common.tastypie_paginator import EstimatedCountPaginator
-
-class TagResource(ModelResource):
-	class Meta:
-		queryset = Tag.objects.all()
 
 class BaseResource(ModelResource):
 	"""Base class to set common parameters to all resources"""
@@ -30,6 +26,24 @@ class BaseResource(ModelResource):
 #			url(r"^%s/(?P<resource_name>%s)/set/(?P<pk_list>\w[\w/;-]*)/$" % (self.dataset_name, self._meta.resource_type), self.wrap_view('get_multiple'), name="api_get_multiple"),
 #			url(r"^%s/(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)%s$" % (self.dataset_name, self._meta.resource_type, trailing_slash()), self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
 #		]
+
+
+def TagResource_for(dataset_name, Tag):
+	"""Create a TagResource class for a specific dataset"""
+	
+	class TagResource(BaseResource):
+		class Meta(BaseResource.Meta):
+			queryset = Tag.objects.all()
+			resource_name = dataset_name + '_tag'
+			resource_type = 'tag'
+		
+		def __init__(self, *args, **kwargs):
+			self.dataset_name = dataset_name
+			self._meta.paginator_class.setup(connection_name = self.dataset_name)
+			super(TagResource, self).__init__(*args, **kwargs)
+	
+	return TagResource
+
 
 def KeywordResource_for(dataset_name, Keyword):
 	"""Create a KeywordResource class for a specific dataset"""
@@ -68,7 +82,7 @@ def DataLocationResource_for(dataset_name, DataLocation):
 	return DataLocationResource
 
 
-def MetaDataResource_for(dataset_name, MetaData):
+def MetaDataResource_for(dataset_name, MetaData, TagResource):
 	"""Create a MetaDataResource class for a specific dataset"""
 	
 	class MetaDataResource(BaseResource):

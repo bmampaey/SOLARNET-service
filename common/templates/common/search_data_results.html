@@ -19,7 +19,7 @@
 				<input type="checkbox" name="data_id" value="{{ data.id }}"></input>
 			</td>
 			<td>
-				<a class="download_data small_button" title="Download data" href="{% url dataset_name|add:':download_data' data.id %}">Download</a>
+				<a class="download_data small_button" title="Download data" href="{% url dataset_name|add:':download_data' data.id %}" download>Download</a>
 			</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ data|getattr:keyword }}</td>
