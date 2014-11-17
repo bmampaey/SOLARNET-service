@@ -19,10 +19,15 @@ class BaseSearchDataForm(TemplateView):
 	dataset_name = None # To be overriden in the derived class
 	template_name = 'common/search_data_form.html'
 	
-	
 	def get_context_data(self, **kwargs):
+		#import pdb; pdb.set_trace()
 		context = super(BaseSearchDataForm, self).get_context_data(**kwargs)
-		context['search_form'] = self.search_form_class(auto_id=self.dataset_name+'_%s')
+		# We allow to pass data in the get to prefil the form (override initials)
+		if self.request.GET:
+			context['search_form'] = self.search_form_class(self.request.GET, auto_id=self.dataset_name+'_%s')
+		else:
+			context['search_form'] = self.search_form_class(auto_id=self.dataset_name+'_%s')
+		
 		context['dataset_name'] = self.dataset_name
 		return context
 
@@ -42,6 +47,7 @@ class BaseSearchDataResults(ListView):
 	
 	def get_queryset(self):
 		# Get the cleaned data from the form
+		#import pdb; pdb.set_trace()
 		cleaned_data = self.search_form_class.get_cleaned_data(self.request.GET)
 		# What happens if an exception is raised
 		

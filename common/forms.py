@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
+class TagField(forms.TypedMultipleChoiceField):
+	def validate(self, value):
+		pass
+
 class BaseForm(forms.Form):
 	"""Base form to set common methods and parameters to all forms"""
 	

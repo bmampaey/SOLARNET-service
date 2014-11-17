@@ -14,7 +14,11 @@
 	</thead>
 	<tbody>
 		{% for dataset in dataset_list %}
-		<tr class='open_data_search' dataset_name="{{ dataset.name }}" search_data_form_href="{% url dataset.name|add:':search_data_form' %}" search_data_results_href="{% url dataset.name|add:':search_data_results' %}" dataset_description="{{ dataset.description }}" query_string="{{ dataset.query_string }}">
+		{% if dataset.query_string %}
+		<tr class='open_data_search' dataset_name="{{ dataset.name }}" search_data_form_href="{% url dataset.name|add:':search_data_form' %}?{{ dataset.query_string }}" search_data_results_href="{% url dataset.name|add:':search_data_results' %}?{{ dataset.query_string }}" dataset_description="{{ dataset.description }}">
+		{% else %}
+		<tr class='open_data_search' dataset_name="{{ dataset.name }}" search_data_form_href="{% url dataset.name|add:':search_data_form' %}" search_data_results_href="{% url dataset.name|add:':search_data_results' %}" dataset_description="{{ dataset.description }}">
+		{% endif %}
 			<td>
 				<input type="checkbox" value="{{ dataset.name }}" name="dataset_name"></input>
 			</td>

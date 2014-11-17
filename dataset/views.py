@@ -85,7 +85,7 @@ class SearchAcrossDatasetsResults(ListView):
 			if(cleaned_data['tags']):
 				# TODO make sure that a data location exists
 				item_count = dataset.meta_data_model.objects.filter(tags__in=cleaned_data['tags']).distinct().count()
-				query['tags'] = cleaned_data['tags']
+				query.setlist('tags', cleaned_data['tags'])
 			else:
 				item_count = dataset.data_location_model.objects.count()
 			

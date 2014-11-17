@@ -30,13 +30,21 @@ class SearchByDataset(BaseForm):
 		
 		return selection_criteria
 
+
 class SearchAcrossDatasets(BaseForm):
 	"""Form to search across datasets"""
-	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
+	CHARACTERISTICS = lambda: [(t, u'%s'%t) for t in Characteristic.objects.values_list('name', flat=True)]
 	# Absolutely all tags from all datasets
-	TAGS = BaseTag.all_tags()
-	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
-	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in TAGS])
+	ALL_TAGS = lambda: [(t, u'%s'%t) for t in BaseTag.all_tags()]
+	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=CHARACTERISTICS())
+	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=ALL_TAGS())
+	
+	# Overiding init to load choices dynamically
+	# When django 1.8 is out, you can use the callable directly for the choices
+	def __init__(self, *args, **kwargs):
+		super(SearchAcrossDatasets, self).__init__(*args, **kwargs)
+		self.fields['characteristics'].choices = [(t, u'%s'%t) for t in Characteristic.objects.values_list('name', flat=True)]
+		self.fields['tags'].choices = [(t, u'%s'%t) for t in BaseTag.all_tags()]
 	
 	@classmethod
 	def get_selection_criteria(cls, cleaned_data):
