@@ -82,12 +82,22 @@ class SearchAcrossDatasetsResults(ListView):
 		datasets = list()
 		for dataset in self.model.objects.filter(**selection_criteria).distinct():
 			query = QueryDict("",mutable=True)
-			if(cleaned_data['tags']):
-				# TODO make sure that a data location exists
-				item_count = dataset.meta_data_model.objects.filter(tags__in=cleaned_data['tags']).distinct().count()
+			# TODO make sure that we only count the one with a dtat_location
+			query_set = dataset.meta_data_model.objects.filter()
+			
+			if cleaned_data['tags']:
+				query_set = query_set.filter(tags__in=cleaned_data['tags'])
 				query.setlist('tags', cleaned_data['tags'])
-			else:
-				item_count = dataset.data_location_model.objects.count()
+			
+			if cleaned_data['start_date']:
+				query_set = query_set.filter(date_obs__gte=cleaned_data['start_date'])
+				query['start_date'] = cleaned_data['start_date']
+			
+			if cleaned_data['end_date']:
+				query_set = query_set.filter(date_obs__lt=cleaned_data['end_date'])
+				query['end_date'] = cleaned_data['end_date']
+			
+			item_count = query_set.distinct().count()
 			
 			if item_count > 0:
 				dataset.item_count = item_count

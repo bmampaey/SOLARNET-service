@@ -37,6 +37,8 @@ class SearchAcrossDatasets(BaseForm):
 	# Absolutely all tags from all datasets
 	ALL_TAGS = lambda: [(t, u'%s'%t) for t in BaseTag.all_tags()]
 	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=CHARACTERISTICS())
+	start_date = forms.DateTimeField(required=False, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))
+	end_date = forms.DateTimeField(required=False, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))
 	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=ALL_TAGS())
 	
 	# Overiding init to load choices dynamically
