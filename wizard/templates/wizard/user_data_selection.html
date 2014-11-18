@@ -11,7 +11,7 @@
 		{% for data_selection in user_data_selection.data_selections.all %}
 		<tr class='clickable' href="{% url 'data_selection' data_selection.id %}">
 			<td>{{ data_selection.number_items }}</td>
-			<td>{{ data_selection.dataset_name }}</td>
+			<td>{{ data_selection.dataset.name }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>

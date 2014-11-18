@@ -1,5 +1,6 @@
 from django.db import models
 from common.models import BaseMetaData, BaseDataLocation, BaseTag
+from common.views import BaseSearchDataForm
 
 
 class Dataset(models.Model):
@@ -38,6 +39,12 @@ class Dataset(models.Model):
 			self.__tag_model = tag_models[self.name]
 		else:
 			raise Exception("No Tag model with name %s" % self.name)
+		
+		search_data_forms = dict((form.dataset_name, form) for form in BaseSearchDataForm.__subclasses__())
+		if self.name in search_data_forms:
+			self.__search_data_form = search_data_forms[self.name]
+		else:
+			raise Exception("No SearchDataForm view with name %s" % self.name)
 	
 	@property
 	def meta_data_model(self):
@@ -56,6 +63,12 @@ class Dataset(models.Model):
 		if not hasattr(self, '__tag_model'):
 			self.__set_models()
 		return self.__tag_model
+	
+	@property
+	def search_data_form(self):
+		if not hasattr(self, '__search_data_form'):
+			self.__set_models()
+		return self.__search_data_form
 	
 	@property
 	def characteristics_names(self):

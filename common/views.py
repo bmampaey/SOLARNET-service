@@ -32,6 +32,7 @@ class BaseSearchDataForm(TemplateView):
 		return context
 
 
+
 class BaseSearchDataResults(ListView):
 	dataset_name = None # To be overriden in the derived class
 	model = None # To be overriden in the derived class

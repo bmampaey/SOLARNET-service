@@ -9,8 +9,6 @@ from dataset.forms import SearchByDataset, SearchAcrossDatasets
 from dataset.models import Dataset
 
 
-
-
 # See links below for some explanations on class based views
 # http://georgebrock.github.io/talks/intro-to-class-based-generic-views/
 # https://blog.safaribooksonline.com/2013/10/28/class-based-views-in-django/
@@ -82,7 +80,7 @@ class SearchAcrossDatasetsResults(ListView):
 		datasets = list()
 		for dataset in self.model.objects.filter(**selection_criteria).distinct():
 			query = QueryDict("",mutable=True)
-			# TODO make sure that we only count the one with a dtat_location
+			# TODO make sure that we only count the one with a data_location
 			query_set = dataset.meta_data_model.objects.filter()
 			
 			if cleaned_data['tags']:

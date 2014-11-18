@@ -10,6 +10,7 @@ from django.http import HttpResponse, JsonResponse
 
 from wizard.forms import Login
 from wizard.models import UserDataSelection, DataSelection
+from dataset.models import Dataset
 
 # See https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-editing/#ajax-example
 class AjaxableResponseMixin(object):
@@ -82,6 +83,7 @@ class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 	
 	def form_valid(self, form):
 		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=self.request.POST["user_data_selection"])[0]
+		form.instance.dataset = Dataset.objects.get(name=self.request.POST["dataset_name"])
 		return super(DataSelectionCreate, self).form_valid(form)
 
 
