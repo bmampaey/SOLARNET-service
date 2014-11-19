@@ -66,24 +66,38 @@ class LoginForm(FormView):
 		else:
 			return HttpResponse("Your account is disabled. Please contact the website administrator", content_type="text/plain", status=401)
 
-
+# NOT USEFUL
 class UserDataSelectionCreate(CreateView):
 	model = UserDataSelection
 #	http_method_names = ['post']
-#	fields = ["dataset_name", "query_string", "all_selected", "data_ids"]
+#	fields = ["name"]
 #	success_url = '/success/'
 	success_message = "%(name)s was saved successfully"
 
 class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 	model = DataSelection
-	fields = ["dataset_name", "query_string", "all_selected", "data_ids"]
+	form_class = DataSelectionCreateForm
 #	http_method_names = ['post']
 	success_url = '/success/'
 	success_message = "%(name)s was saved successfully"
 	
+	def get_form(self, form_class):
+		if self.request.GET:
+			return form_class(self.request.user, self.request.GET)
+		else:
+			return form_class(self.request.user)
+	
+	
 	def form_valid(self, form):
-		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=self.request.POST["user_data_selection"])[0]
-		form.instance.dataset = Dataset.objects.get(name=self.request.POST["dataset_name"])
+		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=form.cleaned_data["user_data_selection"])[0]
+		form.instance.dataset = Dataset.objects.get(name=form.cleaned_data["dataset_name"])
+		#If all is selected we exclude the data_ids 
+# 			if self.all_selected:
+# 				# Make up the selection criteria from the cleaned data
+# 				cleaned_data = self.dataset.search_data_form.get_cleaned_data(QueryDict(self.query_string))
+# 				selection_criteria = self.dataset.search_data_form.get_selection_criteria(cleaned_data)
+# 				self.item_count = self.dataset.meta_data_model.objects.filter(**selection_criteria).exclude(id__in=self.data_ids).distict().count()
+
 		return super(DataSelectionCreate, self).form_valid(form)
 
 
