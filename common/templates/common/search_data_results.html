@@ -1,7 +1,7 @@
 {% block content %}
 {% load getattr %}
 {% if data_list %}
-<table class="search_results_table" dataset_name="{{ dataset_name }}" summary="Search results">
+<table class="search_results_table" summary="Search results">
 	<thead>
 		<tr>
 			<th></th><!-- checkbox column -->
@@ -29,6 +29,7 @@
 		{% endfor %}
 	</tbody>
 </table>
+<!-- Net and previous buttons -->
 <div class="page_navigation">
 	{% if page_obj.number > 1 %}
 	<a class="first_page small_button" title="Go to first page" href="{% url dataset_name|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}=1">First page</a>
@@ -40,9 +41,6 @@
 	{% else %}
 	<a class="previous_page small_button" title="Go to previous page">Previous page</a>
 	{% endif %}
-	<!-- Select all and none buttons -->
-	<button class="select_all" title="Select all">Select all</button>
-	<button class="unselect_all" title="Unselect all">Unselect all</button>
 	{% if page_obj.has_next %}
 	<a class="next_page small_button" title="Go to next page" href="{% url dataset_name|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}={{page_obj.next_page_number}}">Next page</a>
 	{% else %}
@@ -54,21 +52,20 @@
 	<a class="last_page small_button" title="Go to last page">Last page</a>
 	{% endif %}
 </div>
-
-<div class="actions search_results_actions">
-	<form action="{% url 'data_selection_create' %}" method="post">
-		{% csrf_token %}
-		<input type="hidden" name="user_data_selection" value="{{ dataset_name }}">
-		<input type="hidden" name="dataset_name" value="{{ dataset_name }}">
-		<input type="hidden" name="query_string" value="{{ query_string }}">
-		<input type="hidden" name="all_selected" value="false">
-		<input type="hidden" name="data_ids">
-		<div class="actions">
-			<button class="add_to_selection" title="Add the selected data to selection">Add to selection</button>
-		</div>
-	</form>
+<!-- Select all and none buttons -->
+<div class="selection">
+	<button class="select_all" title="Select all">Select all</button>
+	<button class="unselect_all" title="Unselect all">Unselect all</button>
 </div>
-
+<!-- Action buttons -->
+<form  method="get" class="data_selection_create">
+	<input type="hidden" name="query_string" value="{{ query_string }}"/>
+	<input type="hidden" name="dataset_name" value="{{ dataset_name }}"/>
+	
+	<div class="actions search_results_actions">
+		<input type="submit" class="add_to_selection" title="Add the selected data to selection" action="{% url 'data_selection_create' %}" value="Add to selection"/>
+	</div>
+</form>
 {% elif message %}
 <p>{{ message }}</p>
 {% else %}

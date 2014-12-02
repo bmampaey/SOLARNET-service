@@ -27,3 +27,8 @@ class DatasetResource(ModelResource):
 		limit = None
 		paginator_class = EstimatedCountPaginator
 		authorization = DjangoAuthorization()
+		filtering = {
+		"instrument": ALL,
+		"telescope": ALL,
+		"characteristics": ALL_WITH_RELATIONS
+		}

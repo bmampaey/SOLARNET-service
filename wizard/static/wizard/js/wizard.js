@@ -102,7 +102,7 @@ function select_all(table)
 	var selection = selections[table.attr("dataset_name")];
 	$("input:checkbox", table).each(function(){$(this).prop('checked', true);});
 	selection.all_selected = true;
-	selection.selected = new Set();
+	selection.data_ids = new Set();
 }
 
 // De-select all checkboxes in a table and update the selection
@@ -112,7 +112,7 @@ function unselect_all(table)
 	var selection = selections[table.attr("dataset_name")];
 	$("input:checkbox", table).each(function(){$(this).prop('checked', false);});
 	selection.all_selected = false;
-	selection.selected = new Set();
+	selection.data_ids = new Set();
 }
 
 // Update selection from selected checkboxes in a table
@@ -122,11 +122,11 @@ function update_selection_from_table(table)
 	
 	if(selection.all_selected)
 	{
-		$("input:checkbox:not(:checked)", table).each(function(){selection.selected.add(this.value);});
+		$("input:checkbox:not(:checked)", table).each(function(){selection.data_ids.add(this.value);});
 	}
 	else
 	{
-		$("input:checkbox:checked", table).each(function(){selection.selected.add(this.value);});
+		$("input:checkbox:checked", table).each(function(){selection.data_ids.add(this.value);});
 	}
 }
 
@@ -139,7 +139,7 @@ function update_table_from_selection(table)
 		if(selection.all_selected)
 		{
 			$("input:checkbox", table).prop("checked", true).each(function(){
-				if(this.value in selection.selected)
+				if(this.value in selection.data_ids)
 				{
 					$(this).prop("checked", false);
 				}
@@ -148,7 +148,7 @@ function update_table_from_selection(table)
 		else // Do the opposite
 		{
 			$("input:checkbox", table).prop("checked", false).each(function(){
-				if(this.value in selection.selected)
+				if(this.value in selection.data_ids)
 				{
 					$(this).prop("checked", true);
 				}
@@ -301,8 +301,7 @@ function post_load_search_data_form_section(section)
 		// Reset the selection
 		selections[form.attr("dataset_name")] = {
 			all_selected: false,
-			selected: new Set(),
-			search_query: form.serialize(),
+			data_ids: new Set(),
 		};
 		
 		// Make the search and load the table
@@ -312,8 +311,7 @@ function post_load_search_data_form_section(section)
 	// Set up the selection
 	selections[$("form", section).attr("dataset_name")] = {
 		all_selected: false,
-		selected: new Set(),
-		search_query: $("form", section).serialize(),
+		data_ids: new Set(),
 	};
 	
 	// Set some JQuery classes to make sections pretty
@@ -369,51 +367,60 @@ function post_load_search_data_result_section(section)
 	// Mark as checked the checkboxes from previous selection
 	update_table_from_selection($("table.search_results_table", section));
 	
-	// Transform add button
-	$('button.add_to_selection', section).button({
+	// Transform add button to do ajax request
+	$('input.add_to_selection', section).button({
 			icons: {
 				primary: "ui-icon-cart"
 			},
 			text: true,
-	});
-	
-
-	// Transform action submit form to do ajax request instead
-	$("form", section).submit(function(e){
+	}).click(function(e){
 		e.preventDefault();
-		var form = $(e.target);
-		var dialog = $("#post_user_data_selection");
-		$("input[name='user_data_selection']", dialog).val($("input[name='user_data_selection']", form).val());
+		var button = $(e.target);
+		
+		// update and get the selection
 		update_selection_from_table($("table.search_results_table", section));
 		var selection = selections[$("input[name='dataset_name']", form).val()];
-		dialog.dialog({
-			buttons : {
-				"Ok": function() {
-					$("input[name='user_data_selection']", form).val($("input[name='user_data_selection']", dialog).val());
-					$("input[name='all_selected']", form).val(selection.all_selected);
-					$("input[name='data_ids']", form).val(selection.selected.values());
-					$("input[name='query_string']", form).val(selection.search_query);
-					log("submit form action: ", form.attr("action"), "query: ", form.serialize());
-					$.post(form.attr("action"), form.serialize())
-					.done(function(response){
-						log("POST succeded, response: ", response);
-							//Load the user section with href with the content at the url 
-							$('#user_panel > .section[href]').each(function(){
-								load_section($(this), $(this).attr('href'), post_load_user_section);
-							});
-							$("#accordion").accordion("option", "active", $("#accordion>div").index($('#user_panel')));
-					})
-					.fail(function(request, status){
-						log("POST FAILED, response: ", request.responseText);
-						alert_user(request.responseText);
-					});
-					dialog.dialog("close");
-				},
-				"Cancel": function() {
-					dialog.dialog("close");
-				}
-			}
-		}).dialog('open');
+		
+		log("submit action: ", button.attr("action"), "query: ", selection);
+		
+		$.get(button.attr("href"), selection)
+		.done(function(response){
+			log("GET form succeeded: ", response);
+			// Create a dialog with the form
+			var box = $('<div><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;">Info:</span>' + response + '</div>');
+			box.dialog({
+				modal: false,
+				draggable: false,
+				title: "Note",
+				resizable: false,
+				width: "auto",
+				dialogClass: "ui-state-highlight dialog_box",
+			});
+			$("form.data_selection_create", box).submit(function(e){
+				e.preventDefault();
+				var form = $(e.target);
+				log("submit form action: ", form.attr("action"), "query: ", form.serialize());
+			
+				$.post(form.attr("action"), form.serialize())
+				.done(function(response){
+					log("POST succeded, response: ", response);
+						//Load the user section with href with the content at the url 
+						$('#user_panel > .section[href]').each(function(){
+							load_section($(this), $(this).attr('href'), post_load_user_section);
+						});
+						$("#accordion").accordion("option", "active", $("#accordion>div").index($('#user_panel')));
+				})
+				.fail(function(request, status){
+					log("POST FAILED, response: ", request.responseText);
+					alert_user(request.responseText);
+				});
+				box.dialog("close");
+			});
+		})
+		.fail(function(request, status){
+			log("GET form failed: ", request.responseText);
+			alert_user(request.responseText);
+		});
 	});
 	
 	// Set some JQuery classes to make sections pretty

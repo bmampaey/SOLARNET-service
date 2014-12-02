@@ -8,7 +8,7 @@ class Login(forms.Form):
 	email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'my.email@address.com'}))
 
 class DataSelectionCreateForm(forms.Form):
-	user_data_selection_name = forms.CharField(help_text="The name for the selection", widget = forms.Select(choices=[]))
+	user_data_selection_name = forms.CharField(help_text="Create a new selection", widget = forms.Select(choices=[]))
 	dataset_name = forms.CharField(help_text="Name of the dataset for the selection", max_length=20, widget = forms.HiddenInput())
 	query_string = forms.CharField(help_text="Query string for the data selection", max_length=2000, widget = forms.HiddenInput())
 	all_selected = forms.BooleanField(help_text="Wheter all data was selected", required=False, widget = forms.HiddenInput())

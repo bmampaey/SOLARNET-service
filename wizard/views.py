@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login as user_login
 from django.http import HttpResponse, JsonResponse
 
 
-from wizard.forms import Login
+from wizard.forms import Login, DataSelectionCreateForm
 from wizard.models import UserDataSelection, DataSelection
 from dataset.models import Dataset
 
@@ -89,7 +89,8 @@ class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 	
 	
 	def form_valid(self, form):
-		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=form.cleaned_data["user_data_selection"])[0]
+		import pdb; pdb.set_trace()
+		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=form.cleaned_data["user_data_selection_name"])[0]
 		form.instance.dataset = Dataset.objects.get(name=form.cleaned_data["dataset_name"])
 		#If all is selected we exclude the data_ids 
 # 			if self.all_selected:

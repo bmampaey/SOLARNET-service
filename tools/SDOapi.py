@@ -169,8 +169,8 @@ class DataSet:
 
 
 class SDO:
-	def __init__(url = "http://127.0.0.1:8000/DRMS/api/v1/", auth = None):
-		self.api = slumber.API(url, auth=None)
+	def __init__(url = "http://db1.sdodb.oma.be/DRMS/api/v1/", auth = None):
+		self.api = slumber.API(url, auth=auth)
 	
 	def all(self):
 		return self.api.data_series.get()
