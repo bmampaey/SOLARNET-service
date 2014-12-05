@@ -5,7 +5,7 @@ from datetime import datetime
 import urllib
 import StringIO
 
-API = slumber.API((url = "http://benjmam-pc:8000", auth = None)
+API = slumber.API("http://benjmam-pc:8000", auth = None)
 
 
 class Time:
@@ -94,15 +94,42 @@ class Time:
 				
 class Dataset:
 	
+	class Iterator:
+	
+		def __init__(self, api, filters, keywords, limit = 20):
+		
+			self.api = api
+			self.filters = filters
+			self.keywords = keywords
+			self.limit = limit
+			self.i = 0
+			self.infos = []
+		
+		def __iter__(self):
+			# Iterators are iterables too.
+			return self
+		
+		def next(self):
+			# Cache some info
+			if not self.infos:
+				self.infos = self.api.get(limit=self.limit, offset=self.i, **self.filters)["objects"]
+				self.i += self.limit
+			# Return the first one in cache
+			if self.infos:
+				info = self.infos.pop(0)
+				return Data({keywords[field_name]: value for field_name, value in info.iteritems() if field_name in keywords}, info["data_location"]["url"], [tag["name"] for tag in info["tags"]])
+			else:
+				raise StopIteration()
+	
 	def __init__(self, info, api = API):
 		self.name = info["name"]
 		self.display_name = info["display_name"]
 		self.description = info["description"]
 		self.characteristics = info["characteristics"]
 		
-		self.keyword_api = api(self.name + "_keyword")
-		self.meta_data_api = api(self.name + "_meta_data")
-		self.data_location_api = api(self.name + "_data_location")
+		self.keyword_api = api.api.v1(self.name + "_keyword")
+		self.meta_data_api = api.api.v1(self.name + "_meta_data")
+		self.data_location_api = api.api.v1(self.name + "_data_location")
 		
 		#Set up the keywords and the field names for easy reverse lookup
 		self._keywords = dict()
@@ -116,7 +143,7 @@ class Dataset:
 	
 	def __str__(self):
 		if self.filters:
-			return self.display_name + ": " + "; ".join([keyword+" "+str(value) for keyword,value in self.filters.iteritems()])
+			return self.display_name + ": " + "; ".join([keyword+" = "+str(value) for keyword,value in self.filters.iteritems()])
 		else:
 			return self.display_name + ": all"
 	
@@ -177,64 +204,41 @@ class Dataset:
 		
 		return filters
 	
-	def filter(self, keyword, value):
-		if keyword not in self._field_names:
-			raise LookupError("Unknown keyword %s for dataset %s" % (keyword, self.display_name))
-		else:
-			field_name = self._field_names[keyword]
-		
-		try:
-			#TODO Change type and keyword to field_name
-			if self.keywords[keyword]["type"] == "str":
-				filters = self.string_filter(field_name, value)
-			elif self.keywords[keyword]["type"] == "int" or self.keywords[keyword]["type"] == "float":
-				filters = self.numeric_filter(field_name, value)
-			elif self.keywords[keyword]["type"] == "datetime":
-				filters = self.time_filter(field_name, value)
+	def filter(self, **kwargs):
+		filters = dict()
+		for keyword, value in kwargs.iteritems():
+			if keyword in self._field_names:
+				filters[keyword] = value
 			else:
-				raise NotImplementedError("Filter for type %s has not been implemented", self.keywords[keyword]["type"])
-		except Exception, why:
-			raise ValueError("Bad value %s for keyword %s: %s", (keyword, value, why))
+				raise LookupError("Unknown keyword %s for dataset %s" % (keyword, self.display_name))
 		
-		data_set_copy = copy.deepcopy(self)
-		data_set_copy.filters.update(filters)
-		return data_set_copy
+		dataset_copy = copy.deepcopy(self)
+		dataset_copy.filters.update(filters)
+		return dataset_copy
 	
 	def __iter__(self):
-		return DatasetIterator(self)
-
-class DatasetIterator:
-	
-	def __init__(self, dataset):
-		self.i = 0
-		self.limit = 20
-		self.meta_data_api = dataset.meta_data_api
-		self.filters = dataset.filters
-		self.keywords = {field_name: keyword for keyword, field_name in dataset._field_names.iteritems()}
-		self.infos = []
-	
-	def __iter__(self):
-		# Iterators are iterables too.
-		# Adding this functions to make them so.
-		return self
-
-	def next(self):
-		# Cache some info
-		if not self.infos:
-			self.infos = self.meta_data_api.get(limit=self.limit, offset=self.i, **self.filters)["objects"]
-			self.i += self.limit
-		# Return the first one in cache
-		if self.infos:
-			info = self.infos.pop(0)
-			return Data(info, self.keywords)
-		else:
-			raise StopIteration()
+		filters = dict()
+		for keyword, value in self.filters.iteritems():
+			field_name = self._field_names[keyword]
+			try:
+				if self.keywords[keyword]["type"] == "str":
+					filters.update(self.string_filter(field_name, value))
+				elif self.keywords[keyword]["type"] == "int" or self.keywords[keyword]["type"] == "float":
+					filters.update(self.numeric_filter(field_name, value))
+				elif self.keywords[keyword]["type"] == "datetime":
+					filters.update(self.time_filter(field_name, value))
+				else:
+					raise NotImplementedError("Filter for type %s has not been implemented", self.keywords[keyword]["type"])
+			except Exception, why:
+				raise ValueError("Bad value %s for keyword %s: %s", (keyword, value, why))
+		
+		return self.Iterator(self.meta_data_api, filters, {field_name: keyword for keyword, field_name in dataset._field_names.iteritems()})
 
 class Data:
-	def __init__(self, info, keywords):
-		self.meta_data = {keywords[field_name]: value for field_name, value in info.iteritems() if field_name in keywords}
-		self.data_location = info["data_location"]["url"]
-		self.tags = [tag["name"] for tag in info["tags"]]
+	def __init__(self, meta_data, data_location, tags):
+		self.meta_data = meta_data
+		self.data_location = data_location
+		self.tags = tags
 	
 	def download(self, to="."):
 		if os.path.isdir(to):
@@ -248,29 +252,57 @@ class Data:
 		return StringIO.StringIO(urllib.urlopen(self.data_location).read())
 
 class Datasets:
+	
+	class Iterator:
+	
+		def __init__(self, infos):
+		
+			self.infos = infos
+		
+		def __iter__(self):
+			# Iterators are iterables too.
+			return self
+		
+		def next(self):
+			# Return the first one in cache
+			if self.infos:
+				return Dataset(self.infos.pop(0))
+			else:
+				raise StopIteration()
+	
 	def __init__(self, api = API):
-		self.api = api("dataset")
+		self.api = api.api.v1("dataset")
 		self.datasets = [Dataset(info, api) for info in self.api.get(limit=0)["objects"]]
+		self._field_names = ["name", "display_name", "instrument", "telescope", "description", "contact", "characteristics"]
+		self.filters = dict()
 	
 	def __iter__(self):
-		self.i = 0
-		return self
-	
-	def __next__(self):
-		if self.i < len(self.datasets):
-			self.i += 1
-			return self.datasets[i - 1]
-		else:
-			raise StopIteration()
+		filters = dict()
+		for field_name, value in self.filters.iteritems():
+			try:
+				filters.update(self.string_filter(field_name, value))
+			except Exception, why:
+				raise ValueError("Bad value %s for keyword %s: %s", (keyword, value, why))
+		
+		return self.Iterator(self.api.get(limit=0, **filters)["objects"])
 	
 	def filter(self, **kwargs):
-		return
+		filters = dict()
+		for keyword, value in kwargs.iteritems():
+			if keyword in self._field_names:
+				filters[keyword] = value
+			else:
+				raise LookupError("Unknown keyword %s for datasets" % keyword)
 		
-	def get(dataset_name)
-		return DataSet(self.api)
+		datasets_copy = copy.deepcopy(self)
+		datasets_copy.filters.update(filters)
+		return datasets_copy
+	
+	def __str__(self):
+		return ", ".join([dataset.display_name for dataset in self])
+	
+	def get(dataset_name):
+		return Dataset(self.api)
 
+datasets = Datasets(API)
 
-
-datasets = SDA.datasets(start_date = None, end_date = None, euv = true)
-datasets[“aia.lev1”].keywords()
-datasets[“aia.lev1”].filter(date_obs="2014-05-01"
