@@ -28,6 +28,9 @@ class DatasetResource(ModelResource):
 		paginator_class = EstimatedCountPaginator
 		authorization = DjangoAuthorization()
 		filtering = {
+		"name": ALL,
+		"description": ALL,
+		"contact": ALL,
 		"instrument": ALL,
 		"telescope": ALL,
 		"characteristics": ALL_WITH_RELATIONS
