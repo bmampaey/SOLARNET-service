@@ -1,9 +1,10 @@
-import slumber
-import dateutil.parser
+import os
 import copy
 from datetime import datetime
-import urllib
+import dateutil.parser
+import urllib, urlparse
 import StringIO
+import slumber
 
 API = slumber.API("http://benjmam-pc:8000", auth = None)
 
@@ -117,7 +118,7 @@ class Dataset:
 			# Return the first one in cache
 			if self.infos:
 				info = self.infos.pop(0)
-				return Data({keywords[field_name]: value for field_name, value in info.iteritems() if field_name in keywords}, info["data_location"]["url"], [tag["name"] for tag in info["tags"]])
+				return Data({self.keywords[field_name]: value for field_name, value in info.iteritems() if field_name in self.keywords}, info["data_location"]["url"], [tag["name"] for tag in info["tags"]])
 			else:
 				raise StopIteration()
 	
@@ -146,6 +147,24 @@ class Dataset:
 			return self.display_name + ": " + "; ".join([keyword+" = "+str(value) for keyword,value in self.filters.iteritems()])
 		else:
 			return self.display_name + ": all"
+	
+	def __iter__(self):
+		filters = dict()
+		for keyword, value in self.filters.iteritems():
+			field_name = self._field_names[keyword]
+			try:
+				if self.keywords[keyword]["type"] == "str":
+					filters.update(self.string_filter(field_name, value))
+				elif self.keywords[keyword]["type"] == "int" or self.keywords[keyword]["type"] == "float":
+					filters.update(self.numeric_filter(field_name, value))
+				elif self.keywords[keyword]["type"] == "datetime":
+					filters.update(self.time_filter(field_name, value))
+				else:
+					raise NotImplementedError("Filter for type %s has not been implemented", self.keywords[keyword]["type"])
+			except Exception, why:
+				raise ValueError("Bad value %s for keyword %s: %s", (keyword, value, why))
+		
+		return self.Iterator(self.meta_data_api, filters, {field_name: keyword for keyword, field_name in self._field_names.iteritems()})
 	
 	@property
 	def keywords(self):
@@ -204,9 +223,11 @@ class Dataset:
 		
 		return filters
 	
-	def filter(self, **kwargs):
+	def filter(self, *args, **kwargs):
 		filters = dict()
-		for keyword, value in kwargs.iteritems():
+		args = dict(zip(args[::2], args[1::2]))
+		args.update(kwargs)
+		for keyword, value in args.iteritems():
 			if keyword in self._field_names:
 				filters[keyword] = value
 			else:
@@ -216,23 +237,7 @@ class Dataset:
 		dataset_copy.filters.update(filters)
 		return dataset_copy
 	
-	def __iter__(self):
-		filters = dict()
-		for keyword, value in self.filters.iteritems():
-			field_name = self._field_names[keyword]
-			try:
-				if self.keywords[keyword]["type"] == "str":
-					filters.update(self.string_filter(field_name, value))
-				elif self.keywords[keyword]["type"] == "int" or self.keywords[keyword]["type"] == "float":
-					filters.update(self.numeric_filter(field_name, value))
-				elif self.keywords[keyword]["type"] == "datetime":
-					filters.update(self.time_filter(field_name, value))
-				else:
-					raise NotImplementedError("Filter for type %s has not been implemented", self.keywords[keyword]["type"])
-			except Exception, why:
-				raise ValueError("Bad value %s for keyword %s: %s", (keyword, value, why))
-		
-		return self.Iterator(self.meta_data_api, filters, {field_name: keyword for keyword, field_name in dataset._field_names.iteritems()})
+
 
 class Data:
 	def __init__(self, meta_data, data_location, tags):
@@ -286,9 +291,14 @@ class Datasets:
 		
 		return self.Iterator(self.api.get(limit=0, **filters)["objects"])
 	
-	def filter(self, **kwargs):
+	def __str__(self):
+		return ", ".join([dataset.display_name for dataset in self])
+	
+	def filter(self, *args, **kwargs):
 		filters = dict()
-		for keyword, value in kwargs.iteritems():
+		args = dict(zip(args[::2], args[1::2]))
+		args.update(kwargs)
+		for keyword, value in args.iteritems():
 			if keyword in self._field_names:
 				filters[keyword] = value
 			else:
@@ -298,11 +308,9 @@ class Datasets:
 		datasets_copy.filters.update(filters)
 		return datasets_copy
 	
-	def __str__(self):
-		return ", ".join([dataset.display_name for dataset in self])
-	
-	def get(dataset_name):
-		return Dataset(self.api)
+	def get(self, dataset_name):
+		return Dataset(self.api.get(name = dataset_name)["objects"][0])
+
 
 datasets = Datasets(API)
 
