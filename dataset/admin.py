@@ -4,7 +4,7 @@ from dataset.models import Dataset, Characteristic
 
 # For this class to work there must be for each dataset a group with the same name
 class DatasetAdmin(admin.ModelAdmin):
-	list_display = ("name", "instrument", "contact")
+	list_display = ("name", "display_name", "instrument")
 	filter_horizontal = ("characteristics",)
 	
 	def get_readonly_fields(self, request, obj=None):

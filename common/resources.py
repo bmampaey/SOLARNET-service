@@ -92,10 +92,15 @@ def MetaDataResource_for(dataset_name, MetaData, TagResource):
 			queryset = MetaData.objects.all()
 			resource_name = dataset_name + '_meta_data'
 			resource_type = 'meta_data'
+			filtering = {"tags": ALL_WITH_RELATIONS}
 	
 		def __init__(self, *args, **kwargs):
 			self.dataset_name = dataset_name
 			self._meta.paginator_class.setup(connection_name = self.dataset_name)
 			super(MetaDataResource, self).__init__(*args, **kwargs)
+			# Allow filtering on all fields
+			for field in self.fields:
+				if field not in self.Meta.filtering:
+					self.Meta.filtering[field] = ALL
 	
 	return MetaDataResource

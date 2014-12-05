@@ -279,7 +279,7 @@ function post_load_search_dataset_result_section(section)
 		var row =$(this);
 		$("td:not(:has(input))", row).click(function() {
 			log("Row for dataset",row.attr("dataset_name"), "was clicked");
-			add_search_data_panel(row.attr("dataset_name"), row.attr("search_data_form_href"), row.attr("search_data_results_href"), row.attr("dataset_description"));
+			add_search_data_panel(row.attr("dataset_name"), row.attr("dataset_display_name"), row.attr("search_data_form_href"), row.attr("search_data_results_href"), row.attr("dataset_description"));
 		});
 	});
 	
@@ -494,13 +494,13 @@ function post_load_user_section(section)
 }
 
 // TODO make this more pretty
-function add_search_data_panel(dataset_name, search_data_form_href, search_data_results_href, dataset_description)
+function add_search_data_panel(dataset_name, dataset_display_name, search_data_form_href, search_data_results_href, dataset_description)
 {
 	log("Adding search data panel for", dataset_name)
 	
 	var content = '<div class="section search_data_form_section" href="'+search_data_form_href+'">Please wait for the search form to load</div>\
 				<div class="section search_data_results_section" href="'+search_data_results_href+'">You can search for data using the form on the left</div>';
-	var title = 'Search data ' + dataset_name + ' <button type="button" class="help small_button" title="' + dataset_description + '">Help</button>';
+	var title = 'Search data ' + dataset_display_name + ' <button type="button" class="help small_button" title="' + dataset_description + '">Help</button>';
 	
 	// Check if a panel with that id exists already
 	var content_element = $("#"+dataset_name);

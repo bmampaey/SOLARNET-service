@@ -1,6 +1,12 @@
 import slumber
 import dateutil.parser
+import copy
 from datetime import datetime
+import urllib
+import StringIO
+
+API = slumber.API((url = "http://benjmam-pc:8000", auth = None)
+
 
 class Time:
 	def __init__(self, *args, **kwargs):
@@ -85,101 +91,183 @@ class Time:
 		
 		return "Time(%s)" % str(self)
 
-
-class DataSet:
-	def __init__(dataset, dataset_name = ""):
-		self.dataset = dataset
-		self.dataset_name = dataset_name
-		self._keywords = None
+				
+class Dataset:
 	
-	@static
-	def string_filter(keyword, range):
-		filters = dict()
-		if not isinstance(range, (tuple, list)):
-			filters[keyword+"__iexact"] = range
-		elif len(range) == 1:
-			filters[keyword+"__icontains"] = range[0]
-		elif len(range) == 2:
-			if range[0] is not None:
-				filters[keyword+"__istartswith"] = range[0]  
-			if range[1] is not None:
-				filters[keyword+"__iendswith"] = range[1]
-		elif len(range) == 3:
-			if range[0] is not None:
-				filters[keyword+"__istartswith"] = range[0]
-			if range[1] is not None:
-				filters[keyword+"__icontains"] = range[1]
-			if range[2] is not None:
-				filters[keyword+"__iendswith"] = range[2]
-		else:
-			raise Exception("Bad range type or size for keyword %s: %s", (keyword, range))
-	
-	@static
-	def numeric_filter(keyword, range):
-		filters = dict()
-		if not isinstance(range, (tuple, list)):
-			filters[keyword+"__exact"] = range
-		elif len(range) == 1:
-			filters[keyword+"__exact"] = range[0]
-		elif len(range) == 2:
-			if range[0] is not None:
-				filters[keyword+"__gte"] = range[0]  
-			if range[1] is not None:
-				filters[keyword+"__lt"] = range[1]
-		else:
-			raise Exception("Bad range type or size for keyword %s: %s", (keyword, range))
-
-	@static
-	def time_filter(keyword, range):
-		filters = dict()
-		if not isinstance(range, (tuple, list)):
-			if isinstance(range, date):
-				filters[keyword+"__gte"] = range  
-				filters[keyword+"__lt"] = range + timedelta(days=1)
-			filters[keyword+"__exact"] = range
-		elif len(range) == 1:
-			filters[keyword+"__exact"] = range[0]
-		elif len(range) == 2:
-			if range[0] is not None:
-				filters[keyword+"__gte"] = range[0]  
-			if range[1] is not None:
-				filters[keyword+"__lt"] = range[1]
-		else:
-			raise Exception("Bad range type or size for keyword %s: %s", (keyword, range))
-
-	def filter(self, **kwargs):
-		for keyword, range in kwargs.iteritems():
-			filters = dict()
-			if keyword not in self.seywords:
-				raise Exception("Unknown keyword %s for dataset %s" % (keyword, self.dataset_name))
-			if self.keywords[keyword] type is string:
-				filters.update(Dataset.string_filter(keyword, range))
-			else:
-				filters.update(Dataset.numeric_filter(keyword, range))
+	def __init__(self, info, api = API):
+		self.name = info["name"]
+		self.display_name = info["display_name"]
+		self.description = info["description"]
+		self.characteristics = info["characteristics"]
 		
-		return self.dataset.get(**filters)
-						
-	def get(self, recnum)
-  
-	@property
-	def keywords(self)
-		if self._keywords is None:
-			
-		return self._keywords
-
-
-class SDO:
-	def __init__(url = "http://db1.sdodb.oma.be/DRMS/api/v1/", auth = None):
-		self.api = slumber.API(url, auth=auth)
+		self.keyword_api = api(self.name + "_keyword")
+		self.meta_data_api = api(self.name + "_meta_data")
+		self.data_location_api = api(self.name + "_data_location")
+		
+		#Set up the keywords and the field names for easy reverse lookup
+		self._keywords = dict()
+		self._field_names = dict()
+		for keyword in self.keyword_api.get(limit=0)["objects"]:
+			self._field_names[keyword["name"]] = keyword["db_column"]
+			self._keywords[keyword["name"]] = {"description": keyword["description"], "unit": keyword["unit"], "type": keyword["python_type"] }
+		
+		# At first the filter is empty
+		self.filters = dict()
 	
-	def all(self):
-		return self.api.data_series.get()
+	def __str__(self):
+		if self.filters:
+			return self.display_name + ": " + "; ".join([keyword+" "+str(value) for keyword,value in self.filters.iteritems()])
+		else:
+			return self.display_name + ": all"
+	
+	@property
+	def keywords(self):
+		return self._keywords
+	
+	@staticmethod
+	def string_filter(field_name, value):
+		filters = dict()
+		if not isinstance(value, (tuple, list)):
+			filters[field_name+"__iexact"] = value
+		elif len(value) == 0 or len(value) > 3:
+				raise Exception("String filter must either be an exact value or a triplet (starts with, contains, end with)")
+		else:
+			if len(value) >= 1 and value[0] is not None:
+				filters[field_name+"__istartswith"] = value[0]
+			if len(value) >= 2 and value[1] is not None:
+				filters[field_name+"__icontains"] = value[1]
+			if len(value) >= 3 and value[2] is not None:
+				filters[field_name+"__iendswith"] = value[2]
+		
+		return filters
+	
+	@staticmethod
+	def numeric_filter(field_name, value):
+		filters = dict()
+		if not isinstance(value, (tuple, list)):
+			filters[field_name+"__exact"] = value
+		elif len(value) == 0 or len(value) > 2:
+				raise Exception("Time filter must either be an exact value or a doublet (min value, max value)")
+		else:
+			if len(value) >= 1 and value[0] is not None:
+				filters[field_name+"__gte"] = value[0]
+			if len(value) >= 2 and value[1] is not None:
+				filters[field_name+"__lt"] = value[1]
+		
+		return filters
+	
+	@staticmethod
+	def time_filter(field_name, value):
+		filters = dict()
+		if not isinstance(value, (tuple, list)):
+			if isinstance(value, datetime):
+				filters[field_name+"__exact"] = value.isoformat()
+			else:
+				time = Time(value)
+				for attr in ["year", "month", "day", "hour", "minute", "second"]:
+					if getattr(time, attr) is not None:
+						filters[field_name + "__" + attr] = getattr(time, attr)
+		elif len(value) == 0 or len(value) > 2:
+				raise Exception("Numeric filter must either be an exact value or a doublet (min value, max value)")
+		else:
+			if len(value) >= 1 and value[0] is not None:
+				filters[field_name+"__gte"] = value[0].isoformat()
+			if len(value) >= 2 and value[1] is not None:
+				filters[field_name+"__lt"] = value[1].isoformat()
+		
+		return filters
+	
+	def filter(self, keyword, value):
+		if keyword not in self._field_names:
+			raise LookupError("Unknown keyword %s for dataset %s" % (keyword, self.display_name))
+		else:
+			field_name = self._field_names[keyword]
+		
+		try:
+			#TODO Change type and keyword to field_name
+			if self.keywords[keyword]["type"] == "str":
+				filters = self.string_filter(field_name, value)
+			elif self.keywords[keyword]["type"] == "int" or self.keywords[keyword]["type"] == "float":
+				filters = self.numeric_filter(field_name, value)
+			elif self.keywords[keyword]["type"] == "datetime":
+				filters = self.time_filter(field_name, value)
+			else:
+				raise NotImplementedError("Filter for type %s has not been implemented", self.keywords[keyword]["type"])
+		except Exception, why:
+			raise ValueError("Bad value %s for keyword %s: %s", (keyword, value, why))
+		
+		data_set_copy = copy.deepcopy(self)
+		data_set_copy.filters.update(filters)
+		return data_set_copy
+	
+	def __iter__(self):
+		return DatasetIterator(self)
+
+class DatasetIterator:
+	
+	def __init__(self, dataset):
+		self.i = 0
+		self.limit = 20
+		self.meta_data_api = dataset.meta_data_api
+		self.filters = dataset.filters
+		self.keywords = {field_name: keyword for keyword, field_name in dataset._field_names.iteritems()}
+		self.infos = []
+	
+	def __iter__(self):
+		# Iterators are iterables too.
+		# Adding this functions to make them so.
+		return self
+
+	def next(self):
+		# Cache some info
+		if not self.infos:
+			self.infos = self.meta_data_api.get(limit=self.limit, offset=self.i, **self.filters)["objects"]
+			self.i += self.limit
+		# Return the first one in cache
+		if self.infos:
+			info = self.infos.pop(0)
+			return Data(info, self.keywords)
+		else:
+			raise StopIteration()
+
+class Data:
+	def __init__(self, info, keywords):
+		self.meta_data = {keywords[field_name]: value for field_name, value in info.iteritems() if field_name in keywords}
+		self.data_location = info["data_location"]["url"]
+		self.tags = [tag["name"] for tag in info["tags"]]
+	
+	def download(self, to="."):
+		if os.path.isdir(to):
+			to = os.path.join(to, os.path.basename(urlparse.urlparse(self.data_location).path))
+		elif not os.path.isdir(os.path.dirname(to)):
+			raise ValueError("No directory %s" % os.path.dirname(to))
+		
+		urllib.urlretrieve(self.data_location, to)
+	
+	def data(self):
+		return StringIO.StringIO(urllib.urlopen(self.data_location).read())
+
+class Datasets:
+	def __init__(self, api = API):
+		self.api = api("dataset")
+		self.datasets = [Dataset(info, api) for info in self.api.get(limit=0)["objects"]]
+	
+	def __iter__(self):
+		self.i = 0
+		return self
+	
+	def __next__(self):
+		if self.i < len(self.datasets):
+			self.i += 1
+			return self.datasets[i - 1]
+		else:
+			raise StopIteration()
 	
 	def filter(self, **kwargs):
 		return
 		
 	def get(dataset_name)
-		return DataSet(self.api
+		return DataSet(self.api)
 
 
 

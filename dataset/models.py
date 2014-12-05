@@ -4,7 +4,8 @@ from common.views import BaseSearchDataForm
 
 
 class Dataset(models.Model):
-	name = models.TextField("Data set name.", primary_key=True, max_length=20)
+	name = models.TextField("Dataset name.", primary_key=True, max_length=20)
+	display_name = models.TextField("Dataset display name.", unique = True, blank=False, null=True, max_length=40)
 	description = models.TextField("Dataset description", blank=True, null=True)
 	contact = models.TextField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50)
 	instrument = models.TextField(help_text = "The instrument.", blank=True, null=True, max_length=20)

@@ -76,6 +76,12 @@ div.page_navigation {
 	margin: 1em 0em;
 }
 
+div.selection {
+	/* Push Select all and Unselect all buttons to the center */
+	text-align: center;
+	margin: 1em 0em;
+}
+
 button.select_all>span.ui-button-text, button.unselect_all>span.ui-button-text {
 	/* Make the buttons narrower */
 	padding-top: 0em;
@@ -86,12 +92,12 @@ button.select_all>span.ui-button-text, button.unselect_all>span.ui-button-text {
 
 a.previous_page {
 	/* Push buttons to the left */
-	margin-right: 1em;
+	margin-right: 2em;
 }
 
 a.next_page {
 	/* Push buttons to the right */
-	margin-left: 1em;
+	margin-left: 2em;
 }
 
 /* Make icon buttons tiny squares */
