@@ -4,7 +4,6 @@
 <table class="search_results_table" summary="Search results">
 	<thead>
 		<tr>
-			<th></th><!-- checkbox column -->
 			<th># Items</th>
 			{% for keyword, header in table_columns.items %}
 			<th>{{ header }}</th>
@@ -15,13 +14,10 @@
 	<tbody>
 		{% for dataset in dataset_list %}
 		{% if dataset.query_string %}
-		<tr class='open_data_search' dataset_name="{{ dataset.name }}" dataset_display_name="{{ dataset.display_name }}" search_data_form_href="{% url dataset.name|add:':search_data_form' %}?{{ dataset.query_string }}" search_data_results_href="{% url dataset.name|add:':search_data_results' %}?{{ dataset.query_string }}" dataset_description="{{ dataset.description }}">
+		<tr class='open_data_search' dataset_id="{{ dataset.id }}" dataset_name="{{ dataset.name }}" search_data_form_href="{% url dataset.id|add:':search_data_form' %}?{{ dataset.query_string }}" search_data_results_href="{% url dataset.id|add:':search_data_results' %}?{{ dataset.query_string }}" dataset_description="{{ dataset.description }}">
 		{% else %}
-		<tr class='open_data_search' dataset_name="{{ dataset.name }}" dataset_display_name="{{ dataset.display_name }}" search_data_form_href="{% url dataset.name|add:':search_data_form' %}" search_data_results_href="{% url dataset.name|add:':search_data_results' %}" dataset_description="{{ dataset.description }}">
+		<tr class='open_data_search' dataset_id="{{ dataset.id }}" dataset_name="{{ dataset.name }}" search_data_form_href="{% url dataset.id|add:':search_data_form' %}" search_data_results_href="{% url dataset.id|add:':search_data_results' %}" dataset_description="{{ dataset.description }}">
 		{% endif %}
-			<td>
-				<input type="checkbox" value="{{ dataset.name }}" name="dataset_name"></input>
-			</td>
 			<td>{{ dataset.item_count }}</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ dataset|getattr:keyword }}</td>

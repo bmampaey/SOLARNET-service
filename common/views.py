@@ -16,7 +16,7 @@ from common.django_paginator import EstimatedCountPaginator
 
 class BaseSearchDataForm(TemplateView):
 	search_form_class = None  #To be overriden in the derived class
-	dataset_name = None # To be overriden in the derived class
+	dataset_id = None # To be overriden in the derived class
 	template_name = 'common/search_data_form.html'
 	
 	def get_context_data(self, **kwargs):
@@ -24,17 +24,17 @@ class BaseSearchDataForm(TemplateView):
 		context = super(BaseSearchDataForm, self).get_context_data(**kwargs)
 		# We allow to pass data in the get to prefil the form (override initials)
 		if self.request.GET:
-			context['search_form'] = self.search_form_class(self.request.GET, auto_id=self.dataset_name+'_%s')
+			context['search_form'] = self.search_form_class(self.request.GET, auto_id=self.dataset_id+'_%s')
 		else:
-			context['search_form'] = self.search_form_class(auto_id=self.dataset_name+'_%s')
+			context['search_form'] = self.search_form_class(auto_id=self.dataset_id+'_%s')
 		
-		context['dataset_name'] = self.dataset_name
+		context['dataset_id'] = self.dataset_id
 		return context
 
 
 
 class BaseSearchDataResults(ListView):
-	dataset_name = None # To be overriden in the derived class
+	dataset_id = None # To be overriden in the derived class
 	model = None # To be overriden in the derived class
 	search_form_class = None # To be overriden in the derived class
 	table_columns = OrderedDict([("date_obs", "Date Observation")]) # To be overriden in the derived class. Use an OrderedDict if you want the order of columns to be respected.
@@ -61,7 +61,7 @@ class BaseSearchDataResults(ListView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(BaseSearchDataResults, self).get_context_data(**kwargs)
-		context['dataset_name'] = self.dataset_name
+		context['dataset_id'] = self.dataset_id
 		context['table_columns'] = self.table_columns
 		
 		# Set up the pages navigation by encoding the request data without the page number

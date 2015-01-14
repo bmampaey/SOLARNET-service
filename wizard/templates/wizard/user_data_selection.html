@@ -5,6 +5,7 @@
 		<tr>
 			<th># Items</th>
 			<th>Dataset</th>
+			<th>Added</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -12,6 +13,7 @@
 		<tr class='clickable' href="{% url 'data_selection' data_selection.id %}">
 			<td>{{ data_selection.number_items }}</td>
 			<td>{{ data_selection.dataset.name }}</td>
+			<td>{{ data_selection.created }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>

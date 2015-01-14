@@ -5,11 +5,11 @@ from swap.forms import SearchData
 from swap.models import MetaData, DataLocation
 
 class SearchDataForm(BaseSearchDataForm):
-	dataset_name = "swap"
+	dataset_id = "swap"
 	search_form_class = SearchData
 
 class SearchDataResults(BaseSearchDataResults):
-	dataset_name = "swap"
+	dataset_id = "swap"
 	model = MetaData
 	search_form_class = SearchData
 	table_columns = OrderedDict([("date_obs", "Date Observation")])

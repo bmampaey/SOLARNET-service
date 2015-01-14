@@ -1,16 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from dataset.models import Dataset, Characteristic
+from dataset.models import Telescope, Instrument, Characteristic, Dataset
 
 # For this class to work there must be for each dataset a group with the same name
 class DatasetAdmin(admin.ModelAdmin):
-	list_display = ("name", "display_name", "instrument")
+	list_display = ("id", "name", "instrument")
 	filter_horizontal = ("characteristics",)
 	
 	def get_readonly_fields(self, request, obj=None):
 		# Do not allow to change the name of the dataset
 		if obj:
-			return self.readonly_fields + ("name",)
+			return self.readonly_fields + ("id",)
 		return self.readonly_fields
 	
 	def has_add_permission(self, request):
@@ -42,6 +42,10 @@ class DatasetAdmin(admin.ModelAdmin):
 			groups = [group.name for group in request.user.groups.all()]
 			return queryset.filter(name__in=groups)
 
+
+
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(Characteristic)
+admin.site.register(Telescope)
+admin.site.register(Instrument)
 

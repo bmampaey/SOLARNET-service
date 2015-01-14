@@ -4,15 +4,6 @@ body {
 	padding: 1em 0.5em;
 }
 
-/* Tab elements and content */
-
-li#user_tab {
-	/* Push user tab to the right */
-	/* important to avoid jquery to override it */
-	float: right !important;
-}
-
-
 /* Section elements */
 div.section {
 	/* Put the sections side by side if possible */
@@ -36,7 +27,7 @@ form p * {
 	vertical-align: middle;
 }
 
-form p > label {
+.search_data_form_section form p > label, .search_dataset_form_section  form p > label {
 	width: 10em;
 	display: inline-block;
 	margin: 0.5em;
@@ -136,6 +127,32 @@ span.visual_indicator {
 	margin-right: 0.3em;
 	display: inline-block;
 	overflow: hidden;
+}
+
+#login_box {
+	text-align: center;
+	height: 8em;
+	max-width: 25em;
+  margin: auto;
+  padding: 1em;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#login_box form{
+margin: 2em;
+}
+
+
+#logout {
+	text-align: right;
+}
+
+
+#logout_button>span.ui-button-text{
+	padding-top: 0em;
+	padding-bottom: 0em;
+	font-size: small;
 }
 
 

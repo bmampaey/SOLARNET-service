@@ -4,6 +4,7 @@
 <table class="search_results_table" summary="User Data Selection List">
 	<thead>
 		<tr>
+			<th></th><!-- download_data column -->
 			<th># Items</th>
 			{% for keyword, header in table_columns.items %}
 			<th>{{ header }}</th>
@@ -14,6 +15,9 @@
 	<tbody>
 		{% for user_data_selection in user_data_selection_list %}
 		<tr class='open_user_data_selection' href="{% url 'user_data_selection' user_data_selection.id %}" name="{{ user_data_selection.name }}">
+			<td>
+				<a class="download_data small_button" title="Download data" href="{% url 'download_data_selection' user_data_selection.id %}" target="_blank" download>Download</a>
+			</td>
 			<td>{{ user_data_selection.number_items }}</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ user_data_selection|getattr:keyword }}</td>

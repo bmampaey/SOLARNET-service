@@ -5,3 +5,5 @@ On db1
 copy aia_lev1.meta_data from '/tmp/aia';
 copy aia_lev1.keyword from '/tmp/aia_keyword';
 insert into aia_lev1.data_location (url, id)  select 'http://sdo.oma.be/PMD/download_data/aia_lev1/'||recnum , id from aia_lev1.meta_data;
+
+insert into aia_lev1.data_location (url, id) select 'http://sdo.oma.be/PMD/download_data/aia_lev1/'||recnum::text||to_char(date_obs, '/YYYYMMDD_HH24MISS.')||to_char(wavelnth, 'FM0000')||'.image_lev1.fits', id from aia_lev1.meta_data;

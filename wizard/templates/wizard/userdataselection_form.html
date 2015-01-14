@@ -5,7 +5,8 @@
 	<form action="{% url 'user_data_selection_create' %}" method="post">
 	{% csrf_token %}
 		{{ form.as_p }}
-		<button type="submit" class="search" title="Search data">Create data selection</button>
+
+		<button type="submit" class="create_user_data_selection" title="Create data selection">Create data selection</button>
 	</form>
 </div>
 {% endblock %}

@@ -5,11 +5,11 @@ from eit.forms import SearchData
 from eit.models import MetaData, DataLocation
 
 class SearchDataForm(BaseSearchDataForm):
-	dataset_name = "eit"
+	dataset_id = "eit"
 	search_form_class = SearchData
 
 class SearchDataResults(BaseSearchDataResults):
-	dataset_name = "eit"
+	dataset_id = "eit"
 	model = MetaData
 	search_form_class = SearchData
 	table_columns = OrderedDict([("date_obs", "Date Observation"), ("wavelnth", "Wavelength"), ("sci_obj", "Science Objectif")])

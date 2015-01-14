@@ -4,16 +4,34 @@ from django import forms
 from wizard.models import UserDataSelection
 from djorm_pgarray.fields import ArrayFormField
 
-class Login(forms.Form):
-	email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'my.email@address.com'}))
+from wizard.models import DataSelection
 
-class DataSelectionCreateForm(forms.Form):
-	user_data_selection_name = forms.CharField(help_text="Create a new selection", widget = forms.Select(choices=[]))
-	dataset_name = forms.CharField(help_text="Name of the dataset for the selection", max_length=20, widget = forms.HiddenInput())
-	query_string = forms.CharField(help_text="Query string for the data selection", max_length=2000, widget = forms.HiddenInput())
-	all_selected = forms.BooleanField(help_text="Wheter all data was selected", required=False, widget = forms.HiddenInput())
-	data_ids = ArrayFormField(help_text = "List of data ids to include or exclude (if all_selected is true)", required=False, widget = forms.MultipleHiddenInput())
+class Login(forms.Form):
+	email = forms.EmailField(required=True, max_length=100, widget=forms.EmailInput(attrs={'placeholder': 'my.email@address.com'}))
+
+class ArrayField(forms.Field):
 	
-	def __init__(self, user, *args, **kwargs):
-		super(DataSelectionCreateForm, self).__init__(*args, **kwargs)
-		self.fields['user_data_selection_name'].widget.choices = [(name, name) for name in UserDataSelection.objects.filter(user=user).values_list("name", flat=True)]
+	def __init__(self, *args, **kwargs):
+		self.base_type = kwargs.pop('base_type')
+		self.widget = forms.MultipleHiddenInput
+		super(ArrayField, self).__init__(*args, **kwargs)
+
+	def clean(self, value):
+		for subvalue in value:
+			self.base_type.validate(subvalue)
+	
+		return [self.base_type.clean(subvalue) for subvalue in value]
+
+class DataSelectionCreateForm(forms.ModelForm):
+	
+	dataset_id = forms.CharField(help_text="Id of the dataset for the selection", max_length=20, widget = forms.HiddenInput())
+	user_data_selection_name = forms.CharField(label="Create a new selection", initial = "new", max_length=80)
+	selected_data_ids = ArrayField(help_text="Selected data ids to include into the selection", base_type=forms.IntegerField(), required=False)
+	class Meta:
+		model = DataSelection
+		exclude = ('user_data_selection', 'dataset', 'data_ids')
+		widgets = {
+			'query_string' : forms.HiddenInput,
+			'all_selected' : forms.HiddenInput,
+		}
+

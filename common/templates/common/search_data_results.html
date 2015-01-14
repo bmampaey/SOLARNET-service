@@ -1,7 +1,7 @@
 {% block content %}
 {% load getattr %}
 {% if data_list %}
-<table class="search_results_table" summary="Search results" dataset_name="{{ dataset_name }}">
+<table class="search_results_table" summary="Search results" dataset_id="{{ dataset_id }}">
 	<thead>
 		<tr>
 			<th></th><!-- checkbox column -->
@@ -19,7 +19,7 @@
 				<input type="checkbox" name="data_id" value="{{ data.id }}"></input>
 			</td>
 			<td>
-				<a class="download_data small_button" title="Download data" href="{% url dataset_name|add:':download_data' data.id %}" target="_blank" download>Download</a>
+				<a class="download_data small_button" title="Download data" href="{{ data.data_location.url }}" target="_blank" download>Download</a>
 			</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ data|getattr:keyword }}</td>
@@ -32,22 +32,22 @@
 <!-- Net and previous buttons -->
 <div class="page_navigation">
 	{% if page_obj.number > 1 %}
-	<a class="first_page small_button" title="Go to first page" href="{% url dataset_name|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}=1">First page</a>
+	<a class="first_page small_button" title="Go to first page" href="{% url dataset_id|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}=1">First page</a>
 	{% else %}
 	<a class="first_page small_button" title="Go to first page">First page</a>
 	{% endif %}
 	{% if page_obj.has_previous %}
-	<a class="previous_page small_button" title="Go to previous page" href="{% url dataset_name|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}={{page_obj.previous_page_number}}">Previous page</a>
+	<a class="previous_page small_button" title="Go to previous page" href="{% url dataset_id|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}={{page_obj.previous_page_number}}">Previous page</a>
 	{% else %}
 	<a class="previous_page small_button" title="Go to previous page">Previous page</a>
 	{% endif %}
 	{% if page_obj.has_next %}
-	<a class="next_page small_button" title="Go to next page" href="{% url dataset_name|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}={{page_obj.next_page_number}}">Next page</a>
+	<a class="next_page small_button" title="Go to next page" href="{% url dataset_id|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}={{page_obj.next_page_number}}">Next page</a>
 	{% else %}
 	<a class="next_page small_button" title="Go to next page">Next page</a>
 	{% endif %}
 	{% if page_obj.number < paginator.num_pages %}
-	<a class="last_page small_button" title="Go to last page" href="{% url dataset_name|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}=last">Last page</a>
+	<a class="last_page small_button" title="Go to last page" href="{% url dataset_id|add:':search_data_results' %}?{{ query_string }}&{{ page_kwarg }}=last">Last page</a>
 	{% else %}
 	<a class="last_page small_button" title="Go to last page">Last page</a>
 	{% endif %}
@@ -58,14 +58,10 @@
 	<button class="unselect_all" title="Unselect all">Unselect all</button>
 </div>
 <!-- Action buttons -->
-<form  method="get" class="data_selection_create">
-	<input type="hidden" name="query_string" value="{{ query_string }}"/>
-	<input type="hidden" name="dataset_name" value="{{ dataset_name }}"/>
-	
-	<div class="actions search_results_actions">
-		<input type="submit" class="add_to_selection" title="Add the selected data to selection" action="{% url 'data_selection_create' %}" value="Add to selection"/>
-	</div>
-</form>
+<div class="actions search_results_actions">
+	<button class="add_to_selection" title="Add the selected data to selection" action="{% url 'data_selection_create' %}">Add to selection</button>
+</div>
+
 {% elif message %}
 <p>{{ message }}</p>
 {% else %}

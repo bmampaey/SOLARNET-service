@@ -16,7 +16,7 @@ class UserDataSelection(models.Model):
 		db_table = "user_data_selection"
 		
 	def __unicode__(self):
-		return u"%s by %s on %s" % (self.name, self.user.username, self.requested)
+		return u"%s by %s on %s" % (self.name, self.user.username, self.created)
 	
 	@property
 	def number_items(self):
@@ -38,7 +38,7 @@ class DataSelection(models.Model):
 		db_table = "data_selection"
 		
 	def __unicode__(self):
-		return u"%s for %s" % (self.dataset_name, self.user_data_selection)
+		return u"%s for %s" % (self.dataset, self.user_data_selection)
 	
 	@property
 	def number_items(self):

@@ -35,7 +35,7 @@ class SearchAcrossDatasetsForm(TemplateView):
 class SearchByDatasetResults(ListView):
 	model = Dataset
 	search_form_class = SearchByDataset
-	table_columns = OrderedDict([('display_name', 'Dataset'), ('instrument', 'Instrument'), ('telescope', 'Telescope')])
+	table_columns = OrderedDict([('name', 'Dataset'), ('instrument', 'Instrument'), ('telescope', 'Telescope')])
 	paginate_by = None # We do not paginate for datasets
 	context_object_name = 'dataset_list'
 	ordering = 'name'
@@ -60,7 +60,7 @@ class SearchByDatasetResults(ListView):
 class SearchAcrossDatasetsResults(ListView):
 	model = Dataset
 	search_form_class = SearchAcrossDatasets
-	table_columns = OrderedDict([('display_name', 'Dataset'), ('instrument', 'Instrument'), ('telescope', 'Telescope')])
+	table_columns = OrderedDict([('name', 'Dataset'), ('instrument', 'Instrument'), ('telescope', 'Telescope')])
 	paginate_by = None # We do not paginate for datasets
 	context_object_name = 'dataset_list'
 	ordering = 'name'
