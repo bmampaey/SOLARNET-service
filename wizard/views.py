@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, FormView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as user_login
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse, QueryDict
 
 
 from wizard.forms import Login, DataSelectionCreateForm
@@ -52,8 +52,6 @@ class LoginForm(FormView):
 	success_url = '/wizard/'
 	
 	def form_valid(self, form):
-		# This method is called when valid form data has been POSTed.
-		# It should return an HttpResponse.
 		username, password = form.cleaned_data["email"].split("@", 1)
 		#import pdb; pdb.set_trace()
 		user = authenticate(username=username, password=password)
@@ -65,19 +63,11 @@ class LoginForm(FormView):
 			user_login(self.request, user)
 		
 		return super(LoginForm, self).form_valid(form)
-	
-# NOT USEFUL
-class UserDataSelectionCreate(CreateView):
-	model = UserDataSelection
-#	http_method_names = ['post']
-#	fields = ["name"]
-#	success_url = '/success/'
-	success_message = "%(name)s was saved successfully"
+
 
 class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 	model = DataSelection
 	form_class = DataSelectionCreateForm
-#	http_method_names = ['post']
 	success_url = '/success/'
 	success_message = "%(name)s was saved successfully"
 	
@@ -101,16 +91,18 @@ class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 	
 	def form_valid(self, form):
 		# TODO See if it is possible to put this in the form save method
-		#import pdb; pdb.set_trace()
+		
 		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=form.cleaned_data["user_data_selection_name"])[0]
 		form.instance.dataset = Dataset.objects.get(id=form.cleaned_data["dataset_id"])
-		form.instance.data_ids = form.cleaned_data["selected_data_ids"]
-		#If all is selected we exclude the data_ids 
-# 			if self.all_selected:
-# 				# Make up the selection criteria from the cleaned data
-# 				cleaned_data = self.dataset.search_data_form.get_cleaned_data(QueryDict(self.query_string))
-# 				selection_criteria = self.dataset.search_data_form.get_selection_criteria(cleaned_data)
-# 				self.item_count = self.dataset.meta_data_model.objects.filter(**selection_criteria).exclude(id__in=self.data_ids).distict().count()
+		import pdb; pdb.set_trace()
+		# If all is selected we exclude the data_ids 
+		if form.cleaned_data["all_selected"]:
+			# Make up the selection criteria from the cleaned data
+			cleaned_data = form.instance.dataset.search_data_form.get_cleaned_data(QueryDict(form.cleaned_data["query_string"]))
+			selection_criteria = form.instance.dataset.search_data_form.get_selection_criteria(cleaned_data)
+			form.instance.data_ids = list(form.instance.dataset.meta_data_model.objects.order_by().filter(**selection_criteria).exclude(id__in=form.cleaned_data["selected_data_ids"]).values_list('id', flat=True).distinct())
+		else:
+			form.instance.data_ids = form.cleaned_data["selected_data_ids"]
 		
 		return super(DataSelectionCreate, self).form_valid(form)
 

@@ -27,11 +27,12 @@ class DataSelectionCreateForm(forms.ModelForm):
 	dataset_id = forms.CharField(help_text="Id of the dataset for the selection", max_length=20, widget = forms.HiddenInput())
 	user_data_selection_name = forms.CharField(label="Create a new selection", initial = "new", max_length=80)
 	selected_data_ids = ArrayField(help_text="Selected data ids to include into the selection", base_type=forms.IntegerField(), required=False)
+	all_selected = forms.BooleanField(help_text="If all data was selected", required=False, widget = forms.HiddenInput())
+	
 	class Meta:
 		model = DataSelection
 		exclude = ('user_data_selection', 'dataset', 'data_ids')
 		widgets = {
-			'query_string' : forms.HiddenInput,
-			'all_selected' : forms.HiddenInput,
+			'query_string' : forms.HiddenInput
 		}
 
