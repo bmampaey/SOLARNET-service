@@ -6,6 +6,7 @@ from tastypie.utils import trailing_slash
 
 # See http://django-tastypie.readthedocs.org/en/latest/paginator.html why it is important for postgres to have a special paginator
 from common.tastypie_paginator import EstimatedCountPaginator
+from common.models import BaseTag
 
 from dataset.models import Dataset, Characteristic, Instrument, Telescope
 
@@ -45,9 +46,39 @@ class CharacteristicResource(ModelResource):
 		paginator_class = EstimatedCountPaginator
 		authorization = DjangoAuthorization()
 
+class TagResource(Resource):
+	
+	name = fields.CharField(attribute = 'name')
+	
+	class Meta:
+		allowed_methods = ['get']
+		include_resource_uri = False
+		resource_name = 'tag'
+		limit = None
+		authorization = DjangoAuthorization()
+	
+	class Tag:
+		def __init__(self, **kwargs):
+			for key, val in kwargs.iteritems():
+				setattr(self, key, val)
+	
+	def obj_get_list(self, request = None, **kwargs):
+		# outer get of object list... this calls get_object_list and
+		# could be a point at which additional filtering may be applied
+		return [self.Tag(name=name) for name in BaseTag.all_tags()]
+	
+#	def obj_get(self, request = None, **kwargs):
+#		# get one object from data source
+#		pk = int(kwargs['pk'])
+#		try:
+#			return data[pk]
+#		except KeyError:
+#			raise NotFound("Object not found") 
+
 class DatasetResource(ModelResource):
-#	characteristics = fields.ToManyField(CharacteristicResource, 'characteristics', full = False)
-	characteristics = fields.ListField()
+	characteristics = fields.ToManyField(CharacteristicResource, 'characteristics', full = False)
+	#TODO check here
+#	characteristics = fields.ListField()
 	instrument = fields.CharField('instrument')
 	telescope = fields.CharField('telescope')
 	
