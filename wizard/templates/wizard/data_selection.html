@@ -1,0 +1,25 @@
+{% block content %}
+{% load getattr %}
+{% load querystring %}
+<ul>
+<li>
+Dataset: {{ data_selection.dataset.name }}
+</li>
+<li>
+Number items: {{ data_selection.number_items }}
+</li>
+<li>
+Added: {{ data_selection.created }}
+</li>
+
+{% if data_selection.query_string %}
+<li>
+Original search criteria:
+{{ data_selection.query_string|querystring }}
+</li>
+{% endif %}
+
+</ul>
+
+{% endblock %}
+
