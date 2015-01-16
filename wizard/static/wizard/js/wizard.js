@@ -464,11 +464,30 @@ function open_user_data_selection(href, name)
 	var box = $("<div/>", {
 	'class': "section",
 	});
-	load_section(box, href);
+	load_section(box, href, post_open_user_data_selection);
 	box.dialog({
 		title: name,
 		width: "auto",
 		dialogClass: "ui-state-highlight dialog_box",
+	});
+}
+
+function post_open_user_data_selection(section)
+{
+	log("post_open_user_data_selection");
+	section.tooltip({
+		items: "tr",
+		position: { my: "left+15 top", at: "right center" },
+		content: function(callback) {
+			$.get($(this).attr("href"))
+			.done(function(data) {
+				log("Received: ", data);
+				callback(data);
+			});
+		},
+	});
+	$("tr", section).hover(function(){
+		$(this).toggleClass('ui-state-hover');
 	});
 }
 
