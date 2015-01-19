@@ -1,10 +1,12 @@
 {% block content %}
 {% load getattr %}
 {% if user_data_selection_list %}
-<table class="search_results_table" summary="User Data Selection List">
+<table class="user_data_selection_table" summary="User Data Selection List">
 	<thead>
 		<tr>
-			<th></th><!-- download_data column -->
+			<th>Ftp</th><!-- download_data column -->
+			<!-- To be activated if zip 
+			<th>Zip</th><!-- download_data column -->
 			<th># Items</th>
 			{% for keyword, header in table_columns.items %}
 			<th>{{ header }}</th>
@@ -16,8 +18,13 @@
 		{% for user_data_selection in user_data_selection_list %}
 		<tr class='open_user_data_selection' href="{% url 'user_data_selection' user_data_selection.id %}" name="{{ user_data_selection.name }}">
 			<td>
-				<a class="download_data small_button" title="Download data" href="{% url 'download_data_selection' user_data_selection.id %}" target="_blank" download>Download</a>
+				<a class="download_ftp small_button" title="Download data by ftp" href="ftp://benjmam-pc/exports/{{user_data_selection.user.username}}/{{user_data_selection.name}}" target="_blank" download>Download</a>
 			</td>
+			<!-- To be activated if zip 
+			<td>
+				<a class="download_zip small_button" title="Download data by zip" href="{% url 'download_user_data_selection' user_data_selection.id %}" target="_blank" download>Download</a>
+			</td>
+			-->
 			<td>{{ user_data_selection.number_items }}</td>
 			{% for keyword, header in table_columns.items %}
 			<td>{{ user_data_selection|getattr:keyword }}</td>

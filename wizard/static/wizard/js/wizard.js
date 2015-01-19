@@ -476,7 +476,7 @@ function post_open_user_data_selection(section)
 {
 	log("post_open_user_data_selection");
 	section.tooltip({
-		items: "tr",
+		items: "tbody tr",
 		position: { my: "left+15 top", at: "right center" },
 		content: function(callback) {
 			$.get($(this).attr("href"))
@@ -486,7 +486,7 @@ function post_open_user_data_selection(section)
 			});
 		},
 	});
-	$("tr", section).hover(function(){
+	$("tbody tr", section).hover(function(){
 		$(this).toggleClass('ui-state-hover');
 	});
 }
@@ -495,10 +495,18 @@ function post_load_user_section(section)
 {
 	log("post_load_user_section");
 
-	// Transform download_data anchors to button
-	$('a.download_data', section).button({icons: {primary: 'ui-icon-arrowthickstop-1-s'}, text:false}).click(function(e){
+	// Transform download anchors to button
+	$('a.download_zip', section).button({icons: {primary: 'ui-icon-arrowthickstop-1-s'}, text:false}).click(function(e){
 		// Change the color of the icon so user knows what he already downloaded
 		$(this).addClass('ui-button-disabled ui-state-disabled');
+	});
+	
+	$('a.download_ftp', section).button({icons: {primary: 'ui-icon-folder-open'}, text:false}).click(function(e){
+		e.preventDefault();
+		window.open($(this).attr("href"));
+		// Change the color of the icon so user knows what he already downloaded
+		$(this).addClass('ui-button-disabled ui-state-disabled');
+
 	});
 
 	// Make dataset row openable
@@ -506,7 +514,7 @@ function post_load_user_section(section)
 		$(this).toggleClass('ui-state-hover');
 	}).each(function(){
 		var row =$(this);
-		$("td:not(:has(input))", row).click(function(){open_user_data_selection(row.attr("href"), row.attr("name"));});
+		$("td:not(:has(a))", row).click(function(){open_user_data_selection(row.attr("href"), row.attr("name"));});
 	});
 }
 

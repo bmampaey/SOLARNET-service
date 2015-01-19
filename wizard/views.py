@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as user_login
 from django.http import JsonResponse, QueryDict
 
-
 from wizard.forms import Login, DataSelectionCreateForm
 from wizard.models import UserDataSelection, DataSelection
 from dataset.models import Dataset
@@ -133,3 +132,7 @@ class DataSelectionDetail(DetailView):
 	model = DataSelection
 	context_object_name = 'data_selection'
 	template_name = 'wizard/data_selection.html'
+
+def download_user_data_selection(request, download_user_data_selection_id):
+	# Placeholder for zip file download
+	pass
