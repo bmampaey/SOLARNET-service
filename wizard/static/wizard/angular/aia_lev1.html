@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-resource.min.js"></script>
+	<script src="aia_lev1_controller.js"></script>
+	<script src="angular-multi-select.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="angular-multi-select.css">
+</head>
+
+<body ng-app="aiaLev1App" ng-controller="aiaLev1Controller">
+	<div class="searchForm">
+	
+		<label for="start_date">Start Date:</label>
+		
+		<label for="end_date">End Date:</label>
+		<label for="tags">Tags:</label>
+		<div
+			id="tags"
+			multi-select
+			input-model="tags"
+			button-label="name"
+			item-label="name"
+			tick-property="checked"
+			helper-elements=""
+			group-property="multiSelectGroup"
+		>
+		</div>
+		<button ng-click="update_meta_datas()">Search</button>
+	</div>
+	<div class="searchResults">
+		<table class="table">
+			<tr>
+				<th>Date Observation</th>
+				<th>Wavelength</th>
+				<th>Quality</th>
+				<th>Tags</th>
+			</tr>
+			<tr ng-repeat="meta_data in meta_datas">
+				<td>{{meta_data.name}}</td>
+				<td>{{meta_data.instrument}}</td>
+				<td>{{meta_data.telescope}}</td>
+				<td>{{meta_data.tags.join(', ')}}</td>
+			</tr>
+		</table>
+	</div>
+</body>
+
+</html>
