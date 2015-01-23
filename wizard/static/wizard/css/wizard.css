@@ -100,7 +100,7 @@ a.next_page {
 
 /* Dialog boxes */
 
-div.dialog_box {
+div.inform_user, div.alert_user {
 	max-width: 40em;
 }
 

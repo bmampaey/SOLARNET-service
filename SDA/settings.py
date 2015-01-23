@@ -81,35 +81,35 @@ DATABASES = {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'postgres',
-		'HOST': '127.0.0.1',
+		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
 	'eit': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'eit',
-		'HOST': '127.0.0.1',
+		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
 	'swap': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'swap',
-		'HOST': '127.0.0.1',
+		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
 	'aia_lev1': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'aia_lev1',
-		'HOST': '127.0.0.1',
+		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
 	'hmi_magnetogram': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'hmi_magnetogram',
-		'HOST': '127.0.0.1',
+		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
 }
@@ -129,7 +129,7 @@ USE_L10N = False
 
 USE_TZ = False
 
-SHORT_DATETIME_FORMAT = DATETIME_FORMAT = 'Y-m-d H:i:s'
+SHORT_DATETIME_FORMAT = DATETIME_FORMAT = u'Y-m-d\u202FH:i:s'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/

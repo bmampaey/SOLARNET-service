@@ -62,7 +62,7 @@ function alert_user(message, box)
 			title: "Error",
 			resizable: false,
 			width: "auto",
-			dialogClass: "ui-state-error dialog_box",
+			dialogClass: "ui-state-error dialog_box alert_user",
 			close: function( event, ui ){box.remove();},
 			buttons: {
 				Ok: function() {
@@ -91,7 +91,7 @@ function inform_user(message, box)
 			title: "Note",
 			resizable: false,
 			width: "auto",
-			dialogClass: "ui-state-highlight dialog_box",
+			dialogClass: "ui-state-highlight dialog_box inform_user",
 			close: function( event, ui ){box.remove();},
 			buttons: [
 				{
@@ -315,19 +315,20 @@ function post_load_search_data_form_section(section)
 		e.preventDefault();
 		var form = $(e.target);
 		
-		// Reset the selection
+		// Reset the selection 
 		selections[form.attr("dataset_id")] = {
 			all_selected: false,
 			selected_data_ids: [],
 			dataset_id: form.attr("dataset_id"),
-			query_string: form.serialize(),
+			// We need to remove some superflous input inserted by the multiselect lib
+			query_string: $(':input', form).not(':input[name^=selectItem]').not(':input[name^=selectAll]').serialize(),
 		};
 		
 		// Make the search and load the table
 		load_section($("div.search_data_results_section", form.closest("div.panel")), form.attr("action") + "?" + form.serialize(), post_load_search_data_result_section);
 	});
 	
-	// Set up the selection
+	// Set up the selection TODO try to move this to the post_load_search_results
 	selections[$("form", section).attr("dataset_id")] = {
 		all_selected: false,
 		selected_data_ids: [],
@@ -465,6 +466,11 @@ function open_user_data_selection(href, name)
 	'class': "section",
 	});
 	load_section(box, href, post_open_user_data_selection);
+}
+
+function post_open_user_data_selection(box)
+{
+	log("post_open_user_data_selection");
 	box.dialog({
 		title: name,
 		width: "auto",
@@ -472,6 +478,7 @@ function open_user_data_selection(href, name)
 	});
 }
 
+/*
 function post_open_user_data_selection(section)
 {
 	log("post_open_user_data_selection");
@@ -490,6 +497,7 @@ function post_open_user_data_selection(section)
 		$(this).toggleClass('ui-state-hover');
 	});
 }
+*/
 
 function post_load_user_section(section)
 {

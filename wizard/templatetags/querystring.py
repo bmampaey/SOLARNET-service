@@ -21,11 +21,7 @@ def querystring(value, autoescape=None):
 		esc = lambda x: x
 	
 	q = QueryDict(value)
-	result = "<ul>\n"
-	for key, val in q.iterlists():
-		if not key.startswith("selectItem"):
-			result += "<li>{key}: {values}</li>\n".format(key=esc(key), values= esc(", ".join(val)))
-	result += "</ul>"
+	result = "<br>".join(["{key}: {values}".format(key=esc(key), values= esc(", ".join(val))) for key, val in q.iterlists()])
 	return mark_safe(result)
 
 register.filter('querystring', querystring)

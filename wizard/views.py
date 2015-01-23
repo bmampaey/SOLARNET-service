@@ -69,6 +69,7 @@ class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 	form_class = DataSelectionCreateForm
 	success_url = '/success/'
 	success_message = "%(name)s was saved successfully"
+	template_name = 'wizard/data_selection_create.html'
 	
 	def get_form(self, form_class):
 		data = self.request.GET or self.request.POST
@@ -93,7 +94,7 @@ class DataSelectionCreate(AjaxableResponseMixin, CreateView):
 		
 		form.instance.user_data_selection = UserDataSelection.objects.get_or_create(user=self.request.user, name=form.cleaned_data["user_data_selection_name"])[0]
 		form.instance.dataset = Dataset.objects.get(id=form.cleaned_data["dataset_id"])
-		import pdb; pdb.set_trace()
+		#import pdb; pdb.set_trace()
 		# If all is selected we exclude the data_ids 
 		if form.cleaned_data["all_selected"]:
 			# Make up the selection criteria from the cleaned data
@@ -126,12 +127,12 @@ class UserDataSelectionList(ListView):
 class UserDataSelectionDetail(DetailView):
 	model = UserDataSelection
 	context_object_name = 'user_data_selection'
-	template_name = 'wizard/user_data_selection.html'
+	template_name = 'wizard/user_data_selection_detail.html'
 
 class DataSelectionDetail(DetailView):
 	model = DataSelection
 	context_object_name = 'data_selection'
-	template_name = 'wizard/data_selection.html'
+	template_name = 'wizard/data_selection_detail.html'
 
 def download_user_data_selection(request, download_user_data_selection_id):
 	# Placeholder for zip file download
