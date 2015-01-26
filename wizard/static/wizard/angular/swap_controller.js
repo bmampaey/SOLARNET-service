@@ -1,25 +1,25 @@
-var swapApp = angular.module('swapApp', ['ngResource', 'multi-select', 'ui.bootstrap.datetimepicker']);
+var swapApp = angular.module('swapApp', ['ngResource', 'multi-select', 'ui.bootstrap']);
 
-swapApp.factory('SwapMetaData', ['$resource',
+swapApp.factory('MetaData', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/swap_meta_data');
+		return $resource('/api/v1/swap_meta_data');
 	}
 ]);
 
-swapApp.factory('SwapTag', ['$resource',
+swapApp.factory('Tag', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/swap_tag');
+		return $resource('/api/v1/swap_tag');
 	}
 ]);
 
-swapApp.controller('swapController', function($scope, $timeout, $filter, SwapMetaData, SwapTag) {
+swapApp.controller('controller', function($scope, $filter, MetaData, Tag) {
 	
 	// debugging hack 
 	window.MY_SCOPE = $scope;
 	// load tags
 	$scope.tags = [];
 
-	SwapTag.get({},
+	Tag.get({},
 		function(data) {
 			console.log("Received tags: ");
 			console.log(data);
@@ -40,7 +40,7 @@ swapApp.controller('swapController', function($scope, $timeout, $filter, SwapMet
 	$scope.update_meta_datas = function() {
 		console.log("Updating meta_datas");
 		// ajax request to api, put filter in the {}
-		params = {};
+		var params = {};
 		var selected_tags = $filter('filter')($scope.tags, {
 			checked: true
 		});
@@ -49,12 +49,52 @@ swapApp.controller('swapController', function($scope, $timeout, $filter, SwapMet
 				return element.value;
 			});
 		}
+		if($scope.start_date)
+		{
+			params.date_obs__gte = $scope.start_date.toISOString();
+		}
+		
+		if($scope.end_date)
+		{
+			params.date_obs__lt = $scope.end_date.toISOString();
+		}
 		console.log("Query params");
 		console.log(params);
-		SwapMetaData.get(params, function(data) {
+		MetaData.get(params, function(data) {
+			console.log("Received data", data)
 			$scope.meta_datas = data.objects.map(function(meta_data){meta_data.tags = meta_data.tags.map(function(tag){return tag.name}); return meta_data});
+			$scope.search_params = params;
+			$scope.search_params.offset = 0;
+			$scope.page = 0;
+			$scope.last_page = data.meta.total_count / data.meta.limit;
+			$scope.search_params.limit = data.meta.limit;
 		});
 	};
 
+
+
 	$scope.update_meta_datas();
+
+	$scope.load_page = function(page_number) {
+		var params = $scope.search_params;
+		params.offset = page_number * $scope.search_params.limit;
+		console.log("Load page", page_number, "with params", params);
+		MetaData.get(params, function(data) {
+			console.log("Received data", data)
+			$scope.meta_datas = data.objects.map(function(meta_data){meta_data.tags = meta_data.tags.map(function(tag){return tag.name}); return meta_data});
+			console.log("New meta-data:", $scope.meta_datas);
+			$scope.search_params = params;
+			$scope.page = page_number;
+		});
+	};
+	
+	$scope.date_pickers = {'start_date': false, 'end_date': false};
+	$scope.date_format = 'yyyy-MM-dd 00:00:00';
+	$scope.open_date_picker = function($event, date_picker) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.date_pickers[date_picker] = !$scope.date_pickers[date_picker];
+		console.log("Opening date picker" , date_picker, $scope.date_pickers[date_picker]);
+	};
+	window.my_scope = $scope;
 });

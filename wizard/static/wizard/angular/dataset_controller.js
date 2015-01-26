@@ -2,19 +2,19 @@ var datasetApp = angular.module('datasetApp', ['ngResource', 'multi-select']);
 
 datasetApp.factory('Dataset', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/dataset');
+		return $resource('/api/v1/dataset');
 	}
 ]);
 
 datasetApp.factory('Telescope', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/telescope');
+		return $resource('/api/v1/telescope');
 	}
 ]);
 
 datasetApp.factory('Characteristic', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/characteristic');
+		return $resource('/api/v1/characteristic');
 	}
 ]);
 

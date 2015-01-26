@@ -4,41 +4,34 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-resource.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
 	<script src="swap_controller.js"></script>
 	<script src="angular-multi-select.js"></script>
-	<script src="datetimepicker.js"></script>
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="angular-multi-select.css">
-	<link rel="stylesheet" href="datetimepicker.css">
 </head>
 
-<body ng-app="swapApp" ng-controller="swapController">
+<body ng-app="swapApp" ng-controller="controller">
 	<div class="searchForm">
 	
 		<label for="start_date">Start Date:</label>
-		<div class="dropdown">
-    <a class="dropdown-toggle my-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
-        <div class="input-append"><input type="text" class="input-large" data-ng-model="start_date"><span class="add-on"><i
-                class="icon-calendar"></i></span>
-        </div>
-    </a>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <datetimepicker data-ng-model="start_date"
-                        data-datetimepicker-config="{ dropdownSelector: '.my-toggle-select' }"></datetimepicker>
-    </ul>
-</div>
+		<p id="start_date" class="input-group">
+			<input type="text" class="form-control" datepicker-popup="{{date_format}}" ng-model="start_date" is-open="date_pickers['start_date']" show-weeks="false" starting-day="1" />
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="open_date_picker($event, 'start_date')"><i class="glyphicon glyphicon-calendar"></i></button>
+			</span>
+		</p>
+		
 		<label for="end_date">End Date:</label>
-		<input type="text" datepicker-popup="{{format}}" ng-model="end_date" datepicker-options="dateOptions" close-text="Close" />
-	  <span class="input-group-btn">
-		 <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-	  </span>
-	  <timepicker-pop input-time="time1" class="input-group"
-        show-meridian='showMeridian'> 
-      </timepicker-pop>
+		<p id="end_date" class="input-group">
+			<input type="text" class="form-control" datepicker-popup="{{date_format}}" ng-model="end_date" is-open="date_pickers['end_date']" show-weeks="false" starting-day="1" />
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="open_date_picker($event, 'end_date')"><i class="glyphicon glyphicon-calendar"></i></button>
+			</span>
+		</p>
+		
+		
 		<label for="tags">Tags:</label>
 		<div
 			id="tags"
@@ -64,6 +57,12 @@
 				<td>{{meta_data.tags.join(', ')}}</td>
 			</tr>
 		</table>
+		<div class="navigation">
+		<button type="button" class="btn btn-default" ng-disabled="page==0" ng-click="load_page(0)"><i class="glyphicon glyphicon-fast-backward"></i></button>
+		<button type="button" class="btn btn-default" ng-disabled="page==0" ng-click="load_page(page - 1)"><i class="glyphicon glyphicon-backward"></i></button>
+		<button type="button" class="btn btn-default" ng-disabled="page==last_page" ng-click="load_page(page + 1)"><i class="glyphicon glyphicon-forward"></i></button>
+		<button type="button" class="btn btn-default" ng-disabled="page==last_page" ng-click="load_page(last_page)"><i class="glyphicon glyphicon-fast-forward"></i></button>
+		</div>
 	</div>
 </body>
 

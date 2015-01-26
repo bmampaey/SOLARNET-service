@@ -2,13 +2,13 @@ var aiaLev1App = angular.module('aiaLev1App', ['ngResource', 'multi-select']);
 
 aiaLev1App.factory('AIALev1MetaData', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/aia_lev1_meta_data');
+		return $resource('/api/v1/aia_lev1_meta_data');
 	}
 ]);
 
 aiaLev1App.factory('AIALev1Tag', ['$resource',
 	function($resource) {
-		return $resource('http://benjmam-pc:8000/api/v1/aia_lev1_tag');
+		return $resource('/api/v1/aia_lev1_tag');
 	}
 ]);
 
