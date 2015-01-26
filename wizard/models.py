@@ -33,6 +33,7 @@ class DataSelection(models.Model):
 	query_string = models.TextField(help_text="Query string for the data selection", max_length=2000, null=True, blank=True)
 	data_ids = BigIntegerArrayField(help_text = "List of data ids")
 	created = models.DateTimeField(help_text = "Date of creation", null=False, blank=False, auto_now_add=True)
+	number_items = models.IntegerField(help_text = "Number of items in the data selection", null=True, blank=True)
 	
 	class Meta:
 		db_table = "data_selection"
@@ -40,6 +41,6 @@ class DataSelection(models.Model):
 	def __unicode__(self):
 		return u"%s for %s" % (self.dataset, self.user_data_selection)
 	
-	@property
-	def number_items(self):
-		return len(self.data_ids)
+	def save(self, *args, **kwargs):
+		self.number_items = len(self.data_ids)
+		super(DataSelection, self).save(*args, **kwargs)
