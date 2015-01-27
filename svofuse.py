@@ -17,7 +17,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SDA.settings")
 django.setup()
 
 from wizard.models import UserDataSelection, DataSelection
-import aia_lev1.views, eit.views, swap.views, hmi_magnetogram.views
+import aia_lev1.views, eit.views, swap_lev1.views, hmi_magnetogram.views
 
 class HttpFuse(LoggingMixIn, Operations):
 	

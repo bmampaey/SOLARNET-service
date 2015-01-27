@@ -53,7 +53,7 @@ INSTALLED_APPS = (
 	'common',
 	'dataset',
 	'eit',
-	'swap',
+	'swap_lev1',
 	'aia_lev1',
 	'hmi_magnetogram'
 )
@@ -91,10 +91,10 @@ DATABASES = {
 		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
-	'swap': {
+	'swap_lev1': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
-		'USER': 'swap',
+		'USER': 'swap_lev1',
 		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},

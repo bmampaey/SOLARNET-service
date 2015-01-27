@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url, include
 
-from swap import views
+from swap_lev1 import views
 
 urlpatterns = patterns('',
 	url(r'^search_data_form$', views.SearchDataForm.as_view(), name='search_data_form'),

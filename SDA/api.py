@@ -2,7 +2,7 @@ from tastypie.api import Api
 
 import dataset.resources
 import eit.resources
-import swap.resources
+import swap_lev1.resources
 import aia_lev1.resources
 import hmi_magnetogram.resources
 import wizard.resources
@@ -19,10 +19,10 @@ v1_api.register(eit.resources.DataLocationResource())
 v1_api.register(eit.resources.KeywordResource())
 v1_api.register(eit.resources.TagResource())
 
-v1_api.register(swap.resources.MetaDataResource())
-v1_api.register(swap.resources.DataLocationResource())
-v1_api.register(swap.resources.KeywordResource())
-v1_api.register(swap.resources.TagResource())
+v1_api.register(swap_lev1.resources.MetaDataResource())
+v1_api.register(swap_lev1.resources.DataLocationResource())
+v1_api.register(swap_lev1.resources.KeywordResource())
+v1_api.register(swap_lev1.resources.TagResource())
 
 v1_api.register(aia_lev1.resources.MetaDataResource())
 v1_api.register(aia_lev1.resources.DataLocationResource())

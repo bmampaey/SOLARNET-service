@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from swap.models import Keyword, Tag
+from swap_lev1.models import Keyword, Tag
 from common.admin import KeywordAdmin
 
 admin.site.register(Keyword, KeywordAdmin)
