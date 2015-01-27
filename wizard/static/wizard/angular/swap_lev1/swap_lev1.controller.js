@@ -1,24 +1,12 @@
-var swapApp = angular.module('swapApp', ['ngResource', 'multi-select', 'ui.bootstrap']);
+var swap_lev1 = angular.module('swap_lev1');
 
-swapApp.factory('MetaData', ['$resource',
-	function($resource) {
-		return $resource('/api/v1/swap_meta_data');
-	}
-]);
+swap_lev1.controller('swap_lev1Ctrl', function($scope, $filter, MetaData, Tag) {
 
-swapApp.factory('Tag', ['$resource',
-	function($resource) {
-		return $resource('/api/v1/swap_tag');
-	}
-]);
-
-swapApp.controller('controller', function($scope, $filter, MetaData, Tag) {
-	
-	// debugging hack 
-	window.MY_SCOPE = $scope;
-	// load tags
+	$scope.date_pickers = {'start_date': false, 'end_date': false};
+	$scope.date_format = 'yyyy-MM-dd 00:00:00';
 	$scope.tags = [];
 
+	// Load tags
 	Tag.get({},
 		function(data) {
 			console.log("Received tags: ");
@@ -35,7 +23,7 @@ swapApp.controller('controller', function($scope, $filter, MetaData, Tag) {
 			console.log($scope);
 		}
 	);
-	
+
 	// Function to update meta_data using search button
 	$scope.update_meta_datas = function() {
 		console.log("Updating meta_datas");
@@ -71,10 +59,7 @@ swapApp.controller('controller', function($scope, $filter, MetaData, Tag) {
 		});
 	};
 
-
-
-	$scope.update_meta_datas();
-
+	// Function to load a result page
 	$scope.load_page = function(page_number) {
 		var params = $scope.search_params;
 		params.offset = page_number * $scope.search_params.limit;
@@ -87,14 +72,17 @@ swapApp.controller('controller', function($scope, $filter, MetaData, Tag) {
 			$scope.page = page_number;
 		});
 	};
-	
-	$scope.date_pickers = {'start_date': false, 'end_date': false};
-	$scope.date_format = 'yyyy-MM-dd 00:00:00';
+
+	// Function to open a date picker
 	$scope.open_date_picker = function($event, date_picker) {
 		$event.preventDefault();
 		$event.stopPropagation();
 		$scope.date_pickers[date_picker] = !$scope.date_pickers[date_picker];
 		console.log("Opening date picker" , date_picker, $scope.date_pickers[date_picker]);
 	};
-	window.my_scope = $scope;
+
+	// Load first page of meta data
+	$scope.update_meta_datas();
+	
+	console.log("swap_lev1Ctrl scope", $scope);
 });

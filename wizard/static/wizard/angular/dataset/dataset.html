@@ -1,0 +1,47 @@
+<div  ng-controller="datasetCtrl" class="row">
+	<div class="col-md-4">
+		<form class="form-horizontal">
+			<label for="instruments">Instrument:</label>
+			<multi-select
+				id="instruments"
+				input-model="instruments"
+				button-label="name"
+				item-label="name"
+				tick-property="checked"
+				helper-elements=""
+				group-property="multiSelectGroup"
+			>
+			</multi-select>
+
+			<label for="characteristics">Characteristics:</label>
+			<multi-select
+				id="characteristics"
+				input-model="characteristics"
+				button-label="name"
+				item-label="name"
+				tick-property="checked"
+				helper-elements=""
+				group-property="multiSelectGroup"
+			>
+			</multi-select>
+			<button ng-click="update_datasets()" class="btn btn-primary btn-md">Search</button>
+		</form>
+	</div>
+
+	<div class="col-md-8">
+		<table class="table table-hover table-responsive">
+			<tr>
+				<th>Dataset</th>
+				<th>Instrument</th>
+				<th>Telescope</th>
+				<th>Characteristics</th>
+			</tr>
+			<tr ng-repeat="dataset in datasets" ng-click="open_dataset(dataset)">
+				<td>{{dataset.name}}</td>
+				<td>{{dataset.instrument}}</td>
+				<td>{{dataset.telescope}}</td>
+				<td>{{dataset.characteristics.join(', ')}}</td>
+			</tr>
+		</table>
+	</div>
+</div>

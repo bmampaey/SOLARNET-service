@@ -1,27 +1,7 @@
-var datasetApp = angular.module('datasetApp', ['ngResource', 'multi-select']);
+var dataset = angular.module('dataset');
 
-datasetApp.factory('Dataset', ['$resource',
-	function($resource) {
-		return $resource('/api/v1/dataset');
-	}
-]);
-
-datasetApp.factory('Telescope', ['$resource',
-	function($resource) {
-		return $resource('/api/v1/telescope');
-	}
-]);
-
-datasetApp.factory('Characteristic', ['$resource',
-	function($resource) {
-		return $resource('/api/v1/characteristic');
-	}
-]);
-
-datasetApp.controller('datasetController', function($scope, $timeout, $filter, Dataset, Telescope, Characteristic) {
+dataset.controller('datasetCtrl', function($scope, $timeout, $filter, Dataset, Telescope, Characteristic) {
 	
-	// debugging hack 
-	window.MY_SCOPE = $scope;
 	// load instruments and characteristics
 	$scope.instruments = [];
 	$scope.characteristics = [];
@@ -46,10 +26,7 @@ datasetApp.controller('datasetController', function($scope, $timeout, $filter, D
 				$scope.instruments.push({
 					multiSelectGroup: false
 				});
-
 			}
-			console.log("Scope: ");
-			console.log($scope);
 		});
 
 	Characteristic.get({},
@@ -68,6 +45,7 @@ datasetApp.controller('datasetController', function($scope, $timeout, $filter, D
 			console.log($scope);
 		}
 	);
+	
 	// Function to update dataset using search button
 	$scope.update_datasets = function() {
 		console.log("Updating datasets");
@@ -89,14 +67,14 @@ datasetApp.controller('datasetController', function($scope, $timeout, $filter, D
 				return element.value;
 			});
 		}
-
-
 		console.log("Query params");
 		console.log(params);
 		Dataset.get(params, function(data) {
 			$scope.datasets = data.objects;
 		});
 	};
-
+	
 	$scope.update_datasets();
+	
+	console.log("datasetCtrl scope", $scope);
 });
