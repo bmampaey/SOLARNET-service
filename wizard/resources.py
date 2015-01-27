@@ -8,7 +8,7 @@ from common.models import BaseTag
 
 class UserDataSelectionResource(ModelResource):
 	data_selections = fields.ToManyField('wizard.resources.DataSelectionResource', 'data_selections', related_name='name', full = True)
-	
+	number_items = fields.IntegerField(attribute='number_items', readonly = True)
 	class Meta:
 		queryset = UserDataSelection.objects.all()
 		resource_name = 'user_data_selection'
@@ -23,6 +23,7 @@ class UserDataSelectionResource(ModelResource):
 
 class DataSelectionResource(ModelResource):
 	user_data_selection = fields.ForeignKey(UserDataSelectionResource, 'user_data_selection', full = False)
+	dataset = fields.CharField(attribute='dataset')
 	
 	class Meta:
 		queryset = DataSelection.objects.all()
