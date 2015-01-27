@@ -18,7 +18,7 @@
 		{% for user_data_selection in user_data_selection_list %}
 		<tr class='open_user_data_selection' href="{% url 'user_data_selection' user_data_selection.id %}" name="{{ user_data_selection.name }}">
 			<td>
-				<a class="download_ftp small_button" title="Download data by ftp" href="ftp://benjmam-pc/exports/{{user_data_selection.user.username}}/{{user_data_selection.name}}" target="_blank" download>Download</a>
+				<a class="download_ftp small_button" title="Download data by ftp" href="ftp://solarnet.oma.be/user_data_selections/{{user_data_selection.user.username}}/{{user_data_selection.name}}" target="_blank" download>Download</a>
 			</td>
 			<!-- To be activated if zip 
 			<td>
