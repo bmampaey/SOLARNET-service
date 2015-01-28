@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 class BaseMetaData(models.Model):
 	id = models.BigIntegerField(primary_key=True)
@@ -23,9 +24,9 @@ class BaseKeyword(models.Model):
 		("float", "float"),
 		("datetime", "datetime (iso format)"),
 	)
-	db_column = models.TextField("Column name of the corresponding keyword in the meta_data table.", max_length=30, primary_key = True)
-	name = models.CharField(help_text = "Fits like name of the keyword. Can contain space and dashes.", blank=True, null=True, max_length=70)
-	python_type = models.CharField(help_text = "Python type of the keyword.", blank=True, null=False, max_length=12, default = "string", choices = PYTHON_TYPE_CHOICES)
+	db_column = models.TextField("Column name of the corresponding keyword in the meta_data table.", blank=False, null=False, max_length=30, primary_key = True, validators=RegexValidator(r"^[a-z][_a-z]*$"))
+	name = models.CharField(help_text = "Fits like name of the keyword. Can contain space and dashes.", blank=False, null=False, max_length=70)
+	python_type = models.CharField(help_text = "Python type of the keyword.", blank=False, null=False, max_length=12, default = "string", choices = PYTHON_TYPE_CHOICES)
 	unit = models.CharField(help_text = "Physical unit (SI compliant) of the keyword.", blank=True, null=True, max_length=10)
 	description = models.TextField(help_text = "Full description of the keyword.", blank=True, null=True, max_length=70)
 	
@@ -44,6 +45,8 @@ class BaseKeyword(models.Model):
 class BaseDataLocation(models.Model):
 	
 	url = models.TextField(help_text = "URL of the data at the data site.", max_length=255, blank=True, null=True)
+	file_size = models.IntegerField(help_text = "Size of the file in bytes.", default=0, blank=True, null=True)
+	updated = models.DateTimeField(help_text = "Date of last update", null=False, blank=False, auto_now=True)
 	
 	class Meta:
 		abstract = True

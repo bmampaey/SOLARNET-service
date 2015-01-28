@@ -2,7 +2,9 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS, url
 from tastypie.authorization import DjangoAuthorization
 from tastypie.utils import trailing_slash
-
+from tastypie.authentication import MultiAuthentication, BasicAuthentication, SessionAuthentication
+from tastypie.validation import FormValidation
+from django.forms import ModelForm
 
 from common.tastypie_paginator import EstimatedCountPaginator
 
@@ -12,7 +14,9 @@ class BaseResource(ModelResource):
 		limit = 20
 		#include_absolute_url = True
 		paginator_class = EstimatedCountPaginator
+		authentication = MultiAuthentication(SessionAuthentication(), BasicAuthentication())
 		authorization = DjangoAuthorization()
+		always_return_data = True
 	
 #	def base_urls(self):
 #		"""
@@ -48,13 +52,20 @@ def TagResource_for(dataset_name, Tag):
 def KeywordResource_for(dataset_name, Keyword):
 	"""Create a KeywordResource class for a specific dataset"""
 	
+	class KeywordValidationForm(ModelForm):
+		class Meta:
+			model = Keyword
+			fields = '__all__'
+	
 	class KeywordResource(BaseResource):
 		
 		class Meta(BaseResource.Meta):
 			queryset = Keyword.objects.all()
 			resource_name = dataset_name + '_keyword'
 			resource_type = 'keyword'
-	
+			# Todo test validation
+			#validation = FormValidation(KeywordValidationForm())
+		
 		def __init__(self, *args, **kwargs):
 			self.dataset_name = dataset_name
 			self._meta.paginator_class.setup(connection_name = self.dataset_name)
