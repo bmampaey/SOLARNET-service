@@ -55,7 +55,8 @@ INSTALLED_APPS = (
 	'eit',
 	'swap_lev1',
 	'aia_lev1',
-	'hmi_magnetogram'
+	'hmi_magnetogram',
+	'themis'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,6 +113,13 @@ DATABASES = {
 		'HOST': 'benjmam-pc.oma.be',
 		'PORT': '5432',
 	},
+	'themis': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'themis',
+		'HOST': 'benjmam-pc.oma.be',
+		'PORT': '5432',
+	}
 }
 
 DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
