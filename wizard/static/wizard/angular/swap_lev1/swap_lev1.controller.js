@@ -5,6 +5,7 @@ swap_lev1.controller('swap_lev1Ctrl', function($scope, $filter, MetaData, Tag) {
 	$scope.date_pickers = {'start_date': false, 'end_date': false};
 	$scope.date_format = 'yyyy-MM-dd 00:00:00';
 	$scope.tags = [];
+	$scope.items_per_page = 20;
 
 	// Load tags
 	Tag.get({},
@@ -24,53 +25,61 @@ swap_lev1.controller('swap_lev1Ctrl', function($scope, $filter, MetaData, Tag) {
 		}
 	);
 
-	// Function to update meta_data using search button
-	$scope.update_meta_datas = function() {
-		console.log("Updating meta_datas");
-		// ajax request to api, put filter in the {}
-		var params = {};
+	// Function to load meta-data
+	$scope.load_meta_datas = function(page, search_params) {
+		
+		search_params = (typeof search_params === "undefined") ? angular.copy($scope.search_params) : search_params;
+		page = (typeof page === "undefined") ? 1 : page;
+		
+		search_params.offset = (page - 1) * $scope.items_per_page;
+		search_params.limit = $scope.items_per_page;
+		
+		console.log("Load page", page, "with params", search_params);
+		
+		MetaData.get(search_params, function(data) {
+			console.log("Received data", data)
+			$scope.meta_datas = data.objects.map(function(meta_data){meta_data.tags = meta_data.tags.map(function(tag){return tag.name}); return meta_data});
+			$scope.meta_meta_datas = data.meta;
+			$scope.search_params = search_params;
+			$scope.page = page;
+			$scope.items_per_page = data.meta.limit;
+		});
+	};
+
+	// Function to search for meta-datas
+	$scope.search_meta_datas = function() {
+		console.log("Search meta-datas");
+		var search_params = {
+			limit: $scope.items_per_page,
+		};
+		
 		var selected_tags = $filter('filter')($scope.tags, {
 			checked: true
 		});
+		
 		if(selected_tags.length != 0) {
-			params.tags__in = selected_tags.map(function(element) {
+			search_params.tags__in = selected_tags.map(function(element) {
 				return element.value;
 			});
 		}
+		
 		if($scope.start_date)
 		{
-			params.date_obs__gte = $scope.start_date.toISOString();
+			var date = angular.copy($scope.start_date);
+			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+			search_params.date_obs__gte = date.toISOString();
 		}
 		
 		if($scope.end_date)
 		{
-			params.date_obs__lt = $scope.end_date.toISOString();
+			var date = angular.copy($scope.end_date);
+			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+			search_params.date_obs__lt = date.toISOString();
 		}
-		console.log("Query params");
-		console.log(params);
-		MetaData.get(params, function(data) {
-			console.log("Received data", data)
-			$scope.meta_datas = data.objects.map(function(meta_data){meta_data.tags = meta_data.tags.map(function(tag){return tag.name}); return meta_data});
-			$scope.search_params = params;
-			$scope.search_params.offset = 0;
-			$scope.page = 0;
-			$scope.last_page = data.meta.total_count / data.meta.limit;
-			$scope.search_params.limit = data.meta.limit;
-		});
-	};
-
-	// Function to load a result page
-	$scope.load_page = function(page_number) {
-		var params = $scope.search_params;
-		params.offset = page_number * $scope.search_params.limit;
-		console.log("Load page", page_number, "with params", params);
-		MetaData.get(params, function(data) {
-			console.log("Received data", data)
-			$scope.meta_datas = data.objects.map(function(meta_data){meta_data.tags = meta_data.tags.map(function(tag){return tag.name}); return meta_data});
-			console.log("New meta-data:", $scope.meta_datas);
-			$scope.search_params = params;
-			$scope.page = page_number;
-		});
+		
+		console.log("Search params");
+		console.log(search_params);
+		$scope.load_meta_datas(1, search_params);
 	};
 
 	// Function to open a date picker
@@ -82,7 +91,7 @@ swap_lev1.controller('swap_lev1Ctrl', function($scope, $filter, MetaData, Tag) {
 	};
 
 	// Load first page of meta data
-	$scope.update_meta_datas();
+	$scope.search_meta_datas();
 	
 	console.log("swap_lev1Ctrl scope", $scope);
 });

@@ -13,15 +13,11 @@ attribute_names = ["db_column", "name", "python_type", "unit", "description"]
 
 def get_keywords(filename, hdu = 0, excluded_keywords = []):
 	"""Return the list of the keyword attributes found in a fits file"""
-	try:
-		hdus = pyfits.open(filename)
-		header = hdus[hdu].header.cards
-	except Exception, why:
-		logging.error("Could not open file %s: %s. Skipping", filename, why)
-		return None
+	
 	keywords = list()
 	
-	for card in header:
+	hdus = pyfits.open(filename)
+	for card in hdus[hdu].header.cards:
 		try:
 			keyword = card.keyword
 			value = card.value
@@ -50,7 +46,9 @@ def get_column_name(key):
 iso8601 = re.compile(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})([T ](?P<hour>\d{2}):(?P<min>\d{2}):(?P<sec>\d{2})([,.](?P<mic>\d+))?)?((?P<tzZulu>Z)|[+-](?P<tzhour>\d{2}):?(?P<tzmin>\d{2}))?$")
 def value_type(value):
 	"""Try to guess the type of a value"""
-	if isinstance(value, float):
+	if isinstance(value, bool):
+		return "bool"
+	elif isinstance(value, float):
 		return "float"
 	elif isinstance(value, (int, long)):
 		return "int"
@@ -81,7 +79,7 @@ def extract_unit(comment):
 if __name__ == "__main__":
 	
 	# Get the arguments
-	parser = argparse.ArgumentParser(description='Extract keyword attributes from fits files and upload them to the SDA.')
+	parser = argparse.ArgumentParser(description='Extract keyword attributes from fits files and write them to a csv file.')
 	parser.add_argument('--debug', '-d', default=False, action='store_true', help='Set the logging level to debug')
 	parser.add_argument('--exclude', '-E', default = ["DATASUM", "CHECKSUM", "SIMPLE", "BITPIX"], nargs='*', help='Keywords to exclude')
 	parser.add_argument('--hdu', '-u', default=0, type=int, help='The number of the HDU. Typically 0, but can be 1 for tile compressed images.')
@@ -107,10 +105,14 @@ if __name__ == "__main__":
 	
 	for filename in args.filename:
 		logging.info("Getting keywords for file %s", filename)
-		keywords = get_keywords(filename, args.hdu, excluded_keywords)
-		for attributes in keywords:
-			for name, value in attributes.iteritems():
-				all_keywords[attributes["db_column"]][name].add(value)
+		try:
+			keywords = get_keywords(filename, args.hdu, excluded_keywords)
+		except Exception, why:
+			logging.error("Could not parse file %s: %s. Skipping", filename, why)
+		else:
+			for attributes in keywords:
+				for name, value in attributes.iteritems():
+					all_keywords[attributes["db_column"]][name].add(value)
 	
 	for db_column, attributes in all_keywords.iteritems():
 		for name, values in attributes.iteritems():
@@ -138,17 +140,5 @@ if __name__ == "__main__":
 	
 	csv_file.close()
 	
-	print "The information above was written to the file", csv_filename, "please review it and send it to the SDA adminsitrator"
-
-#	response = raw_input("Do you agree [Y/N]:")
-#	while response not in ["Y", "N"]:
-#		response = raw_input("Please answer Y or N:")
-#	
-#	if response == "Y":
-#		pass
-#	else:
-#		pass
-#	
-#	
-
+	print "The information above was written to the file", csv_filename, "please review it and send it to the SDA administrator"
 

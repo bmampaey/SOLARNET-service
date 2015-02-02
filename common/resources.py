@@ -40,6 +40,7 @@ def TagResource_for(dataset_name, Tag):
 			queryset = Tag.objects.all()
 			resource_name = dataset_name + '_tag'
 			resource_type = 'tag'
+			filtering = {"name": ALL}
 		
 		def __init__(self, *args, **kwargs):
 			self.dataset_name = dataset_name

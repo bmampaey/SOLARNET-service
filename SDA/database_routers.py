@@ -30,13 +30,13 @@ class DataSetRouteur(object):
 		else:
 			return obj1._meta.app_label == obj2._meta.app_label
 	
-	def allow_migrate(self, db, model):
-		"""
-		Make sure the dataset app only appears in the corresponding database.
-		"""
-		#import pdb; pdb.set_trace() 
-		if model._meta.app_label not in DATABASES:
-			return True
-		else:
-			return db == model._meta.app_label
+#	def allow_migrate(self, db, model):
+#		"""
+#		Make sure the dataset app only appears in the corresponding database.
+#		"""
+#		#import pdb; pdb.set_trace() 
+#		if model._meta.app_label not in DATABASES:
+#			return True
+#		else:
+#			return db == model._meta.app_label
 

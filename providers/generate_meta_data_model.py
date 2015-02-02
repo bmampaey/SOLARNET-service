@@ -15,6 +15,8 @@ def get_field(db_column, python_type):
 		return db_column + " = models.TextField(blank=True, null=True)"
 	elif python_type == 'datetime':
 		return db_column + " = models.DateTimeField(blank=True, null=True)"
+	elif python_type == 'bool':
+		return db_column + " = models.NullBooleanField(blank=True, null=True)"
 	else:
 		return "#UNKNOW TYPE "+ db_column + " = models.??????Field(blank=True, null=True)"
 

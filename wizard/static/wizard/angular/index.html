@@ -46,7 +46,7 @@
 			Search across datasets
 		</accordion-group>
 		<accordion-group heading="User selections" is-open="accordion_status.user_data_selection_opened">
-			<div ng-include="'user_data_selection/user_data_selection.html'" ng-controller="user_data_selectionCtrl"></div>
+			<div ng-include="'user_data_selection/user_data_selection.html'"></div>
 		</accordion-group>
 		<accordion-group ng-repeat="dataset in datasets" ng-hide="dataset.is_hidden" is-open="accordion_status[dataset.id]">
 		<accordion-heading>
@@ -54,7 +54,7 @@
 			<span popover="{{dataset.description}}" popover-placement="right" popover-trigger="mouseenter" class="glyphicon glyphicon-info-sign"></span>
 			<span class="pull-right glyphicon glyphicon-remove-sign" ng-click="dataset.is_hidden = true;"></span>
 		</accordion-heading>
-			<div ng-include="dataset.id + '/' + dataset.id + '.html'">Pleae wait for {{dataset.name}} to load.</div>
+			<div ng-include="dataset.id + '/' + dataset.id + '.html'">Please wait for {{dataset.name}} to load.</div>
 		</accordion-group>
 	<accordion>
 </body>

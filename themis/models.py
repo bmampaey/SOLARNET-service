@@ -5,7 +5,6 @@ from common.models import BaseMetaData, BaseKeyword, BaseDataLocation, BaseTag
 
 class MetaData(BaseMetaData):
 	rowstart = models.IntegerField(blank=True, null=True)
-	comment = models.TextField(blank=True, null=True)
 	fileacq = models.TextField(blank=True, null=True)
 	nblambd = models.IntegerField(blank=True, null=True)
 	nowin = models.IntegerField(blank=True, null=True)
@@ -48,18 +47,18 @@ class MetaData(BaseMetaData):
 	email = models.TextField(blank=True, null=True)
 	obs_type = models.TextField(blank=True, null=True)
 	longtrc = models.IntegerField(blank=True, null=True)
-	extend = models.IntegerField(blank=True, null=True)
-	offsets = models.IntegerField(blank=True, null=True)
+	extend = models.NullBooleanField(blank=True, null=True)
+	offsets = models.NullBooleanField(blank=True, null=True)
 	solar_b0 = models.FloatField(blank=True, null=True)
 	nshutter = models.IntegerField(blank=True, null=True)
 	nburst = models.IntegerField(blank=True, null=True)
 	institut = models.TextField(blank=True, null=True)
-	pipeline = models.IntegerField(blank=True, null=True)
+	pipeline = models.NullBooleanField(blank=True, null=True)
 	seq_stok = models.TextField(blank=True, null=True)
 	wavelnth = models.IntegerField(blank=True, null=True)
 	solar_p0 = models.FloatField(blank=True, null=True)
 	tcycle = models.IntegerField(blank=True, null=True)
-	yfirst = models.IntegerField(blank=True, null=True)
+	yfirst = models.NullBooleanField(blank=True, null=True)
 	author = models.TextField(blank=True, null=True)
 	tempbmsp = models.IntegerField(blank=True, null=True)
 	bzero = models.IntegerField(blank=True, null=True)
@@ -82,7 +81,7 @@ class MetaData(BaseMetaData):
 	svector = models.FloatField(blank=True, null=True)
 	nomask = models.TextField(blank=True, null=True)
 	indreg = models.IntegerField(blank=True, null=True)
-	actifmir = models.IntegerField(blank=True, null=True)
+	actifmir = models.NullBooleanField(blank=True, null=True)
 	binning = models.TextField(blank=True, null=True)
 	spatscal = models.FloatField(blank=True, null=True)
 	polarang = models.FloatField(blank=True, null=True)
@@ -128,12 +127,13 @@ class MetaData(BaseMetaData):
 	emgain = models.IntegerField(blank=True, null=True)
 	pregain = models.IntegerField(blank=True, null=True)
 	cmp_type = models.TextField(blank=True, null=True)
-	beamex = models.IntegerField(blank=True, null=True)
+	beamex = models.NullBooleanField(blank=True, null=True)
 	contact = models.TextField(blank=True, null=True)
 	azimuth = models.FloatField(blank=True, null=True)
 	
 	class Meta(BaseMetaData.Meta):
 		pass
+
 
 
 class DataLocation(BaseDataLocation):

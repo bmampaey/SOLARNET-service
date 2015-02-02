@@ -1,29 +1,32 @@
 <div  ng-controller="datasetCtrl" class="row">
 	<div class="col-md-4">
-		<form class="form-horizontal">
-			<label for="instruments">Instrument:</label>
-			<multi-select
-				id="instruments"
-				input-model="instruments"
-				button-label="name"
-				item-label="name"
-				tick-property="checked"
-				helper-elements=""
-				group-property="multiSelectGroup"
-			>
+		<form>
+			<div class="form-group">
+				<label for="instruments">Instrument:</label>
+				<multi-select
+					id="instruments"
+					input-model="instruments"
+					button-label="name"
+					item-label="name"
+					tick-property="checked"
+					helper-elements=""
+					group-property="multiSelectGroup"
+				>
+			</div>
 			</multi-select>
-
-			<label for="characteristics">Characteristics:</label>
-			<multi-select
-				id="characteristics"
-				input-model="characteristics"
-				button-label="name"
-				item-label="name"
-				tick-property="checked"
-				helper-elements=""
-				group-property="multiSelectGroup"
-			>
-			</multi-select>
+			<div class="form-group">
+				<label for="characteristics">Characteristics:</label>
+				<multi-select
+					id="characteristics"
+					input-model="characteristics"
+					button-label="name"
+					item-label="name"
+					tick-property="checked"
+					helper-elements=""
+					group-property="multiSelectGroup"
+				>
+				</multi-select>
+			</div>
 			<button ng-click="update_datasets()" class="btn btn-primary btn-md">Search</button>
 		</form>
 	</div>

@@ -2,6 +2,7 @@ from django.db import models
 from common.models import BaseMetaData, BaseDataLocation, BaseTag
 from common.views import BaseSearchDataForm
 
+
 class Telescope(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False, max_length = 20)
 	description = models.TextField(help_text = "Telescope description", blank=True, null=True)
