@@ -31,7 +31,7 @@ class DataSelectionCreateForm(forms.ModelForm):
 	
 	class Meta:
 		model = DataSelection
-		exclude = ('user_data_selection', 'dataset', 'data_ids')
+		exclude = ('user_data_selection', 'dataset', 'data_ids', 'number_items')
 		widgets = {
 			'query_string' : forms.HiddenInput
 		}

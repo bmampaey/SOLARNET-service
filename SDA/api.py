@@ -1,10 +1,11 @@
 from tastypie.api import Api
 
 import dataset.resources
-import themis.resources
+import eit.resources
 import swap_lev1.resources
 import aia_lev1.resources
 import hmi_magnetogram.resources
+import themis.resources
 import wizard.resources
 
 v1_api = Api(api_name='v1')
@@ -14,10 +15,10 @@ v1_api.register(dataset.resources.TelescopeResource())
 v1_api.register(dataset.resources.InstrumentResource())
 v1_api.register(dataset.resources.TagResource())
 
-v1_api.register(themis.resources.MetaDataResource())
-v1_api.register(themis.resources.DataLocationResource())
-v1_api.register(themis.resources.KeywordResource())
-v1_api.register(themis.resources.TagResource())
+v1_api.register(eit.resources.MetaDataResource())
+v1_api.register(eit.resources.DataLocationResource())
+v1_api.register(eit.resources.KeywordResource())
+v1_api.register(eit.resources.TagResource())
 
 v1_api.register(swap_lev1.resources.MetaDataResource())
 v1_api.register(swap_lev1.resources.DataLocationResource())
