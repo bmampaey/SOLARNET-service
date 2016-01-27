@@ -32,11 +32,11 @@ except ImportError:
 	from secret_key import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'tastypie',
+	'daterange_filter',
 	'wizard',
 	'common',
 	'dataset',
@@ -82,42 +83,42 @@ DATABASES = {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'postgres',
-		'HOST': 'benjmam-pc.oma.be',
+		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	},
 	'eit': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'eit',
-		'HOST': 'benjmam-pc.oma.be',
+		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	},
 	'swap_lev1': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'swap_lev1',
-		'HOST': 'benjmam-pc.oma.be',
+		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	},
 	'aia_lev1': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'aia_lev1',
-		'HOST': 'benjmam-pc.oma.be',
+		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	},
 	'hmi_magnetogram': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'hmi_magnetogram',
-		'HOST': 'benjmam-pc.oma.be',
+		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	},
 	'themis': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
 		'NAME': 'sda',
 		'USER': 'themis',
-		'HOST': 'benjmam-pc.oma.be',
+		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	}
 }
