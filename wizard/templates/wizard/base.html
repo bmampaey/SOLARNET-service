@@ -35,7 +35,13 @@
 		<link rel="stylesheet" href="{% static 'wizard/css/wizard.css' %}" type="text/css">
 	</head>
 	<body>
-		{% block content %} Welcome to the SOLARNET Virtual Observatory Web Application
+		<div id="content">
+		{% block content %}
+			Welcome to the SOLARNET Virtual Observatory Web Application
 		{% endblock %}
+		</div>
+		<footer>
+		This Application was supported by the <a href="http://www.solarnet-east.eu">SOLARNET</a> project, funded by the European Commission’s FP7 Capacities Programme under the Grant Agreement 312495.
+		</footer>
 	</body>
 </html>
