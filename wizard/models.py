@@ -29,7 +29,7 @@ class UserDataSelection(models.Model):
 
 class DataSelection(models.Model):
 	user_data_selection = models.ForeignKey(UserDataSelection, related_name = "data_selections", on_delete=models.CASCADE) # If the UserDataSelection is deleted, delete also the DataSelection
-	dataset = models.ForeignKey(Dataset, help_text="The dataset for the selection", db_column="dataset_name", related_name = "data_selections", on_delete=models.DO_NOTHING) # If the DataSet is deleted, don't delete the data selections
+	dataset = models.ForeignKey(Dataset, help_text="The dataset for the selection", db_column="dataset_name", related_name = "data_selections", on_delete=models.DO_NOTHING) # If the Dataset is deleted, don't delete the data selections
 	query_string = models.TextField(help_text="Query string for the data selection", max_length=2000, null=True, blank=True)
 	data_ids = BigIntegerArrayField(help_text = "List of data ids")
 	created = models.DateTimeField(help_text = "Date of creation", null=False, blank=False, auto_now_add=True)

@@ -1,15 +1,36 @@
 from django.contrib import admin
 from daterange_filter.filter import DateRangeFilter
 
-class KeywordAdmin(admin.ModelAdmin):
-	list_display = ("name", "python_type", "unit", "description")
-	
-	def get_readonly_fields(self, request, obj=None):
-		if obj:
-			return self.readonly_fields + ("db_column",)
-		return self.readonly_fields
+from common.models import DataLocation, Tag
 
 
-class MetaDataAdmin(admin.ModelAdmin):
+#class FirstLetterListFilter(admin.SimpleListFilter):
+#	title = _('First letter')
+#	
+#	# Parameter for the filter that will be used in the URL query.
+#	parameter_name = 'letter'
+#	
+#	def lookups(self, request, model_admin):
+#		return [
+#			('A', 'A'),
+#			('B', 'B')
+#	    ]
+#
+#	def queryset(self, request, queryset):
+#	    return queryset.filter(name__startswith=self.value())
+
+
+@admin.register(DataLocation)
+class DataLocationAdmin(admin.ModelAdmin):
+	'''Admin class for the DataLocation model'''
+	pass
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+	'''Admin class for the Tag model'''
+	pass
+
+class BaseMatadataAdmin(admin.ModelAdmin):
+	'''Admin class for the common options of Matadata models'''
 	list_filter = [("date_obs", DateRangeFilter)]
 	list_display = ["date_obs"]

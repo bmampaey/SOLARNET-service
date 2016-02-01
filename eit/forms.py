@@ -3,15 +3,15 @@ from datetime import datetime, timedelta
 from django import forms
 
 from common.forms import BaseForm, TagField
-from eit.models import MetaData, Tag
+from eit.models import Metada, Tag
 
 
 class SearchData(BaseForm):
 	"""Form to search the data"""
-	FIRST_DATE_OBS = MetaData.objects.order_by("date_obs").first().date_obs
-	LAST_DATE_OBS = MetaData.objects.order_by("date_obs").last().date_obs
+	FIRST_DATE_OBS = Metada.objects.order_by("date_obs").first().date_obs
+	LAST_DATE_OBS = Metada.objects.order_by("date_obs").last().date_obs
 	EIT_WAVELENGTHS = [171, 195, 284, 304]
-	SCIENCE_OBJECTIVES = MetaData.objects.values_list('sci_obj', flat=True).distinct()
+	SCIENCE_OBJECTIVES = Metada.objects.values_list('sci_obj', flat=True).distinct()
 	TAGS = lambda: [(t, u'%s'%t) for t in Tag.objects.values_list("name", flat=True)]
 	start_date = forms.DateTimeField(required=False, initial = FIRST_DATE_OBS, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))
 	end_date = forms.DateTimeField(required=False, initial = LAST_DATE_OBS, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))

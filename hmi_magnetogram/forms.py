@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 from django import forms
 
 from common.forms import BaseForm,TagField
-from hmi_magnetogram.models import MetaData, Tag
+from hmi_magnetogram.models import Metada, Tag
 
 
 class SearchData(BaseForm):
 	"""Form to search the data"""
-	FIRST_DATE_OBS = MetaData.objects.order_by("date_obs").first().date_obs
-	LAST_DATE_OBS = MetaData.objects.order_by("date_obs").last().date_obs
+	FIRST_DATE_OBS = Metada.objects.order_by("date_obs").first().date_obs
+	LAST_DATE_OBS = Metada.objects.order_by("date_obs").last().date_obs
 	TAGS = lambda: [(t, u'%s'%t) for t in Tag.objects.values_list("name", flat=True)]
 	start_date = forms.DateTimeField(required=False, initial = FIRST_DATE_OBS, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))
 	end_date = forms.DateTimeField(required=False, initial = LAST_DATE_OBS, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))

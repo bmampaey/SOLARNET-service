@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from common.models import BaseMetaData, BaseKeyword, BaseDataLocation, BaseTag
+from common.models import BaseMetadata
 
-class MetaData(BaseMetaData):
+class Metadata(BaseMetadata):
 	filename = models.TextField(max_length=18, blank=True)
 	date_obs = models.DateTimeField(blank=True, null=True)
 	corrected_date_obs = models.DateTimeField(blank=True, null=True)
@@ -41,25 +40,3 @@ class MetaData(BaseMetaData):
 	shutter_close_time = models.TextField(max_length=8, blank=True)
 	sci_obj = models.TextField(max_length=30, blank=True)
 	date = models.DateTimeField(blank=True, null=True)
-	
-	class Meta(BaseMetaData.Meta):
-		pass
-
-
-class DataLocation(BaseDataLocation):
-	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
-	
-	class Meta(BaseDataLocation.Meta):
-		pass
-
-
-class Keyword(BaseKeyword):
-	
-	class Meta(BaseKeyword.Meta):
-		pass
-
-
-class Tag(BaseTag):
-	
-	class Meta(BaseTag.Meta):
-		pass

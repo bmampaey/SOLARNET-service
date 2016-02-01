@@ -1,14 +1,8 @@
 from django.contrib import admin
-from aia_lev1.models import Keyword, Tag, MetaData
-from common.admin import KeywordAdmin, MetaDataAdmin
+from aia_lev1.models import Matadata
+from common.admin import BaseMatadataAdmin
 
-class AiaLev1MetaDataAdmin(MetaDataAdmin):
-	list_filter = MetaDataAdmin.list_filter + ["wavelnth"]
-	list_display = MetaDataAdmin.list_display + ["wavelnth"]
-
-admin.site.register(Keyword, KeywordAdmin)
-admin.site.register(Tag)
-admin.site.register(MetaData, AiaLev1MetaDataAdmin)
-
-
-
+@admin.register(Matadata)
+class MatadataAdmin(BaseMatadataAdmin):
+	list_filter = BaseMatadataAdmin.list_filter + ["wavelnth"]
+	list_display = BaseMatadataAdmin.list_display + ["wavelnth"]

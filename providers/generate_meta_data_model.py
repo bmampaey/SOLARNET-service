@@ -36,12 +36,12 @@ if __name__ == "__main__":
 	
 	csv = pandas.read_csv(args.filename, skipinitialspace = True)
 	
-	print "class MetaData(BaseMetaData):"
+	print "class Metada(BaseMetada):"
 	
 	for index, row in csv.iterrows():
 		logging.debug("filed definition for row %s", row)
 		print "\t" + get_field(row['db_column'], row['python_type'])
 	
 	print "\t"
-	print "\tclass Meta(BaseMetaData.Meta):"
+	print "\tclass Meta(BaseMetada.Meta):"
 	print "\t\tpass"

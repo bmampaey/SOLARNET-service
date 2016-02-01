@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from dataset.models import Telescope, Instrument, Characteristic, Dataset
+from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword
 
 # For this class to work there must be for each dataset a group with the same name
+@admin.register(Dataset)
 class DatasetAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "instrument")
-	filter_horizontal = ("characteristics",)
+	'''Admin class for the Dataset model'''
+	list_display = ["id", "name", "instrument"]
+	filter_horizontal = ["characteristics"]
 	
 	def get_readonly_fields(self, request, obj=None):
 		# Do not allow to change the name of the dataset
@@ -42,10 +44,30 @@ class DatasetAdmin(admin.ModelAdmin):
 			groups = [group.name for group in request.user.groups.all()]
 			return queryset.filter(name__in=groups)
 
+@admin.register(Keyword)
+class KeywordAdmin(admin.ModelAdmin):
+	'''Admin class for the Keyword model'''
+	list_display = ["name", "python_type", "unit", "description"]
+	list_filter = ["dataset__name"]
+	
+	def get_readonly_fields(self, request, obj=None):
+		if obj:
+			return self.readonly_fields + ("db_column",)
+		return self.readonly_fields
 
+@admin.register(Characteristic)
+class CharacteristicAdmin(admin.ModelAdmin):
+	'''Admin class for the Characteristic model'''
+	pass
 
-admin.site.register(Dataset, DatasetAdmin)
-admin.site.register(Characteristic)
-admin.site.register(Telescope)
-admin.site.register(Instrument)
+@admin.register(Telescope)
+class TelescopeAdmin(admin.ModelAdmin):
+	'''Admin class for the Telescope model'''
+	pass
+
+@admin.register(Instrument)
+class InstrumentAdmin(admin.ModelAdmin):
+	'''Admin class for the Instrument model'''
+	pass
+
 

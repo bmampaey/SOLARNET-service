@@ -50,14 +50,18 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
 	'tastypie',
 	'daterange_filter',
-	'wizard',
-	'common',
 	'dataset',
-	'eit',
-	'swap_lev1',
-	'aia_lev1',
-	'hmi_magnetogram',
-	'themis'
+	'common',
+	# All the dataset apps
+#	'eit',
+#	'swap_lev1',
+#	'aia_lev1',
+#	'hmi_magnetogram',
+#	'themis',
+#	'chrotel',
+	'xrt',
+	# The wizard temporarly
+#	'wizard'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,49 +85,13 @@ WSGI_APPLICATION = 'SDA.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sda',
-		'USER': 'postgres',
-		'HOST': 'solarnetdb.oma.be',
-		'PORT': '5432',
-	},
-	'eit': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sda',
-		'USER': 'eit',
-		'HOST': 'solarnetdb.oma.be',
-		'PORT': '5432',
-	},
-	'swap_lev1': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sda',
-		'USER': 'swap_lev1',
-		'HOST': 'solarnetdb.oma.be',
-		'PORT': '5432',
-	},
-	'aia_lev1': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sda',
-		'USER': 'aia_lev1',
-		'HOST': 'solarnetdb.oma.be',
-		'PORT': '5432',
-	},
-	'hmi_magnetogram': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sda',
-		'USER': 'hmi_magnetogram',
-		'HOST': 'solarnetdb.oma.be',
-		'PORT': '5432',
-	},
-	'themis': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'sda',
-		'USER': 'themis',
+		'NAME': 'SDA',
+		'USER': 'SDA',
 		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
 	}
 }
 
-DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/

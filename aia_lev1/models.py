@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from common.models import BaseMetaData, BaseKeyword, BaseDataLocation, BaseTag
+from common.models import BaseMetadata
 
-class MetaData(BaseMetaData):
+class Metadata(BaseMetadata):
 	bld_vers = models.TextField(help_text='BLD_VERS', blank=True)
 	lvl_num = models.FloatField(help_text='LVL_NUM', blank=True, null=True)
 	t_rec = models.DateTimeField(help_text='T_REC', blank=True, null=True)
@@ -184,24 +183,3 @@ class MetaData(BaseMetaData):
 	sunum = models.BigIntegerField(help_text='SUNUM', blank=True, null=True)
 	slotnum = models.IntegerField(help_text='SLOTNUM', blank=True, null=True)
 	segment = models.TextField(help_text='SEGMENT', blank=True)
-	
-	class Meta(BaseMetaData.Meta):
-		pass
-
-class DataLocation(BaseDataLocation):
-	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
-	
-	class Meta(BaseDataLocation.Meta):
-		pass
-
-
-class Keyword(BaseKeyword):
-	
-	class Meta(BaseKeyword.Meta):
-		pass
-
-
-class Tag(BaseTag):	
-	
-	class Meta(BaseTag.Meta):
-		pass

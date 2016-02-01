@@ -79,7 +79,7 @@ def DataLocationResource_for(dataset_name, DataLocation):
 	"""Create a DataLocationResource class for a specific dataset"""
 	
 	class DataLocationResource(BaseResource):
-		meta_data = fields.OneToOneField(dataset_name+'.resources.MetaDataResource', 'meta_data', related_name='data_location', null=True, blank=True)
+		meta_data = fields.OneToOneField(dataset_name+'.resources.MetadaResource', 'meta_data', related_name='data_location', null=True, blank=True)
 	
 		class Meta(BaseResource.Meta):
 			queryset = DataLocation.objects.all()
@@ -94,14 +94,14 @@ def DataLocationResource_for(dataset_name, DataLocation):
 	return DataLocationResource
 
 
-def MetaDataResource_for(dataset_name, MetaData, TagResource):
-	"""Create a MetaDataResource class for a specific dataset"""
+def MetadaResource_for(dataset_name, Metada, TagResource):
+	"""Create a MetadaResource class for a specific dataset"""
 	
-	class MetaDataResource(BaseResource):
+	class MetadaResource(BaseResource):
 		data_location = fields.OneToOneField(dataset_name+'.resources.DataLocationResource', 'data_location', related_name='meta_data', full=True, null=True, blank=True)
 		tags = fields.ToManyField(TagResource, 'tags', full=True)
 		class Meta(BaseResource.Meta):
-			queryset = MetaData.objects.all()
+			queryset = Metada.objects.all()
 			resource_name = dataset_name + '_meta_data'
 			resource_type = 'meta_data'
 			filtering = {"tags": ALL_WITH_RELATIONS}
@@ -109,10 +109,10 @@ def MetaDataResource_for(dataset_name, MetaData, TagResource):
 		def __init__(self, *args, **kwargs):
 			self.dataset_name = dataset_name
 			self._meta.paginator_class.setup(connection_name = self.dataset_name)
-			super(MetaDataResource, self).__init__(*args, **kwargs)
+			super(MetadaResource, self).__init__(*args, **kwargs)
 			# Allow filtering on all fields
 			for field in self.fields:
 				if field not in self.Meta.filtering:
 					self.Meta.filtering[field] = ALL
 	
-	return MetaDataResource
+	return MetadaResource

@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from common.models import BaseMetaData, BaseKeyword, BaseDataLocation, BaseTag
+from common.models import BaseMetadata
 
 
-class MetaData(BaseMetaData):
+class Metadata(BaseMetadata):
 	filename = models.TextField()
 	date_obs = models.DateTimeField(db_column='date-obs', blank=True, null=True)  # Field renamed to remove unsuitable characters.
 	wavelnth = models.IntegerField(blank=True, null=True)
@@ -111,25 +110,3 @@ class MetaData(BaseMetaData):
 	eacqtime = models.FloatField(blank=True, null=True)
 	nprescr = models.IntegerField(blank=True, null=True)
 	pga_gain = models.IntegerField(blank=True, null=True)
-	
-	class Meta(BaseMetaData.Meta):
-		pass
-
-
-class DataLocation(BaseDataLocation):
-	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
-	
-	class Meta(BaseDataLocation.Meta):
-		pass
-
-
-class Keyword(BaseKeyword):
-	
-	class Meta(BaseKeyword.Meta):
-		pass
-
-
-class Tag(BaseTag):	
-	
-	class Meta(BaseTag.Meta):
-		pass

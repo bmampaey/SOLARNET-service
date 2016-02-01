@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from common.models import BaseMetaData, BaseKeyword, BaseDataLocation, BaseTag
+from common.models import BaseMetadata
 
-class MetaData(BaseMetaData):
+class Metada(BaseMetadata):
 	rowstart = models.IntegerField(blank=True, null=True)
 	fileacq = models.TextField(blank=True, null=True)
 	nblambd = models.IntegerField(blank=True, null=True)
@@ -130,26 +129,3 @@ class MetaData(BaseMetaData):
 	beamex = models.NullBooleanField(blank=True, null=True)
 	contact = models.TextField(blank=True, null=True)
 	azimuth = models.FloatField(blank=True, null=True)
-	
-	class Meta(BaseMetaData.Meta):
-		pass
-
-
-
-class DataLocation(BaseDataLocation):
-	meta_data = models.OneToOneField(MetaData, primary_key=True, db_column = "id", on_delete=models.CASCADE, related_name="data_location")
-	
-	class Meta(BaseDataLocation.Meta):
-		pass
-
-
-class Keyword(BaseKeyword):
-	
-	class Meta(BaseKeyword.Meta):
-		pass
-
-
-class Tag(BaseTag):
-	
-	class Meta(BaseTag.Meta):
-		pass
