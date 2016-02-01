@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
+from django.db import models
+from common.models import BaseMetadata
 
-from common.models import BaseMatadata
-
-class Matadata(BaseMatadata):
+class Metadata(BaseMetadata):
 	pass

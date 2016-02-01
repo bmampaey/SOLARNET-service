@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from hmi_magnetogram.models import Matadata
-from common.admin import BaseMatadataAdmin
+from hmi_magnetogram.models import Metadata
+from common.admin import BaseMetadataAdmin
 
-@admin.register(Matadata)
-class MatadataAdmin(BaseMatadataAdmin):
+@admin.register(Metadata)
+class MetadataAdmin(BaseMetadataAdmin):
 	pass
 
 

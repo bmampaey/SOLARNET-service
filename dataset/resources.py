@@ -6,7 +6,6 @@ from tastypie.utils import trailing_slash
 
 # See http://django-tastypie.readthedocs.org/en/latest/paginator.html why it is important for postgres to have a special paginator
 from common.tastypie_paginator import EstimatedCountPaginator
-from common.models import BaseTag
 
 from dataset.models import Dataset, Characteristic, Instrument, Telescope
 

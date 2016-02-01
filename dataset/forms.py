@@ -4,18 +4,18 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 
 from common.forms import BaseForm
-from common.models import BaseTag
+from common.models import Tag
 from dataset.models import Dataset, Characteristic
 
 
 class SearchByDataset(BaseForm):
 	"""Form to search by dataset"""
-	TELESCOPES = Dataset.objects.order_by().values_list('telescope', flat = True).distinct()
-	INSTRUMENTS = Dataset.objects.order_by().values_list('instrument', flat = True).distinct()
-	INSTRUMENTS_BY_TELESCOPE = [(t, [(i, u'%s'%i) for i in Dataset.objects.order_by().filter(telescope = t).values_list('instrument', flat = True).distinct()]) for t in TELESCOPES]
-	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
-	instrument = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=INSTRUMENTS_BY_TELESCOPE)
-	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
+#	TELESCOPES = Dataset.objects.order_by().values_list('telescope', flat = True).distinct()
+#	INSTRUMENTS = Dataset.objects.order_by().values_list('instrument', flat = True).distinct()
+#	INSTRUMENTS_BY_TELESCOPE = [(t, [(i, u'%s'%i) for i in Dataset.objects.order_by().filter(telescope = t).values_list('instrument', flat = True).distinct()]) for t in TELESCOPES]
+#	CHARACTERISTICS = Characteristic.objects.values_list('name', flat=True)
+#	instrument = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=INSTRUMENTS_BY_TELESCOPE)
+#	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=[(t, u'%s'%t) for t in CHARACTERISTICS])
 	
 	@classmethod
 	def get_selection_criteria(cls, cleaned_data):
@@ -33,20 +33,17 @@ class SearchByDataset(BaseForm):
 
 class SearchAcrossDatasets(BaseForm):
 	"""Form to search across datasets"""
-	CHARACTERISTICS = lambda: [(t, u'%s'%t) for t in Characteristic.objects.values_list('name', flat=True)]
-	# Absolutely all tags from all datasets
-	ALL_TAGS = lambda: [(t, u'%s'%t) for t in BaseTag.all_tags()]
-	characteristics = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=CHARACTERISTICS())
+	characteristics = forms.ModelMultipleChoiceField(queryset = Characteristic.objects.all(), required=False, widget=forms.SelectMultiple())
 	start_date = forms.DateTimeField(required=False, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))
 	end_date = forms.DateTimeField(required=False, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))
-	tags = forms.TypedMultipleChoiceField(required=False, widget=forms.SelectMultiple(), choices=ALL_TAGS())
+	tags = forms.ModelMultipleChoiceField(queryset = Tag.objects.all(), required=False)
 	
-	# Overiding init to load choices dynamically
-	# When django 1.8 is out, you can use the callable directly for the choices
-	def __init__(self, *args, **kwargs):
-		super(SearchAcrossDatasets, self).__init__(*args, **kwargs)
-		self.fields['characteristics'].choices = [(t, u'%s'%t) for t in Characteristic.objects.values_list('name', flat=True)]
-		self.fields['tags'].choices = [(t, u'%s'%t) for t in BaseTag.all_tags()]
+#	# Overiding init to load choices dynamically
+#	# When django 1.8 is out, you can use the callable directly for the choices
+#	def __init__(self, *args, **kwargs):
+#		super(SearchAcrossDatasets, self).__init__(*args, **kwargs)
+#		self.fields['characteristics'].choices = [(t, u'%s'%t) for t in Characteristic.objects.values_list('name', flat=True)]
+#		self.fields['tags'].choices = [(t, u'%s'%t) for t in BaseTag.all_tags()]
 	
 	@classmethod
 	def get_selection_criteria(cls, cleaned_data):

@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from swap_lev1.models import Matadata
-from common.admin import BaseMatadataAdmin
+from swap_lev1.models import Metadata
+from common.admin import BaseMetadataAdmin
 
-@admin.register(Matadata)
-class MatadataAdmin(BaseMatadataAdmin):
+@admin.register(Metadata)
+class MetadataAdmin(BaseMetadataAdmin):
 	pass
 
 

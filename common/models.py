@@ -1,10 +1,12 @@
+from __future__ import unicode_literals
 from django.db import models
+from django.core.validators import URLValidator
 
 class DataLocation(models.Model):
 	'''Data location model''' 
-	url = models.TextField(help_text = "URL of the data at the remote site.", max_length=255, blank=True, null=True)
+	url = models.TextField(help_text = "URL of the data at the remote site.", max_length=255, blank=True, null=True, validators = [URLValidator()])
 	size = models.IntegerField(help_text = "Size of the data in bytes.", default=0, blank=True, null=True)
-	thumbnail = models.TextField(help_text = "URL of the thumbnail at the remote site.", max_length=255, blank=True, null=True, default = None)
+	thumbnail = models.TextField(help_text = "URL of the thumbnail at the remote site.", max_length=255, blank=True, null=True, default = None, validators = [URLValidator()])
 	updated = models.DateTimeField(help_text = "Date of last update", null=False, blank=False, auto_now=True)
 	
 	class Meta:
@@ -15,7 +17,7 @@ class DataLocation(models.Model):
 
 
 class Tag(models.Model):
-	'''Matadata tag model'''
+	'''Metadata tag model'''
 	name = models.TextField(primary_key=True, max_length=255, blank=False, null=False)
 	
 	class Meta:
@@ -23,18 +25,13 @@ class Tag(models.Model):
 			
 	def __unicode__(self):
 		return unicode(self.name)
-#	
-#	@classmethod
-#	def all_tags(cls):
-#		tags = [sub_model.objects.values_list("name", flat=True) for sub_model in cls.__subclasses__()]
-#		return set([t for ts in tags for t in ts])
 
 
-class BaseMatadata(models.Model):
-	'''Model for the common fields of Matadata models'''
+class BaseMetadata(models.Model):
+	'''Model for the common fields of Metadata models'''
 	oid = models.BigIntegerField('Observation ID', help_text = 'Unique number for the observation metadata, usually in the form YYYYMMDDHHMMSS', unique = True)
 	fits_header = models.TextField(null=False, blank=True)
-	data_location = models.ForeignKey(DataLocation, related_name="%(app_label)s_%(class)s", on_delete=models.SET_NULL)
+	data_location = models.ForeignKey(DataLocation, related_name="%(app_label)s_%(class)s", null=True, blank=True, on_delete=models.SET_NULL)
 	tags = models.ManyToManyField(Tag, related_name="%(app_label)s_%(class)s")
 	
 	class Meta:

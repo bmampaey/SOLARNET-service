@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
-
+from django.db import models
 from common.models import BaseMetadata
 
-class Metada(BaseMetadata):
+class Metadata(BaseMetadata):
 	rowstart = models.IntegerField(blank=True, null=True)
 	fileacq = models.TextField(blank=True, null=True)
 	nblambd = models.IntegerField(blank=True, null=True)

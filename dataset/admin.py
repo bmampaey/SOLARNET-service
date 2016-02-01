@@ -1,12 +1,28 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
+from django import forms
+from django.contrib.contenttypes.models import ContentType
+
 from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword
+
+class ContentTypeChoiceField(forms.ModelChoiceField):
+	def label_from_instance(self, obj):
+		return "%s %s" % (obj.app_label, obj.model)
+
+class DatasetAdminForm(forms.ModelForm):
+	'''Form for the admin class for the Dataset model'''
+	# Display app label via the ContentTypeChoiceField, and limit to model Metadata (must be in lowcase as it is saved in lowcase)
+	_metadata_model = ContentTypeChoiceField(queryset=ContentType.objects.filter(model='metadata')) 
+	class Meta:
+		model = Dataset
+		fields = '__all__'
 
 # For this class to work there must be for each dataset a group with the same name
 @admin.register(Dataset)
 class DatasetAdmin(admin.ModelAdmin):
 	'''Admin class for the Dataset model'''
-	list_display = ["id", "name", "instrument"]
+	form = DatasetAdminForm
+	list_display = ["name", "telescope", "instrument", "contact"]
 	filter_horizontal = ["characteristics"]
 	
 	def get_readonly_fields(self, request, obj=None):
@@ -43,6 +59,7 @@ class DatasetAdmin(admin.ModelAdmin):
 		else:
 			groups = [group.name for group in request.user.groups.all()]
 			return queryset.filter(name__in=groups)
+
 
 @admin.register(Keyword)
 class KeywordAdmin(admin.ModelAdmin):

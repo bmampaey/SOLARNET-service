@@ -1,5 +1,8 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.contrib.contenttypes.models import ContentType
+from django.core.validators import RegexValidator, EmailValidator
+from django.core.exceptions import ValidationError
+
 from common.views import BaseSearchDataForm
 
 
@@ -25,14 +28,14 @@ class Characteristic(models.Model):
 		return unicode(self.name)
 
 class Dataset(models.Model):
-	id = models.TextField("Dataset name.", primary_key=True, max_length=20)
+	id = models.TextField("Dataset name.", primary_key=True, max_length=20, validators=[RegexValidator(r"^[a-z][_a-z0-9]*$")])
 	name = models.TextField("Dataset display name.", unique = True, blank=False, null=False, max_length=40)
 	description = models.TextField("Dataset description", blank=True, null=True)
-	contact = models.TextField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50)
+	contact = models.TextField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50, validators=[EmailValidator()])
 	telescope = models.ForeignKey(Telescope, db_column = "telescope", related_name = "datasets", on_delete = models.DO_NOTHING)
 	instrument = models.ForeignKey(Instrument, db_column = "instrument", related_name = "datasets", on_delete = models.DO_NOTHING)
 	characteristics = models.ManyToManyField(Characteristic, related_name = "datasets")
-	_metadata_model = models.OneToOneField('ContentType', help_text='The model for this dataset metadata', blank=True, null=True, on_delete=models.SET_NULL)
+	_metadata_model = models.OneToOneField(ContentType, help_text='The model for this dataset metadata', blank=True, null=True, on_delete=models.SET_NULL)
 	
 	class Meta:
 		db_table = "dataset"
@@ -43,10 +46,16 @@ class Dataset(models.Model):
 	def __unicode__(self):
 		return unicode(self.name)
 	
+	def clean(self):
+		super(Dataset, self).clean()
+		# Check that id corresponds to the metadata model
+		if self._metadata_model is not None and self._metadata_model.app_label != self.id:
+			raise ValidationError('The id mismatch the metadata model')
+	
 	@property
 	def metadata_model(self):
 		if _metadata_model is None:
-			raise Exception("No Matadata model has been set for this dataset")
+			raise Exception("No Metadata model has been set for this dataset")
 		else:
 			return self._metadata_model.model_class()
 	
@@ -73,7 +82,7 @@ class Keyword(models.Model):
 		("float", "float"),
 		("datetime", "datetime (iso format)"),
 	)
-	db_column = models.TextField("Column name of the corresponding keyword in the meta_data table.", blank=False, null=False, max_length=30, primary_key = True, validators=RegexValidator(r"^[a-z][_a-z]*$"))
+	db_column = models.TextField("Column name of the corresponding keyword in the meta_data table.", blank=False, null=False, max_length=30, primary_key = True, validators=[RegexValidator(r"^[a-z][_a-z]*$")])
 	name = models.CharField(help_text = "Fits like name of the keyword. Can contain space and dashes.", blank=False, null=False, max_length=70)
 	python_type = models.CharField(help_text = "Python type of the keyword.", blank=False, null=False, max_length=12, default = "string", choices = PYTHON_TYPE_CHOICES)
 	unit = models.CharField(help_text = "Physical unit (SI compliant) of the keyword.", blank=True, null=True, max_length=10)
