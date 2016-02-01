@@ -76,6 +76,8 @@ def value_type(value):
 		return "int"
 	elif isinstance(value, datetime):
 		return "datetime"
+	elif isinstance(value, bool):
+		return "bool"
 	else:
 		return "str"
 
