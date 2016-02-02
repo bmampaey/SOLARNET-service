@@ -1,0 +1,25 @@
+{% extends "account/base.html" %}
+{% load staticfiles %}
+{% load floppyforms %}
+
+{% block menu %}
+<!--No menu on login page-->
+{% endblock %}
+
+{% block content %}
+<div class="col-md-8 col-md-offset-2" style="background-image: url({% static 'EUI_control_panel.jpg' %}); background-size: cover;">
+<div class="col-md-10 col-md-offset-1" style="padding: 30px;">
+	<div class="panel panel-default" style="background-color: rgba(255, 255, 255, 0.7);">
+		<div class="panel-heading"><strong>Please log into SVO</strong></div>
+		<div class="panel-body">
+			<form method="post">
+				{% csrf_token %}
+				{% form form using 'floppyforms/layouts/bootstrap.html' %}
+				<input type="submit" value="login" class="btn btn-default">
+				<input type="hidden" name="next" value="{{ next }}">
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}
