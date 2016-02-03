@@ -8,7 +8,6 @@ class Metadata(BaseMetadata):
 	nblambd = models.IntegerField(blank=True, null=True)
 	nowin = models.IntegerField(blank=True, null=True)
 	grechel = models.TextField(blank=True, null=True)
-	date_end = models.DateTimeField(blank=True, null=True)
 	filtersp = models.TextField(blank=True, null=True)
 	waveunit = models.IntegerField(blank=True, null=True)
 	filterch = models.TextField(blank=True, null=True)
