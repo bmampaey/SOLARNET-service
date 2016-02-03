@@ -48,8 +48,8 @@ INSTALLED_APPS = [
 	'aia_lev1',
 	'hmi_magnetogram',
 	'themis',
-#	'chrotel',
-#	'xrt',
+	'chrotel',
+	'xrt',
 	# The wizard temporarily
 #	'wizard'
 ]
