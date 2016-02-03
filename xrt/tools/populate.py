@@ -11,14 +11,14 @@ from xrt.models import Metadata
 def populate(start_date, end_date, update, log):
 	'''Populate the Metada and DataLocation'''
 	
-	# Instrument specific constants
+	# Dataset specific constants
 	instrument='XRT'
 	header_size = 20160
 	zipped = False
 	time_increment = timedelta(hours = 1)
 	vso_base_url = 'http://sdac.virtualsolar.org/cgi-bin/get/{provider}/{fileid}'
 	
-	# This data series is populated through the VSO
+	# This dataset is populated through the VSO
 	client = vso.VSOClient()
 	
 	while start_date <= end_date:

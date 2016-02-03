@@ -93,10 +93,10 @@ def get_keywords(header, excluded = [], log):
 
 
 class Command(BaseCommand):
-	help = 'Inspect the fits_header field of a data series Metadata and extract the keywords definition'
+	help = 'Inspect the fits_header field of a dataset Metadata and extract the keywords definition'
 	
 	def add_arguments(self, parser):
-		parser.add_argument('data_series', help='The id of the data series.')
+		parser.add_argument('dataset', help='The id of the dataset.')
 		parser.add_argument('--comments', '-C', default=False, action='store_true', help='Extract pure comment keywords')
 		parser.add_argument('--history', '-H', default=False, action='store_true', help='Extract history keywords')
 		parser.add_argument('--exclude', '-E', default = ["DATASUM", "CHECKSUM", "SIMPLE", "BITPIX"], nargs='*', help='Keywords to exclude (in small caps)')
@@ -109,11 +109,11 @@ class Command(BaseCommand):
 		if not options['history']:
 			excluded.append('HISTORY')
 		import pdb; pdb.set_trace()
-		# Import the data series models
+		# Import the dataset models
 		try:
-			models = import_module(options['data_series'] + '.models')
+			models = import_module(options['dataset'] + '.models')
 		except Exception, why:
-			raise CommandError('Cannot import %s models: %s' % (options['data_series'], why))
+			raise CommandError('Cannot import %s models: %s' % (options['dataset'], why))
 		
 		# As keywords can be different from one fits file to another
 		# We collect all the possible info variation 
