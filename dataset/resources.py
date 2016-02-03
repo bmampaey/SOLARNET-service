@@ -1,101 +1,101 @@
+from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
-from tastypie.resources import Resource, ModelResource, ALL, ALL_WITH_RELATIONS, url
-from tastypie.authorization import DjangoAuthorization
-from tastypie.utils import trailing_slash
 
+from tastypie.validation import FormValidation
+from django.forms import ModelForm
 
-# See http://django-tastypie.readthedocs.org/en/latest/paginator.html why it is important for postgres to have a special paginator
-from common.tastypie_paginator import EstimatedCountPaginator
-
-from dataset.models import Dataset, Characteristic, Instrument, Telescope
+from SDA.resources import ResourceMeta
+from dataset.models import Dataset, Characteristic, Instrument, Telescope, Keyword
 
 class TelescopeResource(ModelResource):
+	'''RESTful resource for model Telescope'''
 	instruments = fields.ToManyField('dataset.resources.InstrumentResource', 'instruments', related_name='name', full = True)
 	
-	class Meta:
+	class Meta(ResourceMeta):
 		queryset = Telescope.objects.all()
 		resource_name = 'telescope'
 		allowed_methods = ['get']
+		max_limit = None
 		limit = None
-		authorization = DjangoAuthorization()
 		filtering = {
-		"name": ALL,
-		"description": ALL,
+			"name": ALL,
+			"description": ALL,
 		}
 
+
+
 class InstrumentResource(ModelResource):
+	'''RESTful resource for model Instrument'''
 	telescope = fields.ForeignKey(TelescopeResource, 'telescope', full = False)
 	
-	class Meta:
+	class Meta(ResourceMeta):
 		queryset = Instrument.objects.all()
 		resource_name = 'instrument'
 		allowed_methods = ['get']
+		max_limit = None
 		limit = None
-		authorization = DjangoAuthorization()
 		filtering = {
-		"name": ALL,
-		"description": ALL,
+			"name": ALL,
+			"description": ALL,
 		}
 
+
+
 class CharacteristicResource(ModelResource):
-	class Meta:
+	'''RESTful resource for model Characteristic'''
+	
+	class Meta(ResourceMeta):
 		queryset = Characteristic.objects.all()
 		resource_name = 'characteristic'
-		limit = None
-		paginator_class = EstimatedCountPaginator
-		authorization = DjangoAuthorization()
-
-class TagResource(Resource):
-	
-	name = fields.CharField(attribute = 'name')
-	
-	class Meta:
 		allowed_methods = ['get']
-		include_resource_uri = False
-		resource_name = 'tag'
+		max_limit = None
 		limit = None
-		authorization = DjangoAuthorization()
+
+
+class KeywordValidationForm(ModelForm):
+	'''RESTful resource for model Keyword'''
 	
-	class Tag:
-		def __init__(self, **kwargs):
-			for key, val in kwargs.iteritems():
-				setattr(self, key, val)
+	class Meta(ResourceMeta):
+		model = Keyword
+		fields = '__all__'
+
+class KeywordResource(ModelResource):
+	'''RESTful resource for model Keyword'''
 	
-	def obj_get_list(self, request = None, **kwargs):
-		# outer get of object list... this calls get_object_list and
-		# could be a point at which additional filtering may be applied
-		return [self.Tag(name=name) for name in BaseTag.all_tags()]
-	
-#	def obj_get(self, request = None, **kwargs):
-#		# get one object from data source
-#		pk = int(kwargs['pk'])
-#		try:
-#			return data[pk]
-#		except KeyError:
-#			raise NotFound("Object not found") 
+	class Meta(ResourceMeta):
+		queryset = Keyword.objects.all()
+		resource_name = 'keyword'
+		allowed_methods = ['get']
+		# TODO test validation
+		#validation = FormValidation(KeywordValidationForm())
+
+
 
 class DatasetResource(ModelResource):
+	'''RESTful resource for model Dataset'''
 	characteristics = fields.ToManyField(CharacteristicResource, 'characteristics', full = False)
 	#TODO check here
 #	characteristics = fields.ListField()
 	instrument = fields.CharField('instrument')
 	telescope = fields.CharField('telescope')
 	
-	class Meta:
+	class Meta(ResourceMeta):
 		queryset = Dataset.objects.all()
 		resource_name = 'dataset'
+		allowed_methods = ['get']
+		max_limit = None
 		limit = None
-		paginator_class = EstimatedCountPaginator
-		authorization = DjangoAuthorization()
 		filtering = {
-		"name": ALL,
-		"description": ALL,
-		"contact": ALL,
-		"instrument": ALL,
-		"telescope": ALL,
-		"characteristics": ALL_WITH_RELATIONS
+			"name": ALL,
+			"description": ALL,
+			"contact": ALL,
+			"instrument": ALL,
+			"telescope": ALL,
+			"characteristics": ALL_WITH_RELATIONS
 		}
 		
 	def dehydrate(self, bundle):
-		bundle.data['characteristics'] = [str(name) for name in bundle.obj.characteristics.values_list('name', flat = True)]
+		#TODO check here
+		# bundle.data['characteristics'] = [str(name) for name in bundle.obj.characteristics.values_list('name', flat = True)]
 		return bundle
+
