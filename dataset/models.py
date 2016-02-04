@@ -8,14 +8,14 @@ from common.views import BaseSearchDataForm
 
 class Telescope(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False, max_length = 20)
-	description = models.TextField(help_text = "Telescope description", blank=True, null=True)
+	description = models.TextField(help_text = 'Telescope description', blank=True, null=True)
 	
 	def __unicode__(self):
 		return unicode(self.name)
 
 class Instrument(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False, max_length = 20)
-	description = models.TextField(help_text = "Instrument description", blank=True, null=True)
+	description = models.TextField(help_text = 'Instrument description', blank=True, null=True)
 	telescope = models.ForeignKey(Telescope, related_name = 'instruments', on_delete = models.DO_NOTHING)
 	
 	def __unicode__(self):
@@ -28,20 +28,20 @@ class Characteristic(models.Model):
 		return unicode(self.name)
 
 class Dataset(models.Model):
-	id = models.TextField("Dataset name.", primary_key=True, max_length=20, validators=[RegexValidator(r"^[a-z][_a-z0-9]*$")])
-	name = models.TextField("Dataset display name.", unique = True, blank=False, null=False, max_length=40)
-	description = models.TextField("Dataset description", blank=True, null=True)
-	contact = models.TextField(help_text = "Contact email for the data set.", blank=True, null=True, max_length=50, validators=[EmailValidator()])
-	telescope = models.ForeignKey(Telescope, db_column = "telescope", related_name = "datasets", on_delete = models.DO_NOTHING)
-	instrument = models.ForeignKey(Instrument, db_column = "instrument", related_name = "datasets", on_delete = models.DO_NOTHING)
-	characteristics = models.ManyToManyField(Characteristic, related_name = "datasets", blank=True)
+	id = models.TextField('Dataset id.', primary_key=True, max_length=20, validators=[RegexValidator(r'^[a-z][_a-z0-9]*$')])
+	name = models.TextField('Dataset display name.', unique = True, blank=False, null=False, max_length=40)
+	description = models.TextField('Dataset description', blank=True, null=True)
+	contact = models.TextField(help_text = 'Contact email for the data set.', blank=True, null=True, max_length=50, validators=[EmailValidator()])
+	telescope = models.ForeignKey(Telescope, db_column = 'telescope', related_name = 'datasets', on_delete = models.DO_NOTHING)
+	instrument = models.ForeignKey(Instrument, db_column = 'instrument', related_name = 'datasets', on_delete = models.DO_NOTHING)
+	characteristics = models.ManyToManyField(Characteristic, related_name = 'datasets', blank=True)
 	_metadata_model = models.OneToOneField(ContentType, help_text='The model for this dataset metadata', blank=True, null=True, on_delete=models.SET_NULL)
 	
 	class Meta:
-		db_table = "dataset"
-		ordering = ["name"]
-		verbose_name = "Dataset"
-		verbose_name_plural = "Datasets"
+		db_table = 'dataset'
+		ordering = ['name']
+		verbose_name = 'Dataset'
+		verbose_name_plural = 'Datasets'
 	
 	def __unicode__(self):
 		return unicode(self.name)
@@ -55,7 +55,7 @@ class Dataset(models.Model):
 	@property
 	def metadata_model(self):
 		if self._metadata_model is None:
-			raise Exception("No Metadata model has been set for this dataset")
+			raise Exception('No Metadata model has been set for this dataset')
 		else:
 			return self._metadata_model.model_class()
 	
@@ -66,7 +66,7 @@ class Dataset(models.Model):
 			if self.id in search_data_forms:
 				self.__search_data_form = search_data_forms[self.id]
 			else:
-				raise Exception("No SearchDataForm view for dataset %s" % self.id)
+				raise Exception('No SearchDataForm view for dataset %s' % self.id)
 		return self.__search_data_form
 	
 	@property
@@ -76,18 +76,22 @@ class Dataset(models.Model):
 
 class Keyword(models.Model):
 	PYTHON_TYPE_CHOICES = (
-		("str", "string"),
-		("bool", "bool"),
-		("int", "int"),
-		("float", "float"),
-		("datetime", "datetime (iso format)"),
+		('str', 'string'),
+		('bool', 'bool'),
+		('int', 'int'),
+		('float', 'float'),
+		('datetime', 'datetime (iso format)'),
 	)
-	db_column = models.TextField("Column name of the corresponding keyword in the metadata table.", blank=False, null=False, max_length=30, primary_key = True, validators=[RegexValidator(r"^[a-z][_a-z]*$")])
-	name = models.CharField(help_text = "Fits like name of the keyword. Can contain space and dashes.", blank=False, null=False, max_length=70)
-	python_type = models.CharField(help_text = "Python type of the keyword.", blank=False, null=False, max_length=12, default = "string", choices = PYTHON_TYPE_CHOICES)
-	unit = models.CharField(help_text = "Physical unit (SI compliant) of the keyword.", blank=True, null=True, max_length=10)
-	description = models.TextField(help_text = "Full description of the keyword.", blank=True, null=True, max_length=70)
-	dataset = models.ForeignKey(Dataset, db_column = "dataset", related_name = "keywords", on_delete = models.DO_NOTHING)
+	dataset = models.ForeignKey(Dataset, db_column = 'dataset', related_name = 'keywords', on_delete = models.DO_NOTHING)
+	db_column = models.TextField('Column name of the corresponding keyword in the metadata table.', blank=False, null=False, max_length=30, validators=[RegexValidator(r'^[a-z][_a-z]*$')])
+	name = models.CharField(help_text = 'Fits like name of the keyword. Can contain space and dashes.', blank=False, null=False, max_length=70)
+	python_type = models.CharField(help_text = 'Python type of the keyword.', blank=False, null=False, max_length=12, default = 'string', choices = PYTHON_TYPE_CHOICES)
+	unit = models.CharField(help_text = 'Physical unit (SI compliant) of the keyword.', blank=True, null=True, max_length=10)
+	description = models.TextField(help_text = 'Full description of the keyword.', blank=True, null=True, max_length=70)
 	
+	class Meta:
+		ordering = ['dataset', 'db_column']
+		unique_together = [('dataset', 'db_column'), ('dataset', 'name')]
+
 	def __unicode__(self):
 		return unicode(self.name)
