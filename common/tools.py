@@ -33,8 +33,9 @@ def get_fits_header(url, min_size = 2880, zipped = False, file_start = 0):
 			header = pyfits.Header.fromfile(fits_file)
 		except IOError:
 			# Header is partial, we need to read more from the file
-			start += 2880
-			end += 2880
+			# Per fits standard, fits file header size is always a multiple of 2880 
+			start = end
+			end = start + 2880
 		else:
 			# Header is complete
 			# Extract the real file size from the response header
