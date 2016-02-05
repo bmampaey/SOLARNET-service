@@ -22,7 +22,6 @@ class DataLocationResource(ModelResource):
 		resource_name = 'data_location'
 
 
-
 class BaseMetadaResource(ModelResource):
 	'''Base resource for Metadata models'''
 	data_location = fields.OneToOneField(DataLocationResource, 'data_location', related_name='metadata', full=True, null=True, blank=True)
@@ -30,3 +29,12 @@ class BaseMetadaResource(ModelResource):
 	
 	class Meta(ResourceMeta):
 		filtering = {"tags": ALL_WITH_RELATIONS}
+		ordering = []
+	
+	def __init__(self):
+		super(BaseMetadaResource, self).__init__()
+		# Add filtering and ordering by all regular fields
+		for field in self.Meta.object_class._meta.get_fields():
+			if not field.is_relation:
+    				self.Meta.filtering.setdefault(field.name, ALL)
+    				self.Meta.ordering.append(field.name)

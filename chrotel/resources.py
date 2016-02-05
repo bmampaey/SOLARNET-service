@@ -1,8 +1,9 @@
-from common.resources import TagResource_for, KeywordResource_for, DataLocationResource_for, MetadaResource_for
+from common.resources import BaseMetadaResource
+from chrotel.models import Metadata
 
-from chrotel.models import Keyword, DataLocation, Metada, Tag
 
-TagResource = TagResource_for("chrotel", Tag)
-KeywordResource = KeywordResource_for("chrotel", Keyword)
-DataLocationResource = DataLocationResource_for("chrotel", DataLocation)
-MetadaResource = MetadaResource_for("chrotel", Metada, TagResource)
+class MetadaResource(BaseMetadaResource):
+	
+	class Meta(BaseMetadaResource.Meta):
+		queryset = Metadata.objects.all()
+		resource_name = 'chrotel_metadata'

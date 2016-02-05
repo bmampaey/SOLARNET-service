@@ -1,8 +1,5 @@
 from tastypie.api import Api
 
-import account.resources
-import dataset.resources
-import common.resources
 
 #import eit.resources
 #import swap_lev1.resources
@@ -13,18 +10,25 @@ import common.resources
 
 v1_api = Api(api_name='v1')
 
+# TODO remove when migrating to SVO
+import account.resources
 v1_api.register(account.resources.UserResource())
 
+import dataset.resources
 v1_api.register(dataset.resources.DatasetResource())
 v1_api.register(dataset.resources.CharacteristicResource())
 v1_api.register(dataset.resources.TelescopeResource())
 v1_api.register(dataset.resources.InstrumentResource())
 v1_api.register(dataset.resources.KeywordResource())
 
-
+import common.resources
 v1_api.register(common.resources.TagResource())
 v1_api.register(common.resources.DataLocationResource())
 
+import chrotel.resources
+v1_api.register(chrotel.resources.MetadaResource())
+
+#import eit.resources
 #v1_api.register(eit.resources.MetadaResource())
 #
 #v1_api.register(swap_lev1.resources.MetadaResource())
