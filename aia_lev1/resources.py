@@ -1,8 +1,9 @@
-from common.resources import TagResource_for, KeywordResource_for, DataLocationResource_for, MetadaResource_for
+from common.resources import BaseMetadaResource
+from aia_lev1.models import Metadata
 
-from aia_lev1.models import Keyword, DataLocation, Metada, Tag
 
-TagResource = TagResource_for("aia_lev1", Tag)
-KeywordResource = KeywordResource_for("aia_lev1", Keyword)
-DataLocationResource = DataLocationResource_for("aia_lev1", DataLocation)
-MetadaResource = MetadaResource_for("aia_lev1", Metada, TagResource)
+class MetadaResource(BaseMetadaResource):
+	
+	class Meta(BaseMetadaResource.Meta):
+		queryset = Metadata.objects.all()
+		resource_name = 'aia_lev1_metadata'

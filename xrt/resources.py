@@ -1,8 +1,9 @@
-from common.resources import TagResource_for, KeywordResource_for, DataLocationResource_for, MetadaResource_for
+from common.resources import BaseMetadaResource
+from xrt.models import Metadata
 
-from xrt.models import Keyword, DataLocation, Metada, Tag
 
-TagResource = TagResource_for("xrt", Tag)
-KeywordResource = KeywordResource_for("xrt", Keyword)
-DataLocationResource = DataLocationResource_for("xrt", DataLocation)
-MetadaResource = MetadaResource_for("xrt", Metada, TagResource)
+class MetadaResource(BaseMetadaResource):
+	
+	class Meta(BaseMetadaResource.Meta):
+		queryset = Metadata.objects.all()
+		resource_name = 'xrt_metadata'

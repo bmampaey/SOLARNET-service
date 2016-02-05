@@ -1,8 +1,9 @@
-from common.resources import TagResource_for, KeywordResource_for, DataLocationResource_for, MetadaResource_for
+from common.resources import BaseMetadaResource
+from eit.models import Metadata
 
-from eit.models import Keyword, DataLocation, Metada, Tag
 
-TagResource = TagResource_for("eit", Tag)
-KeywordResource = KeywordResource_for("eit", Keyword)
-DataLocationResource = DataLocationResource_for("eit", DataLocation)
-MetadaResource = MetadaResource_for("eit", Metada, TagResource)
+class MetadaResource(BaseMetadaResource):
+	
+	class Meta(BaseMetadaResource.Meta):
+		queryset = Metadata.objects.all()
+		resource_name = 'eit_metadata'

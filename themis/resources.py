@@ -1,8 +1,9 @@
-from common.resources import TagResource_for, KeywordResource_for, DataLocationResource_for, MetadaResource_for
+from common.resources import BaseMetadaResource
+from themis.models import Metadata
 
-from themis.models import Keyword, DataLocation, Metada, Tag
 
-TagResource = TagResource_for("themis", Tag)
-KeywordResource = KeywordResource_for("themis", Keyword)
-DataLocationResource = DataLocationResource_for("themis", DataLocation)
-MetadaResource = MetadaResource_for("themis", Metada, TagResource)
+class MetadaResource(BaseMetadaResource):
+	
+	class Meta(BaseMetadaResource.Meta):
+		queryset = Metadata.objects.all()
+		resource_name = 'themis_metadata'

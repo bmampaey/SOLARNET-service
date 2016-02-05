@@ -37,7 +37,7 @@ class BaseMetadata(models.Model):
 	date_end = models.DateTimeField('DATE-END', help_text='End time of the observation', blank=True, null=True)
 	wavemin = models.IntegerField('WAVEMIN', help_text='Min value of the observation spectral range', blank=True, null=True)
 	wavemax = models.IntegerField('WAVEMAX', help_text='Max value of the observation spectral range', blank=True, null=True)
-
+	
 	class Meta:
 		abstract = True
 	
