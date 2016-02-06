@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from _logger import Logger
 
 class Command(BaseCommand):
-	help = 'Populate the Metada and DataLocation for a dataset'
+	help = 'Populate the Metadata and DataLocation for a dataset'
 	
 	def add_arguments(self, parser):
 		parser.add_argument('dataset', help='The id of the dataset.')

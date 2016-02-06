@@ -6,35 +6,40 @@ from common.models import DataLocation, Tag
 
 class TagResource(ModelResource):
 	'''RESTful resource for model Tag'''
+	# TODO check how to add metadata in detail view ListField?
+	# Better add the related fields at run time
+	
 	class Meta(ResourceMeta):
 		queryset = Tag.objects.all()
 		resource_name = 'tag'
-		filtering = {"name": ALL}
-
+		filtering = {'name': ALL}
 
 
 class DataLocationResource(ModelResource):
-# TODO now a one to many
-#	metadata = fields.OneToOneField(dataset_name+'.resources.MetadaResource', 'metadata', related_name='data_location', null=True, blank=True)
-
+	'''Resource for DataLocation models'''
+	# TODO check how to add metadata in detail view ListField?
+	# Better add the related fields at run time
 	class Meta(ResourceMeta):
 		queryset = DataLocation.objects.all()
 		resource_name = 'data_location'
 
 
-class BaseMetadaResource(ModelResource):
+class BaseMetadataResource(ModelResource):
 	'''Base resource for Metadata models'''
-	data_location = fields.OneToOneField(DataLocationResource, 'data_location', related_name='metadata', full=True, null=True, blank=True)
+	
+	data_location = fields.ToOneField(DataLocationResource, 'data_location', full=True)
 	tags = fields.ToManyField(TagResource, 'tags', full=True)
 	
 	class Meta(ResourceMeta):
-		filtering = {"tags": ALL_WITH_RELATIONS}
+		excludes = ['id']
+		detail_uri_name = 'oid'
+		filtering = {'tags': ALL_WITH_RELATIONS}
 		ordering = []
 	
 	def __init__(self):
-		super(BaseMetadaResource, self).__init__()
+		super(BaseMetadataResource, self).__init__()
 		# Add filtering and ordering by all regular fields
 		for field in self.Meta.object_class._meta.get_fields():
 			if not field.is_relation:
-    				self.Meta.filtering.setdefault(field.name, ALL)
-    				self.Meta.ordering.append(field.name)
+    				self._meta.filtering.setdefault(field.name, ALL)
+    				self._meta.ordering.append(field.name)

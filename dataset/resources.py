@@ -9,7 +9,7 @@ from dataset.models import Dataset, Characteristic, Instrument, Telescope, Keywo
 
 class TelescopeResource(ModelResource):
 	'''RESTful resource for model Telescope'''
-	instruments = fields.ToManyField('dataset.resources.InstrumentResource', 'instruments', related_name='name', full = True)
+	instruments = fields.ToManyField('dataset.resources.InstrumentResource', 'instruments', full = True)
 	
 	class Meta(ResourceMeta):
 		queryset = Telescope.objects.all()
@@ -26,7 +26,8 @@ class TelescopeResource(ModelResource):
 
 class InstrumentResource(ModelResource):
 	'''RESTful resource for model Instrument'''
-	telescope = fields.ForeignKey(TelescopeResource, 'telescope', full = False)
+	
+	telescope = fields.ToOneField(TelescopeResource, 'telescope')
 	
 	class Meta(ResourceMeta):
 		queryset = Instrument.objects.all()
@@ -40,9 +41,10 @@ class InstrumentResource(ModelResource):
 		}
 
 
-
 class CharacteristicResource(ModelResource):
 	'''RESTful resource for model Characteristic'''
+	
+	datasets = fields.ToManyField('dataset.resources.DatasetResource', 'datasets')
 	
 	class Meta(ResourceMeta):
 		queryset = Characteristic.objects.all()
@@ -50,30 +52,34 @@ class CharacteristicResource(ModelResource):
 		allowed_methods = ['get']
 		max_limit = None
 		limit = None
+		filtering = {
+			"name": ALL,
+		}
 
-
-class KeywordValidationForm(ModelForm):
-	'''RESTful resource for model Keyword'''
-	
-	class Meta(ResourceMeta):
-		model = Keyword
-		fields = '__all__'
 
 class KeywordResource(ModelResource):
 	'''RESTful resource for model Keyword'''
+	
+	dataset = fields.ToOneField('dataset.resources.DatasetResource', 'dataset')
 	
 	class Meta(ResourceMeta):
 		queryset = Keyword.objects.all()
 		resource_name = 'keyword'
 		allowed_methods = ['get']
-		# TODO test validation
-		#validation = FormValidation(KeywordValidationForm())
-
+		filtering = {
+			'dataset': ALL_WITH_RELATIONS,
+			'db_column': ALL,
+			'name': ALL,
+			'python_type': ALL,
+			'unit': ALL,
+			'description': ALL,
+		}
 
 
 class DatasetResource(ModelResource):
 	'''RESTful resource for model Dataset'''
-	characteristics = fields.ToManyField(CharacteristicResource, 'characteristics', full = False)
+	
+	characteristics = fields.ToManyField(CharacteristicResource, 'characteristics')
 	#TODO check here
 #	characteristics = fields.ListField()
 	instrument = fields.CharField('instrument')

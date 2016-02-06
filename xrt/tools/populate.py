@@ -9,7 +9,7 @@ from xrt.models import Metadata
 
 
 def populate(start_date, end_date, update, log):
-	'''Populate the Metada and DataLocation'''
+	'''Populate the Metadata and DataLocation'''
 	
 	# Dataset specific constants
 	instrument='XRT'

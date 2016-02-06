@@ -26,18 +26,18 @@ v1_api.register(common.resources.TagResource())
 v1_api.register(common.resources.DataLocationResource())
 
 import chrotel.resources
-v1_api.register(chrotel.resources.MetadaResource())
+v1_api.register(chrotel.resources.MetadataResource())
 
 #import eit.resources
-#v1_api.register(eit.resources.MetadaResource())
+#v1_api.register(eit.resources.MetadataResource())
 #
-#v1_api.register(swap_lev1.resources.MetadaResource())
+#v1_api.register(swap_lev1.resources.MetadataResource())
 #
-#v1_api.register(aia_lev1.resources.MetadaResource())
+#v1_api.register(aia_lev1.resources.MetadataResource())
 #
-#v1_api.register(hmi_magnetogram.resources.MetadaResource())
+#v1_api.register(hmi_magnetogram.resources.MetadataResource())
 #
-#v1_api.register(themis.resources.MetadaResource())
+#v1_api.register(themis.resources.MetadataResource())
 #
 #v1_api.register(wizard.resources.UserDataSelectionResource())
 #v1_api.register(wizard.resources.DataSelectionResource())

@@ -1,9 +1,9 @@
-from common.resources import BaseMetadaResource
+from common.resources import BaseMetadataResource
 from eit.models import Metadata
 
 
-class MetadaResource(BaseMetadaResource):
+class MetadataResource(BaseMetadataResource):
 	
-	class Meta(BaseMetadaResource.Meta):
+	class Meta(BaseMetadataResource.Meta):
 		queryset = Metadata.objects.all()
 		resource_name = 'eit_metadata'
