@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword
-from common.models import DataLocation, Tag
+from dataset.models import DataLocation, Tag
 
 class InstrumentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:

@@ -5,43 +5,43 @@ from collections import defaultdict, Counter
 from django.core.management.base import BaseCommand, CommandError
 import pyfits
 
-from _logger import Logger
+from ..logger import Logger
 from dataset.models import Dataset, Keyword
 
 def column_name(keyword):
 	'''Transform a keyword into an acceptable column name'''
 	# It is more simpler in postgres to have column names in lower case and without spaces
-	return re.sub("\W", "_", keyword.strip()).lower()
+	return re.sub('\W', '_', keyword.strip()).lower()
 
 def value_type(value):
 	'''Return the string representation of the type'''
 	if isinstance(value, float):
-		return "float"
+		return 'float'
 	elif isinstance(value, (int, long)):
-		return "int"
+		return 'int'
 	elif isinstance(value, datetime):
-		return "datetime"
+		return 'datetime'
 	elif isinstance(value, bool):
-		return "bool"
+		return 'bool'
 	else:
 		try:
 			parse_date(value)
 		except Exception:
-			return "str"
+			return 'str'
 		else:
-			return "datetime"
+			return 'datetime'
 
 
-unit_pattern =  re.compile(r"\s*(\[\s*(?P<unit>[^\]]*)\s*\])?(?P<comment>.*)\s*")
+unit_pattern =  re.compile(r'\s*(\[\s*(?P<unit>[^\]]*)\s*\])?(?P<comment>.*)\s*')
 def extract_unit(comment):
 	'''Split the unit from the comment'''
 	# Units are usually specified at the beginning of the comment between brackets
 	try:
 		parts = unit_pattern.match(comment).groupdict()
 	except Exception:
-		return "", comment.strip()
+		return '', comment.strip()
 	else:
-		return parts["unit"].strip() if parts["unit"] is not None else "", parts["comment"].strip()
+		return parts['unit'].strip() if parts['unit'] is not None else '', parts['comment'].strip()
 
 
 def get_keywords(header, log, excluded = []):
@@ -57,30 +57,30 @@ def get_keywords(header, log, excluded = []):
 			value = card.value
 			comment = card.comment
 		except Exception, why:
-			log.error("Could not parse card %s: %s. Skipping.", card, why)
+			log.error('Could not parse card %s: %s. Skipping.', card, why)
 			continue
 		
 		if keyword.upper() in excluded:
 			log.debug('Skipping excluded keyword %s', keyword)
 			continue
 		
-		elif keyword.upper() == "HISTORY":
-			value.strip(" \t\n-")
+		elif keyword.upper() == 'HISTORY':
+			value.strip(' \t\n-')
 			if not value:
 				# We omit empty history
 				continue	
 			# history keywords are not unique
-			db_column = "history_%d" % history_index
+			db_column = 'history_%d' % history_index
 			history_index += 1
 		
 		
-		elif keyword.upper() == "COMMENT":
-			value.strip(" \t\n-")
+		elif keyword.upper() == 'COMMENT':
+			value.strip(' \t\n-')
 			if not value:
 				# We omit empty comment
 				continue	
 			# comment keywords are not unique
-			db_column = "comment_%d" % comment_index
+			db_column = 'comment_%d' % comment_index
 			comment_index += 1
 		
 		else:
@@ -108,7 +108,8 @@ class Command(BaseCommand):
 		parser.add_argument('--max_record', '-m', type = int, default = None, help='Maximum number of record to inspect')
 		parser.add_argument('--comments', '-C', default=False, action='store_true', help='Extract pure comment keywords')
 		parser.add_argument('--history', '-H', default=False, action='store_true', help='Extract history keywords')
-		parser.add_argument('--exclude', '-E', default = ["DATASUM", "CHECKSUM", "SIMPLE", "BITPIX"], nargs='*', help='keywords to exclude (in small caps)')
+		parser.add_argument('--exclude', '-E', default = ['DATASUM', 'CHECKSUM', 'SIMPLE', 'BITPIX'], nargs='*', help='keywords to exclude (in small caps)')
+		parser.add_argument('--no_backup', '-b', default=False, action='store_true', help='Do not write backup after parsing has finished')
 		
 	def handle(self, **options):
 		# Parse the options
@@ -156,6 +157,16 @@ class Command(BaseCommand):
 				for info, value in keyword.iteritems():
 					all_keywords[keyword['name']][info][value] += 1
 		
+		# Write a backup of all keywords in case of problem
+		if not options['no_backup']:
+			backup_filename = options['dataset'] + '_keywords.pickle'
+			try:
+				with open(backup_filename, 'w') as f:
+					pickle.dump(all_keywords, f, pickle.HIGHEST_PROTOCOL)
+			except Exception, why:
+				log.error('Could not write backup file %s: %s', backup_filename, why)
+		
+		
 		# Ask user to select between possible info values if there is more than one
 		for keyword, infos in all_keywords.iteritems():
 			for info, values in infos.iteritems():
@@ -174,8 +185,6 @@ class Command(BaseCommand):
 							print 'Invalid selection', selection
 				else:
 					infos[info] = values.most_common(1)[0][0]
-		
-		import pdb; pdb.set_trace()
 		
 		# Insert the keyword info into the DB
 		for keyword, infos in all_keywords.iteritems():

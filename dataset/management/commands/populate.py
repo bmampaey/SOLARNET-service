@@ -2,7 +2,7 @@ from datetime import datetime
 from dateutil.parser import parse as parse_date
 from importlib import import_module
 from django.core.management.base import BaseCommand, CommandError
-from _logger import Logger
+from ..logger import Logger
 
 class Command(BaseCommand):
 	help = 'Populate the Metadata and DataLocation for a dataset'

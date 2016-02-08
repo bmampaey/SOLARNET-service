@@ -3,8 +3,8 @@ from django.db import transaction
 
 from sunpy.net import vso
 
-from common.tools import get_fits_header
-from common.models import DataLocation
+from dataset.management.tools import get_fits_header
+from dataset.models import DataLocation
 from xrt.models import Metadata
 
 

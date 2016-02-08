@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 
 from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword
-from common.models import DataLocation, Tag
+from dataset.models import DataLocation, Tag
 
 from dataset.serializers import TelescopeSerializer, InstrumentSerializer, DatasetSerializer, CharacteristicSerializer, KeywordSerializer, DataLocationSerializer, TagSerializer
 

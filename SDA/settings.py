@@ -45,7 +45,6 @@ INSTALLED_APPS = [
 	'django_filters',
 	'crispy_forms', # Just for the Rest framework
 	'dataset',
-	'common',
 	# All the dataset apps
 	'eit',
 	'swap_lev1',
