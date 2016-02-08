@@ -3,8 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator, EmailValidator
 from django.core.exceptions import ValidationError
 
-from common.views import BaseSearchDataForm
-
 
 class Telescope(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False, max_length = 20)
@@ -58,16 +56,6 @@ class Dataset(models.Model):
 			raise Exception('No Metadata model has been set for this dataset')
 		else:
 			return self._metadata_model.model_class()
-	
-	@property
-	def search_data_form(self):
-		if not hasattr(self, '__search_data_form'):
-			search_data_forms = dict((view.dataset_id, view.search_form_class) for view in BaseSearchDataForm.__subclasses__())
-			if self.id in search_data_forms:
-				self.__search_data_form = search_data_forms[self.id]
-			else:
-				raise Exception('No SearchDataForm view for dataset %s' % self.id)
-		return self.__search_data_form
 	
 	@property
 	def characteristics_names(self):

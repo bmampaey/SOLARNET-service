@@ -38,8 +38,12 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'tastypie',
+	'django_extensions', # Add useful management commands
+	'debug_toolbar', # Add useful info when debugging
 	'daterange_filter',
+	'rest_framework',
+	'django_filters',
+	'crispy_forms', # Just for the Rest framework
 	'dataset',
 	'common',
 	# All the dataset apps
@@ -138,3 +142,11 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# DRF settings
+REST_FRAMEWORK = {
+	'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+	'PAGE_SIZE': 10,
+	'URL_FIELD_NAME': 'uri',
+	'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.OrderingFilter')
+}
