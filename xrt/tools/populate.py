@@ -16,7 +16,7 @@ def populate(start_date, end_date, update, log):
 	header_size = 20160
 	zipped = False
 	time_increment = timedelta(hours = 1)
-	vso_base_url = 'http://sdac.virtualsolar.org/cgi-bin/get/{provider}/{fileid}'
+	
 	
 	# This dataset is populated through the VSO
 	client = vso.VSOClient()
@@ -32,12 +32,12 @@ def populate(start_date, end_date, update, log):
 			# Get file and thumbnail url
 			url = record.fileid
 			try:
-				thumbnail = record.extra.thumbnail.highres
+				thumbnail_url = record.extra.thumbnail.highres
 			except Exception:
 				try:
-					thumbnail = record.extra.thumbnail.lowres
+					thumbnail_url = record.extra.thumbnail.lowres
 				except Exception:
-					thumbnail = None
+					thumbnail_url = None
 					log.warning("No thumbnail for file %s", record.fileid)
 			
 			# Get the header
@@ -51,8 +51,8 @@ def populate(start_date, end_date, update, log):
 			try:
 				# It needs to be an atomic transaction so that if the metadata creation fails, the data location is not saved
 				with transaction.atomic():
-					# Create data location but with access through VSO
-					data_location = DataLocation.objects.create(url = vso_base_url.format(provider=record.provider, fileid=record.fileid), size = file_size, thumbnail = thumbnail)
+					# Create data location but with access through VSO (xrt data is stored at VSO)
+					data_location = DataLocation.objects.create(file_url = url, file_size = file_size, thumbnail_url = thumbnail_url)
 					# Create metadata
 					metadata = Metadata.objects.create(oid = record.time.start, data_location = data_location, fits_header = header.tostring())
 			
@@ -63,3 +63,25 @@ def populate(start_date, end_date, update, log):
 				log.info('Created record for "%s"', record.fileid)
 		
 		start_date += time_increment
+
+def field_values(fields, header):
+	values = dict()
+	for field in fields:
+		try:
+			if field.verbose_name in header:
+				if isinstance(field, DateField):
+					value = parse_date(header[field.verbose_name])
+				else:
+					value = header[field.verbose_name]
+				values[field.name] = field.to_python(value)
+		except Exception, why:
+			print metadata.id, field.name, why
+	
+	# See https://xrt.cfa.harvard.edu/resources/documents/XAG/XAG.pdf
+	values['date_beg'] = values['date_obs']
+	values['date_end'] = values['date_obs'] + timedelta(seconds = values['exptime'])
+	full_width_at_half_maximum = 2
+	values['wavemin'] = values['wavelnth']/10.0 - full_width_at_half_maximum
+	values['wavemax'] = values['wavelnth']/10.0 + full_width_at_half_maximum
+	
+	return values

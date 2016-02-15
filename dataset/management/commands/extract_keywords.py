@@ -24,13 +24,15 @@ def value_type(value):
 		return 'datetime'
 	elif isinstance(value, bool):
 		return 'bool'
-	else:
+	elif isinstance(value, str) and len(value) >= 8:
 		try:
 			parse_date(value)
 		except Exception:
 			return 'str'
 		else:
 			return 'datetime'
+	else:
+		return 'str'
 
 
 unit_pattern =  re.compile(r'\s*(\[\s*(?P<unit>[^\]]*)\s*\])?(?P<comment>.*)\s*')
