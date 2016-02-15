@@ -15,7 +15,7 @@ class DataLocation(models.Model):
 		db_table = 'data_location'
 	
 	def __unicode__(self):
-		return unicode(self.url)
+		return unicode(self.file_url)
 
 
 class Tag(models.Model):
@@ -120,7 +120,7 @@ class Keyword(models.Model):
 	db_column = models.TextField('Column name of the corresponding keyword in the metadata table.', blank=False, null=False, max_length=30, validators=[RegexValidator(r'^[a-z][_a-z]*$')])
 	name = models.CharField(help_text = 'Fits like name of the keyword. Can contain space and dashes.', blank=False, null=False, max_length=70)
 	python_type = models.CharField(help_text = 'Python type of the keyword.', blank=False, null=False, max_length=12, default = 'string', choices = PYTHON_TYPE_CHOICES)
-	unit = models.CharField(help_text = 'Physical unit (SI compliant) of the keyword.', blank=True, null=True, max_length=10)
+	unit = models.CharField(help_text = 'Physical unit (SI compliant) of the keyword.', blank=True, null=True, max_length=70)
 	description = models.TextField(help_text = 'Full description of the keyword.', blank=True, null=True, max_length=70)
 	
 	class Meta:
