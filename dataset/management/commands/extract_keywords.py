@@ -2,6 +2,7 @@ from datetime import datetime
 from dateutil.parser import parse as parse_date
 import re
 from collections import defaultdict, Counter
+import pickle
 from django.core.management.base import BaseCommand, CommandError
 import pyfits
 
