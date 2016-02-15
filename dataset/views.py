@@ -2,13 +2,12 @@ from django.views.generic import RedirectView
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 
-from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword
-from dataset.models import DataLocation, Tag
-
+from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword, DataLocation, Tag
 from dataset.serializers import TelescopeSerializer, InstrumentSerializer, DatasetSerializer, CharacteristicSerializer, KeywordSerializer, DataLocationSerializer, TagSerializer
 
 class DownloadData(RedirectView):
 	'''View to download the data by looking up it's dataset id and metadata oid'''
+	# TODO allow to download by oid or using filter (see django_filter), if there is more than one gives back the first one
 	http_method_names = [u'get', u'head']
 	permanent = True
 	
