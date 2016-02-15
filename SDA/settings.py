@@ -26,6 +26,10 @@ from secret_key import SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Add extra DEBUG info for these ips
+# Also necessary to see the debug toolbar
+INTERNAL_IPS = ['192.168.142.128']
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -40,12 +44,13 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'django_extensions', # Add useful management commands
 	'debug_toolbar', # Add useful info when debugging
+	'corsheaders', # Allow cross domain
 	'daterange_filter',
 	'rest_framework',
 	'django_filters',
 	'crispy_forms', # Just for the Rest framework
+	# Our own apps
 	'dataset',
-	# All the dataset apps
 	'eit',
 	'swap_lev1',
 	'aia_lev1',
@@ -53,13 +58,12 @@ INSTALLED_APPS = [
 	'themis',
 	'chrotel',
 	'xrt',
-	# The wizard temporarily
-#	'wizard'
 ]
 
 MIDDLEWARE_CLASSES = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+	'corsheaders.middleware.CorsMiddleware', # Allow cross domain
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -142,10 +146,17 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-# DRF settings
+
+# Django REST Framework settings
 REST_FRAMEWORK = {
-	'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+	# For now allow anybody to acces the api
+	# Only ok because we use ReadOnlyModelViewSet
+	'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
 	'PAGE_SIZE': 10,
 	'URL_FIELD_NAME': 'uri',
 	'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.OrderingFilter')
 }
+
+# Cross domain See https://github.com/ottoyiu/django-cors-headers/
+CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ALLOW_CREDENTIALS = True
