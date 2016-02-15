@@ -35,10 +35,10 @@ class BaseMetadata(models.Model):
 	fits_header = models.TextField(null=False, blank=True)
 	data_location = models.ForeignKey(DataLocation, related_name='%(app_label)s_%(class)s', null=True, blank=True, on_delete=models.SET_NULL)
 	tags = models.ManyToManyField(Tag, related_name='%(app_label)s_%(class)s')
-	date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation', blank=True, null=True)
-	date_end = models.DateTimeField('DATE-END', help_text='End time of the observation', blank=True, null=True)
-	wavemin = models.IntegerField('WAVEMIN', help_text='Min value of the observation spectral range', blank=True, null=True)
-	wavemax = models.IntegerField('WAVEMAX', help_text='Max value of the observation spectral range', blank=True, null=True)
+	date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True)
+	date_end = models.DateTimeField('DATE-END', help_text='End time of the observation [UTC]', blank=True, null=True)
+	wavemin = models.FloatField('WAVEMIN', help_text='Min value of the observation spectral range [nm]', blank=True, null=True)
+	wavemax = models.FloatField('WAVEMAX', help_text='Max value of the observation spectral range [nm]', blank=True, null=True)
 	
 	class Meta:
 		abstract = True
