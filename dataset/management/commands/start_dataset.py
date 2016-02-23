@@ -84,4 +84,5 @@ class Command(StartAppCommand):
 		log = Logger(self)
 		log.info('DO NOT FORGET:')
 		log.info('\t1.Add the app "%s" to the INSTALLED_APPS in the settings file', app_name)
-		log.info('\t2.Add the dataset "%s" to the dataset table via the admin interface', app_name)
+		log.info('\t2.Create the metadata tables: ./manage.py makemigrations %s && ./manage.py migrate %s', app_name, app_name)
+		log.info('\t3.Add the dataset "%s" to the dataset table via the admin interface', app_name)

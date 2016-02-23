@@ -52,7 +52,7 @@ class Command(BaseCommand):
 			for keyword in keywords:
 				if keyword.db_column in ['id', 'oid', 'fits_header', 'data_location', 'tags']:
 					raise CommandError('Keywords %s is duplicate of existing keyword in BaseMetadata' % keyword.db_column)
-				elif keyword.db_column not in ['date_beg', ' date_end', ' wavemin', ' wavemax']:
+				elif keyword.db_column not in ['date_beg', 'date_end', 'wavemin', 'wavemax']:
 					print field_template.format(keyword = keyword, field_type = field_for_type(keyword.python_type))
 		else:
 			print '\tpass'

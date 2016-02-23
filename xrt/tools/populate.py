@@ -1,7 +1,11 @@
+import logging
 from datetime import timedelta
+from urlparse import urlparse
+from dateutil.parser import parse as parse_date
 from django.db import transaction
+from django.db.models.fields import DateField
 
-from sunpy.net import vso
+
 
 from dataset.management.tools import get_fits_header
 from dataset.models import DataLocation
@@ -75,13 +79,12 @@ def field_values(fields, header):
 					value = header[field.verbose_name]
 				values[field.name] = field.to_python(value)
 		except Exception, why:
-			print metadata.id, field.name, why
+			print field.name, why
 	
 	# See https://xrt.cfa.harvard.edu/resources/documents/XAG/XAG.pdf
 	values['date_beg'] = values['date_obs']
-	values['date_end'] = values['date_obs'] + timedelta(seconds = values['exptime'])
-	full_width_at_half_maximum = 2
-	values['wavemin'] = values['wavelnth']/10.0 - full_width_at_half_maximum
-	values['wavemax'] = values['wavelnth']/10.0 + full_width_at_half_maximum
+	full_width_at_half_maximum = 17
+	values['wavemin'] = 430.5 - full_width_at_half_maximum
+	values['wavemax'] = 430.5 + full_width_at_half_maximum
 	
 	return values

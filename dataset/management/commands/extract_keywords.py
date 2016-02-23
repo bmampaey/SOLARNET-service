@@ -19,6 +19,8 @@ def value_type(value):
 	if isinstance(value, float):
 		return 'float'
 	elif isinstance(value, (int, long)):
+		return 'long'
+	elif isinstance(value, (int, long)):
 		return 'int'
 	elif isinstance(value, datetime):
 		return 'datetime'
