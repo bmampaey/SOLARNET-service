@@ -12,8 +12,8 @@ router.register(r'characteristic', dataset.views.CharacteristicViewSet)
 router.register(r'keyword', dataset.views.KeywordViewSet)
 router.register(r'tag', dataset.views.TagViewSet)
 
-import chrotel.views
-router.register(r'chrotel', chrotel.views.MetadataViewSet, base_name = 'chrotel')
+from chrotel.views import ChrotelMetadataViewSet
+router.register(r'chrotel', ChrotelMetadataViewSet, base_name='chrotel')
 
-import xrt.views
-router.register(r'xrt', xrt.views.MetadataViewSet)
+from xrt.views import XrtMetadataViewSet
+router.register(r'xrt', XrtMetadataViewSet, base_name='xrt')
