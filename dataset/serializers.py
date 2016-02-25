@@ -13,12 +13,12 @@ class TelescopeSerializer(serializers.ModelSerializer):
 		model = Telescope
 
 class DatasetSerializer(serializers.ModelSerializer):
-	number_items = serializers.SerializerMethodField()
+	metadata = serializers.SerializerMethodField()
 	class Meta:
 		model = Dataset
 		exclude = ['_metadata_model']
 	
-	def get_number_items(self, obj):
+	def get_metadata(self, obj):
 		# TODO add filtering
 		# TODO add estimated count if too slow
 		return obj.metadata_model.objects.count()

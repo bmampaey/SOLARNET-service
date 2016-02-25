@@ -2,5 +2,5 @@ from dataset.views import BaseMetadataViewSet
 from .models import Metadata
 
 
-class ChrotelMetadataViewSet(BaseMetadataViewSet):
+class MetadataViewSet(BaseMetadataViewSet):
 	model = Metadata

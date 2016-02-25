@@ -1,6 +1,8 @@
 from django.views.generic import RedirectView
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ImproperlyConfigured
+
+
 from rest_framework import viewsets
 from rest_framework.settings import api_settings
 from rest_framework.filters import OrderingFilter
@@ -8,7 +10,7 @@ from rest_framework import serializers
 
 from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword, DataLocation, Tag
 from dataset.serializers import TelescopeSerializer, InstrumentSerializer, DatasetSerializer, CharacteristicSerializer, KeywordSerializer, DataLocationSerializer, TagSerializer
-from dataset.filters import MetadataFilterBackend
+from dataset.filters import MetadataFilterBackend, DatasetFilter
 
 class DownloadData(RedirectView):
 	'''View to download the data by looking up it's dataset id and metadata oid'''
@@ -44,10 +46,12 @@ class KeywordViewSet(viewsets.ReadOnlyModelViewSet):
 	queryset = Keyword.objects.all()
 	serializer_class = KeywordSerializer
 
+
 class DatasetViewSet(viewsets.ReadOnlyModelViewSet):
 	'''API endpoint that allows datasets to be viewed or edited.'''
 	queryset = Dataset.objects.all()
 	serializer_class = DatasetSerializer
+	filter_class = DatasetFilter
 
 class CharacteristicViewSet(viewsets.ReadOnlyModelViewSet):
 	'''API endpoint that allows characteristics to be viewed or edited.'''
@@ -88,7 +92,5 @@ class BaseMetadataViewSet(viewsets.ReadOnlyModelViewSet):
 			class Meta:
 				model = self.get_queryset().model
 				extra_kwargs = {'uri': {'lookup_field': 'oid', 'view_name': model._meta.app_label + '-detail'}}
-			def __init__(self, *args, **kwargs):
-				#import pdb; pdb.set_trace()
-				super(MetadataSerializer, self).__init__(*args, **kwargs)
+		
 		return MetadataSerializer

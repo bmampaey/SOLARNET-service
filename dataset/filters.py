@@ -1,6 +1,16 @@
 from rest_framework.filters import DjangoFilterBackend
 from django.db import models
 from django.db.models.sql.constants import QUERY_TERMS
+from django_filters import FilterSet, ModelMultipleChoiceFilter
+from dataset.models import Dataset, Telescope, Instrument, Characteristic
+
+class DatasetFilter(FilterSet):
+	telescope = ModelMultipleChoiceFilter(queryset = Telescope.objects.all())
+	instrument = ModelMultipleChoiceFilter(queryset = Instrument.objects.all())
+	characteristics = ModelMultipleChoiceFilter(queryset = Characteristic.objects.all())
+	class Meta:
+		model = Dataset
+		filter_fields = {'name' : QUERY_TERMS, 'description' : QUERY_TERMS}
 
 
 class MetadataFilterBackend(DjangoFilterBackend):
