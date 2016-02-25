@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 	'django_extensions', # Add useful management commands
 	'debug_toolbar', # Add useful info when debugging
 	'corsheaders', # Allow cross domain
-	'daterange_filter',
+	'daterange_filter', # For easy admin filter
+	'tastypie', # RESTful api
 	# Our own apps
 	'dataset',
 	'eit',
