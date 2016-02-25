@@ -46,9 +46,6 @@ INSTALLED_APPS = [
 	'debug_toolbar', # Add useful info when debugging
 	'corsheaders', # Allow cross domain
 	'daterange_filter',
-	'rest_framework',
-	'django_filters',
-	'crispy_forms', # Just for the Rest framework
 	# Our own apps
 	'dataset',
 	'eit',
@@ -146,16 +143,6 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-
-# Django REST Framework settings
-REST_FRAMEWORK = {
-	# For now allow anybody to acces the api
-	# Only ok because we use ReadOnlyModelViewSet
-	'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
-	'PAGE_SIZE': 10,
-	'URL_FIELD_NAME': 'uri',
-	'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.OrderingFilter')
-}
 
 # Cross domain See https://github.com/ottoyiu/django-cors-headers/
 CORS_ORIGIN_ALLOW_ALL = True

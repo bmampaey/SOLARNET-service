@@ -24,31 +24,6 @@ from dataset.admin import BaseMetadataAdmin
 @admin.register(Metadata)
 class MetadataAdmin(BaseMetadataAdmin):
 	pass
-''',
-
-'serializers.py' : '''
-from rest_framework import serializers
-
-from .models import Metadata
-from dataset.serializers import DataLocationSerializer
-
-class MetadataSerializer(serializers.HyperlinkedModelSerializer):
-	data_location = DataLocationSerializer()
-	class Meta:
-		model = Metadata
-		extra_kwargs = {'uri': {'lookup_field': 'oid'}}
-''',
-
-'views.py' : '''
-from rest_framework import viewsets
-
-from .models import Metadata
-from .serializers import MetadataSerializer
-
-class MetadataViewSet(viewsets.ReadOnlyModelViewSet):
-	queryset = Metadata.objects.all()
-	serializer_class = MetadataSerializer
-	lookup_field = 'oid'
 '''
 }
 
