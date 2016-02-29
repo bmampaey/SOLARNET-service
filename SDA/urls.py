@@ -1,9 +1,10 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from SDA.api import v1_api
+from SDA.api import api
 
 urlpatterns = [
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^dataset/', include('dataset.urls')),
-	url(r'^api/', include(v1_api.urls)),
+	url(r'^api/', include(api.urls)),
+	url(r'^api/doc/', include('tastypie_swagger.urls', namespace='api_doc'),kwargs={"tastypie_api_module": api, 'namespace': 'api_doc'}),
 ]

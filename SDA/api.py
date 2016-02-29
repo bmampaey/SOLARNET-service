@@ -1,31 +1,35 @@
 from tastypie.api import Api
 
-v1_api = Api(api_name='v1')
+api = Api(api_name='v1')
 
 
 import dataset.resources
-v1_api.register(dataset.resources.DatasetResource())
-v1_api.register(dataset.resources.CharacteristicResource())
-v1_api.register(dataset.resources.TelescopeResource())
-v1_api.register(dataset.resources.InstrumentResource())
-v1_api.register(dataset.resources.KeywordResource())
-v1_api.register(dataset.resources.TagResource())
-v1_api.register(dataset.resources.DataLocationResource())
+api.register(dataset.resources.DatasetResource())
+api.register(dataset.resources.CharacteristicResource())
+api.register(dataset.resources.TelescopeResource())
+api.register(dataset.resources.InstrumentResource())
+api.register(dataset.resources.KeywordResource())
+api.register(dataset.resources.TagResource())
+api.register(dataset.resources.DataLocationResource())
 
 import chrotel.resources
-v1_api.register(chrotel.resources.MetadataResource())
+api.register(chrotel.resources.MetadataResource())
 
 import xrt.resources
-v1_api.register(xrt.resources.MetadataResource())
+api.register(xrt.resources.MetadataResource())
 
 import eit.resources
-v1_api.register(eit.resources.MetadataResource())
-#
-#v1_api.register(swap_lev1.resources.MetadataResource())
-#
-#v1_api.register(aia_lev1.resources.MetadataResource())
-#
-#v1_api.register(hmi_magnetogram.resources.MetadataResource())
-#
-#v1_api.register(themis.resources.MetadataResource())
+api.register(eit.resources.MetadataResource())
+
+import swap_lev1.resources
+api.register(swap_lev1.resources.MetadataResource())
+
+import aia_lev1.resources
+api.register(aia_lev1.resources.MetadataResource())
+
+import hmi_magnetogram.resources
+api.register(hmi_magnetogram.resources.MetadataResource())
+
+import themis.resources
+api.register(themis.resources.MetadataResource())
 

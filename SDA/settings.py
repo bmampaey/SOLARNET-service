@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 	'corsheaders', # Allow cross domain
 	'daterange_filter', # For easy admin filter
 	'tastypie', # RESTful api
+	'tastypie_swagger', # RESTful api viewer pip install git+https://github.com/concentricsky/django-tastypie-swagger.git --upgrade
 	# Our own apps
 	'dataset',
 	'eit',
