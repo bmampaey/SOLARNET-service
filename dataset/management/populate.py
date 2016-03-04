@@ -6,6 +6,8 @@ import zlib
 import logging
 from datetime import timedelta
 from dateutil.parser import parse as parse_date
+from glob import glob
+from itertools import chain
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
@@ -60,23 +62,23 @@ def get_fits_header_via_http(url, zipped = False, min_size = 2880, header_start 
 	return header, file_size
 
 
-class PopulateVSO:
+class PopulatorForVSO:
 	vso_base_url = 'http://sdac.virtualsolar.org/cgi-bin/get/{provider}/{fileid}'
 	min_header_size = 2880
 	header_start = 0
 	zipped = False
 	time_increment = timedelta(hours = 1)
 	instrument = None
-	dataset = None
+	dataset_id = None
 	
 	def __init__(self, log = logging):
 		
-		if self.dataset is None:
-			raise ImproperlyConfigured('dataset has not been set')
+		if self.dataset_id is None:
+			raise ImproperlyConfigured('dataset_id has not been set')
 		if self.instrument is None:
-			raise ImproperlyConfigured('dataset has not been set')
+			raise ImproperlyConfigured('dataset_id has not been set')
 		
-		self.metadata_model = Dataset.objects.get(id=dataset).metadata_model
+		self.metadata_model = Dataset.objects.get(id=dataset_id).metadata_model
 		self.log = log
 	
 	def get_oid(self, record):
@@ -101,12 +103,12 @@ class PopulateVSO:
 			self.log.debug('No thumbnail for record %s', record.fileid)
 		return thumbnail_url
 	
-	def get_fits_header(record):
+	def get_fits_header(self, record):
 		'''Return the header and file size for the record'''
 		url = self.get_file_url(record)
 		return get_fits_header_via_http(url, self.zipped, self.min_header_size, self.header_start)
 	
-	def get_field_values(fields, header):
+	def get_field_values(self, fields, header):
 		'''Return a dict with the value for each field'''
 		field_values = dict()
 		
@@ -177,21 +179,21 @@ class PopulateVSO:
 			start_date += time_increment
 
 
-class PopulateFilesystem:
-	dataset = None
+class PopulatorForFiles:
+	dataset_id = None
 	directory = None
 	file_url_template = None
 	thumbnail_url_template = None
 	
 	def __init__(self, log = logging):
 		
-		if self.dataset is None:
-			raise ImproperlyConfigured('dataset has not been set')
+		if self.dataset_id is None:
+			raise ImproperlyConfigured('dataset_id has not been set')
 		
 		if self.directory is None:
 			raise ImproperlyConfigured('directory has not been set')
 		
-		self.metadata_model = Dataset.objects.get(id=dataset).metadata_model
+		self.metadata_model = Dataset.objects.get(id=dataset_id).metadata_model
 		self.log = log
 	
 	def get_oid(self, header):
@@ -214,14 +216,14 @@ class PopulateFilesystem:
 		else:
 			return thumbnail_url_template.format(**dict(header.iteritems()))
 	
-	def get_fits_header(file_path):
+	def get_fits_header(self, file_path):
 		'''Return the header and file size for the record'''
 		hdus = pyfits.open(file_path)
 		file_size = os.path.getsize(file_path)
 		
 		return hdus[self.hdu_number], file_size
 	
-	def get_field_values(fields, header):
+	def get_field_values(self, fields, header):
 		'''Return a dict with the value for each field'''
 		field_values = dict()
 		
@@ -242,9 +244,7 @@ class PopulateFilesystem:
 		
 		return field_values
 	
-	def list_files(start_date = None, end_date = None):
-		from glob import glob
-		from itertools import chain
+	def list_files(self, start_date = None, end_date = None):
 		return (chain.from_iterable(glob(os.path.join(x[0], '*.fits')) for x in os.walk(self.directory)))
 	
 	def run(self, start_date, end_date, update = False):
@@ -252,7 +252,7 @@ class PopulateFilesystem:
 		# List of fields to populate
 		fields = self.metadata_model._meta.get_fields()
 		
-		for file_path in list_files(start_date, end_date):
+		for file_path in self.list_files(start_date, end_date):
 			
 			# Get the header
 			try:
