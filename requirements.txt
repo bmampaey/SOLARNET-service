@@ -11,4 +11,4 @@ pyfits>=3.3
 pytz>=2014.10
 requests>=2.2.1
 sunpy>=0.6.1
-
+suds
