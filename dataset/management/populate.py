@@ -183,91 +183,91 @@ class PopulatorForVSO(object):
 			start_date += time_increment
 
 
-class FilePopulatorMixin(object):
+class RecordFromFitsFile(object):
+	#: The Matadata model for the dataset
 	metadata_model = None
-	hdu_number = 0
-	skip_fields = []
+	#: The HDU for this record (a number or a name)
+	HDU = 0
+	#: Fields to exclude from record
+	exclude_fields = []
 	
-	def __init__(self, *args, **kwargs):
-		super(FilePopulatorMixin, self).__init__(*args, **kwargs)
+	def __init__(self, file_path):
 		if not getattr(self, metadata_model):
 			raise ImproperlyConfigured('Metadata model has not been set')
+		self.file_path = file_path
 		self.fields = self.get_fields()
-		self.log = Logger(self)
 	
-	@classmethod
-	def get_fields(cls):
-		skip_fields = ['id', 'data_location', 'tags', 'oid', 'fits_header'] + cls.skip_fields
-		return [field for field in cls.metadata_model._meta.get_fields() if field.name not in skip_fields]
-
-	def add_arguments(self, parser):
-		parser.add_argument('files', nargs='+', metavar='file', help='Path to a fits file.')
-		parser.add_argument('--update', default = False, action='store_true', help='Update metadata even if already present in DB')
-		
-	def handle(self, **options):
-		
-		# Glob the file paths
-		file_paths = list()
-		for path in options['files']:
-			files.extend(glob(path))
-		
-		# Populate the dataset
-		for file_path in file_paths:
-			try:
-				self.populate(file_path, update=options['update'])
-			except Exception, why:
-				self.log.error('Error creating record for "%s": %s', file_path, why)
-
-	def get_oid(self, field_values):
-		'''Return the oid for the record'''
-		return int(parse_date(field_values['date_beg']).strftime('%Y%m%d%H%M%S'))
+	@property
+	def fields(self):
+		'''Record fields'''
+		if getattr(self, '_fields'):
+			exclude_fields = ['id', 'data_location', 'tags', 'oid', 'fits_header'] + self.exclude_fields
+			self._fields = [field for field in self.metadata_model._meta.get_fields() if field.name not in exclude_fields]
+		return self._fields
 	
-	def get_file_url(self, header, file_path):
-		'''Return the file url for the record'''
-		raise ImproperlyConfigured('You must override get_file_url')
-	
-	def get_thumbnail_url(self, header):
-		'''Return the thumbnail url for the record'''
-		thumbnail_url = None
-		if self.thumbnail_url_template is None:
-			self.log.warning('No thumbnail_url_template was set')
-			return None
+	@property
+	def oid(self):
+		'''Observation identifier'''
+		if getattr(self, '_oid'):
+			return self._oid
+		elif 'date_beg' in self.field_values:
+			return int(parse_date(self.field_values['date_beg']).strftime('%Y%m%d%H%M%S'))
 		else:
-			return self.thumbnail_url_template.format(**dict(header.iteritems()))
+			raise ImproperlyConfigured('oid not set')
 	
-	def get_fits_header(self, file_path):
-		'''Return the header and file size for the record'''
-		hdus = pyfits.open(file_path)
-		file_size = os.path.getsize(file_path)
+	@property
+	def file_url(self):
+		'''URL of the file'''
+		if getattr(self, '_file_url'):
+			return self._file_url
+		else:
+			raise ImproperlyConfigured('file_url not set')
+	
+	@property
+	def thumbnail_url(self):
+		'''URL of the thumbnail'''
+		if getattr(self, '_thumbnail_url'):
+			return self._thumbnail_url
+		else:
+			return None
+	
+	@property
+	def fits_header(self):
+		'''Fits header'''
+		if getattr(self, '_fits_header') is None:
+			hdus = pyfits.open(self.file_path)
+			self._fits_header = hdus[self.HDU].header
+			hdus.close(output_verify='ignore')
+		return self._fits_header
 		
-		return hdus[self.hdu_number].header, file_size
+	@property
+	def file_size(self)
+		'''File size'''
+		return os.path.getsize(self.file_path)
 	
-	
-	
-	def get_field_values(self, fields, header):
-		'''Return a dict with the value for each field'''
-		field_values = dict()
+	@property
+	def field_values(self):
+		'''Dict of values for each record field'''
 		
-		for field in self.fields:
-			if field.verbose_name in header:
+		if getattr(self, '_field_values') is None:
+			self.field_values = dict()
+			
+			for field in self.fields:
 				try:
-					# If the field is a data or a datetime, parse the keyword value into a datetime
+					# If the field is a date or a datetime, parse the keyword value into a datetime
 					if isinstance(field, DateField):
-						value = parse_date(header[field.verbose_name])
+						value = parse_date(self.fits_header[field.verbose_name])
 					else:
-						value = header[field.verbose_name]
+						value = self.fits_header[field.verbose_name]
 					# Convert the keyword value into the appropriate python type for the field
 					field_values[field.name] = field.to_python(value)
 				except Exception, why:
-					self.log.error('Error parsing value %s for field %s: %s', header[field.verbose_name], field.name, why)
-			else:
-				self.log.warning('Missing keyword %s in header', field.verbose_name)
+					continue
 		
-		return field_values
+		return self._field_values
 	
-	
-	def populate(self, file_path, update = False):
-		'''Populate database with data location and metadata from file'''
+	def save(self, update = False):
+		'''Save the record (DataLocation + MetaData) into the database'''
 			
 		# Get the header
 		try:
