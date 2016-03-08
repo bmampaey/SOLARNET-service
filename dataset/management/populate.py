@@ -183,36 +183,48 @@ class PopulatorForVSO(object):
 			start_date += time_increment
 
 
-class PopulatorForFiles(object):
-	dataset_id = None
-	directory = None
-	file_pattern = '*.fits'
-	file_url_template = None
-	thumbnail_url_template = None
+class FilePopulatorMixin(object):
+	metadata_model = None
 	hdu_number = 0
 	skip_fields = []
 	
-	def __init__(self, log = logging):
-		
-		if self.dataset_id is None:
-			raise ImproperlyConfigured('dataset_id has not been set')
-		
-		if self.directory is None:
-			raise ImproperlyConfigured('directory has not been set')
-		
-		self.metadata_model = Dataset.objects.get(id=self.dataset_id).metadata_model
-		self.log = log
+	def __init__(self, *args, **kwargs):
+		super(FilePopulatorMixin, self).__init__(*args, **kwargs)
+		if not getattr(self, metadata_model):
+			raise ImproperlyConfigured('Metadata model has not been set')
+		self.fields = self.get_fields()
+		self.log = Logger(self)
 	
-	def get_oid(self, header):
+	@classmethod
+	def get_fields(cls):
+		skip_fields = ['id', 'data_location', 'tags', 'oid', 'fits_header'] + cls.skip_fields
+		return [field for field in cls.metadata_model._meta.get_fields() if field.name not in skip_fields]
+
+	def add_arguments(self, parser):
+		parser.add_argument('files', nargs='+', metavar='file', help='Path to a fits file.')
+		parser.add_argument('--update', default = False, action='store_true', help='Update metadata even if already present in DB')
+		
+	def handle(self, **options):
+		
+		# Glob the file paths
+		file_paths = list()
+		for path in options['files']:
+			files.extend(glob(path))
+		
+		# Populate the dataset
+		for file_path in file_paths:
+			try:
+				self.populate(file_path, update=options['update'])
+			except Exception, why:
+				self.log.error('Error creating record for "%s": %s', file_path, why)
+
+	def get_oid(self, field_values):
 		'''Return the oid for the record'''
-		raise ImproperlyConfigured('get_oid must be overriden')
+		return int(parse_date(field_values['date_beg']).strftime('%Y%m%d%H%M%S'))
 	
 	def get_file_url(self, header, file_path):
 		'''Return the file url for the record'''
-		if self.file_url_template is None:
-			raise ImproperlyConfigured('file_url_template has not been set. Set file_url_template or override get_file_url')
-		else:
-			return self.file_url_template.format(**dict(header.iteritems()))
+		raise ImproperlyConfigured('You must override get_file_url')
 	
 	def get_thumbnail_url(self, header):
 		'''Return the thumbnail url for the record'''
@@ -230,15 +242,13 @@ class PopulatorForFiles(object):
 		
 		return hdus[self.hdu_number].header, file_size
 	
-	def get_fields(self):
-		return [field for field in self.metadata_model._meta.get_fields() if field.name not in ['id', 'data_location', 'tags', 'oid', 'fits_header'] + self.skip_fields]
 	
 	
 	def get_field_values(self, fields, header):
 		'''Return a dict with the value for each field'''
 		field_values = dict()
 		
-		for field in fields:
+		for field in self.fields:
 			if field.verbose_name in header:
 				try:
 					# If the field is a data or a datetime, parse the keyword value into a datetime
@@ -255,48 +265,41 @@ class PopulatorForFiles(object):
 		
 		return field_values
 	
-	def list_files(self, start_date = None, end_date = None):
-		return chain.from_iterable(glob(os.path.join(x[0], self.file_pattern)) for x in os.walk(self.directory))
 	
-	def run(self, start_date, end_date, update = False):
+	def populate(self, file_path, update = False):
 		'''Populate database with data location and metadata from file'''
-		# List of fields to populate
-		fields = self.get_fields()
+			
+		# Get the header
+		try:
+			fits_header, file_size = self.get_fits_header(file_path)
+		except Exception, why:
+			raise CommandError('Error reading file "%s": %s'% (file_path, why))
+			
 		
-		for file_path in self.list_files(start_date, end_date):
-			
-			# Get the header
-			try:
-				header, file_size = self.get_fits_header(file_path)
-			except Exception, why:
-				self.log.error('Error reading file "%s": %s', file_path, why)
-				continue
-			
-			# Skip element if metadata already exists
-			if not update and self.metadata_model.objects.filter(oid = self.get_oid(header)).exists():
-				self.log.warning('Not updating data_location and metadata for file "%s"', file_path) 
-				continue
-			
-			# Get the field values
-			try:
-				field_values = self.get_field_values(fields, header)
-			except Exception, why:
-				self.log.error('Error parsing header into field values "%s": %s', file_path, why)
-				continue
-			
-			# Create the corresponding DataLocation and Metadata
-			try:
-				# It needs to be an atomic transaction so that if the metadata creation fails, the data location is not saved
-				with transaction.atomic():
-					# Create data location but with access through VSO
-					data_location = DataLocation.objects.create(file_url = self.get_file_url(header, file_path), file_size = file_size, thumbnail_url = self.get_thumbnail_url(header))
-					
-					# Create metadata
-					metadata = self.metadata_model.objects.create(oid = self.get_oid(header), data_location = data_location, fits_header = header.tostring(), **field_values)
-			
-			except Exception, why:
-				self.log.error('Error creating record for "%s": %s', file_path, why)
-			
-			else:
-				self.log.info('Created record for "%s"', file_path)
+		# Get the field values
+		try:
+			field_values = self.get_field_values(fields, header)
+		except Exception, why:
+			raise CommandError('Error parsing header into field values "%s": %s' % (file_path, why))
+		
+		
+		# Skip element if metadata already exists
+		if not update and self.metadata_model.objects.filter(oid = field_values['oid']).exists():
+			raise CommandError('Not updating data_location and metadata for file "%s"' % file_path) 
+		
+		# Create the corresponding DataLocation and Metadata
+		try:
+			# It needs to be an atomic transaction so that if the metadata creation fails, the data location is not saved
+			with transaction.atomic():
+				# Create data location
+				data_location = DataLocation.objects.create(file_url = self.get_file_url(file_path), file_size = file_size, thumbnail_url = self.get_thumbnail_url(header))
+				
+				# Create metadata
+				metadata = self.metadata_model.objects.create(data_location = data_location, fits_header = header.tostring(), **field_values)
+		
+		except Exception, why:
+			self.log.error('Error creating record for "%s": %s', file_path, why)
+		
+		else:
+			self.log.info('Created record for "%s"', file_path)
 

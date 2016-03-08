@@ -1,7 +1,8 @@
 from datetime import datetime
 from dateutil.parser import parse as parse_date
-from importlib import import_module
+#from importlib import import_module
 from django.core.management.base import BaseCommand, CommandError
+import ..populate
 from ..logger import Logger
 
 class Command(BaseCommand):
@@ -9,17 +10,35 @@ class Command(BaseCommand):
 	
 	def add_arguments(self, parser):
 		parser.add_argument('dataset', help='The id of the dataset.')
-		parser.add_argument('start_date', type = lambda s: parse_date(s), help='The start date.')
-		parser.add_argument('end_date', nargs = '?', type = lambda s: parse_date(s), default = datetime.utcnow(), help='The end date.')
+		parser.add_argument('files', nargs='+', metavar='file', help='Path to a fits file.')
 		parser.add_argument('--update', default = False, action='store_true', help='Update metadata even if already present in DB')
 		
 	def handle(self, **options):
-		# Create a populator for the dataset
+		
+		log = Logger(self)
+		
+		# Check if the dataset has a specific populator
 		try:
 			populate = import_module(options['dataset'] + '.management.populate')
-			populator = populate.Populator(Logger(self))
-		except Exception, why:
-			raise CommandError('Cannot create a populator for dataset %s: %s' % (options['dataset'], why))
+		except ImportError:
+			log.warning('No Populator for dataset %s, using generic Populator', options['dataset'])
 		
-		# Run the populator
-		populator.run(options['start_date'], options['end_date'], options['update'])
+		# Create a populator for the dataset
+		try
+			populator = populate.Populator(options, log=log)
+		except Exception, why:
+			raise CommandError('Could not create Populator for dataset %s: %s', options['dataset'])
+		
+		# Glob the file paths
+		file_paths = list()
+		for path in options['files']:
+			files.extend(glob(path))
+		
+		# Populate the dataset
+		for file_path in file_paths:
+			try:
+				populator.populate(file_path, update=options['update'])
+			except Exception, why:
+				log.error('Error creating record for "%s": %s', file_path, why)
+
+
