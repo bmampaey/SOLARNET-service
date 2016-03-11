@@ -139,4 +139,5 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 	'''Admin class for the common options of Metadata models'''
 	list_filter = [('date_beg', DateRangeFilter), 'wavemin']
 	list_display = ['date_beg', 'wavemin']
+	readonly_fields = ['data_location']
 

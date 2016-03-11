@@ -1,13 +1,21 @@
-from dataset.management.populate import PopulatorForVSO
+from datetime import timedelta
+from urlparse import urlparse
 
-class Populator(PopulatorForVSO):
-	header_size = 5760
-	zipped = True
+from dataset.management import records
+from ..models import Metadata
+
+class RecordFromVSO(records.RecordFromVSO):
+	metadata_model = Metadata
+	exclude_fields = ['date_beg', 'date_end', 'wavemin', 'wavemax']
 	instrument = 'ChroTel'
-	dataset_id = 'chrotel'
+	min_header_size = 5760
+	zipped = True
 	
-	def get_field_values(self, fields, header):
-		field_values = super(Populator, self).get_field_values(fields, header)
+	def get_header_file_url(self):
+		return urlparse(self.vso_record.fileid)._replace(scheme='http').geturl()
+		
+	def get_field_values(self):
+		field_values = super(RecordFromVSO, self).get_field_values()
 		
 		# See http://www.kis.uni-freiburg.de/en/observatories/chrotel/data/
 		field_values['date_beg'] = field_values['date_obs']
