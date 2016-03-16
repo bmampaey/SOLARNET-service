@@ -137,7 +137,7 @@ USE_I18N = False
 
 USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
 # Specify ISO time format with timezone
 DATETIME_FORMAT = 'Y-m-d H:i:s e'
