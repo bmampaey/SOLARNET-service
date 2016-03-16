@@ -34,7 +34,7 @@ class Command(BaseCommand):
 		for tag_name in options['tags']:
 			tag, created = Tag.objects.get_or_create(name=tag_name)
 			tags.append(tag)
-		import pdb; pdb.set_trace()
+		
 		# Populate the dataset
 		for vso_record in vso_records(Record.instrument, options['start_date'], options['end_date']):
 			try:

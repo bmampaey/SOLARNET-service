@@ -45,7 +45,7 @@ class Command(StartAppCommand):
 			top_dir = os.path.join(os.getcwd(), app_name)
 		else:
 			top_dir = os.path.abspath(os.path.expanduser(target))
-		import pdb; pdb.set_trace()
+		
 		# Write the files template
 		for file_name, template in file_templates.iteritems():
 			file_path = os.path.join(top_dir, file_name)

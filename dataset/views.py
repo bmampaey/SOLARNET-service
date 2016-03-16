@@ -10,7 +10,6 @@ class DownloadData(RedirectView):
 	permanent = True
 	
 	def get_redirect_url(self, dataset_id, metadata_oid):
-		import pdb; pdb.set_trace()
 		dataset = get_object_or_404(Dataset, id=dataset_id)
 		metadata = get_object_or_404(dataset.metadata_model, oid=metadata_oid)
 		return metadata.data_location.url

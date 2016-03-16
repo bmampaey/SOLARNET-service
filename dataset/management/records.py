@@ -249,4 +249,5 @@ class RecordFromVSO(RecordFromFitsFile):
 	def get_file_size(self):
 		'''Return the size of the file'''
 		# The file size is set by get_fits_header
+		self.header = self.get_fits_header()
 		return self.file_size

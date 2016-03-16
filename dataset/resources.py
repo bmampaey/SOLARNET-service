@@ -122,26 +122,7 @@ class DatasetResource(ModelResource):
 	def dehydrate_characteristics(self, bundle):
 		return [str(name) for name in bundle.obj.characteristics.values_list('name', flat = True)]
 
-	def dehydrate_metadata2(self, bundle):
-		# 2 ways
-		# 1.  use the request and the resource to build everything
-		# 2. use the reverse and the buil_filters
-		from SDA.api import api
-		# Get the API resource for the metadata
-		try:
-			#import pdb; pdb.set_trace()
-			resource = api._registry['%s_metadata' % bundle.obj.id]
-		except KeyError:
-			return None
-		
-		request = copy(bundle.request)
-		# TODO remove dataset only filters from GET QueryDict
-		request.path = resource.get_resource_uri()
-		number_items = resource.obj_get_list(resource.build_bundle(request=request)).count()
-		return {'uri': request.get_full_path(), 'number_items': number_items}
-
 	def dehydrate_metadata(self, bundle):
-		#import pdb; pdb.set_trace()
 		# Find the metadata resource uri
 		try:
 			uri = reverse('api_dispatch_list', kwargs={'resource_name': '%s_metadata' % bundle.obj.id, 'api_name': self.api_name})
@@ -176,7 +157,6 @@ class DatasetResource(ModelResource):
 				'uri': uri,
 				 'number_items': bundle.obj.metadata_model.objects.filter(**filters).count()
 			 }
-
 
 class BaseMetadataResource(ModelResource):
 	'''Base resource for Metadata models'''

@@ -14,7 +14,6 @@ class RecordFromVSO(records.RecordFromVSO):
 		return self.vso_record.fileid
 		
 	def get_field_values(self):
-		import pdb; pdb.set_trace()
 		field_values = super(RecordFromVSO, self).get_field_values()
 		
 		# See https://xrt.cfa.harvard.edu/resources/documents/XAG/XAG.pdf
