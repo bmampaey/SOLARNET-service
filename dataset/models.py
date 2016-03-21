@@ -31,7 +31,7 @@ class Tag(models.Model):
 
 class BaseMetadata(models.Model):
 	'''Model for the common fields of Metadata models'''
-	oid = models.BigIntegerField('Observation ID', help_text = 'Unique number for the observation metadata, usually in the form YYYYMMDDHHMMSS', unique = True)
+	oid = models.TextField('Observation ID', help_text = 'Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS', unique = True)
 	fits_header = models.TextField(null=False, blank=True)
 	data_location = models.ForeignKey(DataLocation, related_name='%(app_label)s_%(class)s', null=True, blank=True, on_delete=models.SET_NULL)
 	tags = models.ManyToManyField(Tag, related_name='%(app_label)s_%(class)s')
@@ -42,6 +42,7 @@ class BaseMetadata(models.Model):
 	
 	class Meta:
 		abstract = True
+		ordering = ['date_beg']
 	
 	def __unicode__(self):
 		return unicode(self.id)
