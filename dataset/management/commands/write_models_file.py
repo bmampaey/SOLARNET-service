@@ -20,6 +20,8 @@ def field_for_type(python_type):
 		return 'models.DateTimeField'
 	elif python_type == 'int':
 		return 'models.IntegerField'
+	elif python_type == 'long':
+		return 'models.BigIntegerField'
 	elif python_type == 'float':
 		return 'models.FloatField'
 	elif python_type == 'bool':

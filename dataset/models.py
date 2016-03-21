@@ -114,6 +114,7 @@ class Keyword(models.Model):
 		('str', 'string'),
 		('bool', 'bool'),
 		('int', 'int'),
+		('long', 'bigint'),
 		('float', 'float'),
 		('datetime', 'datetime (iso format)'),
 	)
