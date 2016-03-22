@@ -17,7 +17,24 @@ class TagResource(ModelResource):
 		queryset = Tag.objects.all()
 		resource_name = 'tag'
 		filtering = {'name': ALL}
-
+	
+	def build_filters(self, filters=None, ignore_bad_filters=False):
+		# Allow more intuitive  tags filtering on dataset using dataset={dateset_id} instaed of {dataset_id}_metadata__isnull=False
+		# This filter allows only to get tags for one dataset
+		orm_filters = super(TagResource, self).build_filters(filters, ignore_bad_filters)
+		if "dataset" in filters:
+			orm_filters[filters['dataset'] + '_metadata__isnull'] = False
+		
+		return orm_filters
+	
+	def apply_filters(self, request, applicable_filters):
+		# Avoid duplicate results
+		return super(TagResource, self).apply_filters(request, applicable_filters).distinct()
+	
+	def build_schema(self):
+		data = super(TagResource, self).build_schema()
+		data['filtering']['dataset'] = 'exact'
+		return data
 
 class DataLocationResource(ModelResource):
 	'''Resource for DataLocation models'''
@@ -100,7 +117,8 @@ class DatasetResource(ModelResource):
 	
 	instrument = fields.CharField('instrument')
 	telescope = fields.CharField('telescope')
-	characteristics = fields.ListField()
+	characteristics = fields.ToManyField(CharacteristicResource, 'characteristics', full=True)
+
 	metadata = fields.DictField()
 	
 	class Meta(ResourceMeta):
@@ -119,14 +137,11 @@ class DatasetResource(ModelResource):
 		}
 		
 		
-	def dehydrate_characteristics(self, bundle):
-		return [str(name) for name in bundle.obj.characteristics.values_list('name', flat = True)]
-
 	def dehydrate_metadata(self, bundle):
 		# Find the metadata resource uri
 		try:
 			uri = reverse('api_dispatch_list', kwargs={'resource_name': '%s_metadata' % bundle.obj.id, 'api_name': self.api_name})
-		except NoReverseMatch:
+		except (NoReverseMatch, AttributeError):
 			return None
 		
 		# Create the resource for the metadata model
@@ -157,6 +172,7 @@ class DatasetResource(ModelResource):
 				'uri': uri,
 				 'number_items': bundle.obj.metadata_model.objects.filter(**filters).count()
 			 }
+
 
 class BaseMetadataResource(ModelResource):
 	'''Base resource for Metadata models'''
