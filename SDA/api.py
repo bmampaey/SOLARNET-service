@@ -12,6 +12,10 @@ api.register(dataset.resources.KeywordResource())
 api.register(dataset.resources.TagResource())
 api.register(dataset.resources.DataLocationResource())
 
+import data_selection.resources
+api.register(data_selection.resources.UserDataSelectionResource())
+api.register(data_selection.resources.DataSelectionResource())
+
 import chrotel.resources
 api.register(chrotel.resources.MetadataResource())
 

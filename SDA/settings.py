@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 	'tastypie_swagger', # RESTful api viewer pip install git+https://github.com/concentricsky/django-tastypie-swagger.git --upgrade
 	# Our own apps
 	'dataset',
+	'data_selection',
 	'eit',
 	'swap_lev1',
 	'aia_lev1',
@@ -151,3 +152,6 @@ STATIC_URL = '/static/'
 # Cross domain See https://github.com/ottoyiu/django-cors-headers/
 CORS_ORIGIN_ALLOW_ALL = True
 #CORS_ALLOW_CREDENTIALS = True
+
+# FTP settings
+FTP_URL = 'ftp://solarnet.oma.be/'
