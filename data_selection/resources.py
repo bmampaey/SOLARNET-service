@@ -29,6 +29,18 @@ class UserDataSelectionResource(ModelResource):
 	
 	def dehydrate_ftp_link(self, bundle):
 		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user.username}/{obj.name}/'.format(obj = bundle.obj))
+	
+	def obj_create(self, bundle, **kwargs):
+		import pdb; pdb.set_trace()
+		#TODO is this needed
+		return super(UserDataSelectionResource, self).obj_create(bundle, user=bundle.request.user)
+	
+	def authorized_read_list(self, object_list, bundle):
+		# Only allow a user to list it's own data seletcion
+		if bundle.request.user.is_authenticated():
+			return object_list.filter(user=bundle.request.user)
+		else:
+			return object_list.none()
 
 class DataSelectionResource(ModelResource):
 	'''RESTful resource for model DataSelection'''
