@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from SDA.api import v1_api
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^api/', include(v1_api.urls)),
 	url(r'^wizard/', include('wizard.urls')),
@@ -12,4 +12,6 @@ urlpatterns = patterns('',
 	url(r'^aia_lev1/', include('aia_lev1.urls', namespace='aia_lev1')),
 	url(r'^hmi_magnetogram/', include('hmi_magnetogram.urls', namespace='hmi_magnetogram')),
 	url(r'^themis/', include('themis.urls', namespace='themis')),
-)
+	url(r'^chrotel/', include('chrotel.urls', namespace='chrotel')),
+	url(r'^xrt/', include('xrt.urls', namespace='xrt')),
+]

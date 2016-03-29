@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 class BaseMetaData(models.Model):
 	id = models.BigIntegerField(primary_key=True)
 	tags = models.ManyToManyField('Tag', related_name = "%(app_label)s_%(class)s")
+	fits_header = models.TextField(null=True, blank=True, default = None)
 	
 	class Meta:
 		abstract = True
@@ -44,9 +45,10 @@ class BaseKeyword(models.Model):
 
 class BaseDataLocation(models.Model):
 	
-	url = models.TextField(help_text = "URL of the data at the data site.", max_length=255, blank=True, null=True)
+	url = models.TextField(help_text = "URL of the file at the data site.", max_length=255, blank=True, null=True)
 	file_size = models.IntegerField(help_text = "Size of the file in bytes.", default=0, blank=True, null=True)
 	updated = models.DateTimeField(help_text = "Date of last update", null=False, blank=False, auto_now=True)
+	thumbnail_url = models.TextField(help_text = 'URL of the thumbnail at the remote site.', max_length=255, blank=True, null=True, default = None)
 	
 	class Meta:
 		abstract = True
@@ -67,5 +69,10 @@ class BaseTag(models.Model):
 	
 	@classmethod
 	def all_tags(cls):
-		tags = [sub_model.objects.values_list("name", flat=True) for sub_model in cls.__subclasses__()]
-		return set([t for ts in tags for t in ts])
+		tags = set()
+		for sub_model in cls.__subclasses__():
+			try:
+				tags.update(sub_model.objects.values_list("name", flat=True))
+			except Exception:
+				pass
+		return tags

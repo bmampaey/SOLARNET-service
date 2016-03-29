@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from themis import views
+from chrotel import views
 
 urlpatterns = [
 	url(r'^search_data_form$', views.SearchDataForm.as_view(), name='search_data_form'),

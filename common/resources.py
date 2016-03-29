@@ -1,12 +1,13 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS, url
-from tastypie.authorization import DjangoAuthorization
+
 from tastypie.utils import trailing_slash
 from tastypie.validation import FormValidation
 from django.forms import ModelForm
 
 from common.tastypie_paginator import EstimatedCountPaginator
 from SDA.authentication import authentication
+from SDA.authorization import AlwaysReadAuthorization
 
 class BaseResource(ModelResource):
 	"""Base class to set common parameters to all resources"""
@@ -15,7 +16,7 @@ class BaseResource(ModelResource):
 		#include_absolute_url = True
 		paginator_class = EstimatedCountPaginator
 		authentication = authentication
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 		always_return_data = True
 	
 #	def base_urls(self):

@@ -8,8 +8,8 @@ from eit.models import MetaData, Tag
 
 class SearchData(BaseForm):
 	"""Form to search the data"""
-	FIRST_DATE_OBS = MetaData.objects.order_by("date_obs").first().date_obs
-	LAST_DATE_OBS = MetaData.objects.order_by("date_obs").last().date_obs
+	FIRST_DATE_OBS = MetaData.objects.order_by('date_obs').values_list('date_obs', flat = True).first()
+	LAST_DATE_OBS = MetaData.objects.order_by('date_obs').values_list('date_obs', flat = True).last()
 	EIT_WAVELENGTHS = [171, 195, 284, 304]
 	SCIENCE_OBJECTIVES = MetaData.objects.values_list('sci_obj', flat=True).distinct()
 	TAGS = lambda: [(t, u'%s'%t) for t in Tag.objects.values_list("name", flat=True)]

@@ -1,10 +1,10 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from tastypie.authorization import DjangoAuthorization
 
 
 from wizard.models import UserDataSelection, DataSelection
 from common.models import BaseTag
+from SDA.authorization import AlwaysReadAuthorization
 
 class UserDataSelectionResource(ModelResource):
 	data_selections = fields.ToManyField('wizard.resources.DataSelectionResource', 'data_selections', related_name='name', full = True)
@@ -13,7 +13,7 @@ class UserDataSelectionResource(ModelResource):
 		queryset = UserDataSelection.objects.all()
 		resource_name = 'user_data_selection'
 		limit = None
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 		filtering = {
 		"user": ALL,
 		"name": ALL,
@@ -29,7 +29,7 @@ class DataSelectionResource(ModelResource):
 		queryset = DataSelection.objects.all()
 		resource_name = 'data_selection'
 		limit = None
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 		filtering = {
 		"dataset": ALL_WITH_RELATIONS,
 		"created": ALL,

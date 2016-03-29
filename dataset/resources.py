@@ -1,6 +1,5 @@
 from tastypie import fields
 from tastypie.resources import Resource, ModelResource, ALL, ALL_WITH_RELATIONS, url
-from tastypie.authorization import DjangoAuthorization
 from tastypie.utils import trailing_slash
 
 
@@ -8,6 +7,7 @@ from tastypie.utils import trailing_slash
 from common.tastypie_paginator import EstimatedCountPaginator
 from common.models import BaseTag
 
+from SDA.authorization import AlwaysReadAuthorization
 from dataset.models import Dataset, Characteristic, Instrument, Telescope
 
 class TelescopeResource(ModelResource):
@@ -18,21 +18,21 @@ class TelescopeResource(ModelResource):
 		resource_name = 'telescope'
 		allowed_methods = ['get']
 		limit = None
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 		filtering = {
 		"name": ALL,
 		"description": ALL,
 		}
 
 class InstrumentResource(ModelResource):
-	telescope = fields.ForeignKey(TelescopeResource, 'telescope', full = False)
+	telescope = fields.ToOneField(TelescopeResource, 'telescope', full = False)
 	
 	class Meta:
 		queryset = Instrument.objects.all()
 		resource_name = 'instrument'
 		allowed_methods = ['get']
 		limit = None
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 		filtering = {
 		"name": ALL,
 		"description": ALL,
@@ -43,8 +43,7 @@ class CharacteristicResource(ModelResource):
 		queryset = Characteristic.objects.all()
 		resource_name = 'characteristic'
 		limit = None
-		paginator_class = EstimatedCountPaginator
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 
 class TagResource(Resource):
 	
@@ -55,7 +54,7 @@ class TagResource(Resource):
 		include_resource_uri = False
 		resource_name = 'tag'
 		limit = None
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 	
 	class Tag:
 		def __init__(self, **kwargs):
@@ -87,7 +86,7 @@ class DatasetResource(ModelResource):
 		resource_name = 'dataset'
 		limit = None
 		paginator_class = EstimatedCountPaginator
-		authorization = DjangoAuthorization()
+		authorization = AlwaysReadAuthorization()
 		filtering = {
 		"name": ALL,
 		"description": ALL,

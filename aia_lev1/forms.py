@@ -8,8 +8,8 @@ from aia_lev1.models import MetaData, Tag
 
 class SearchData(BaseForm):
 	"""Form to search the data"""
-	FIRST_DATE_OBS = MetaData.objects.order_by("date_obs").first().date_obs
-	LAST_DATE_OBS = MetaData.objects.order_by("date_obs").last().date_obs
+	FIRST_DATE_OBS = MetaData.objects.order_by('date_obs').values_list('date_obs', flat = True).first()
+	LAST_DATE_OBS = MetaData.objects.order_by('date_obs').values_list('date_obs', flat = True).last()
 	AIA_WAVELENGTHS = [94, 131, 171, 193, 211, 304, 335, 1600, 1700, 4500]
 	TAGS = lambda: [(t, u'%s'%t) for t in Tag.objects.values_list("name", flat=True)]
 	start_date = forms.DateTimeField(required=False, initial = FIRST_DATE_OBS, widget=forms.DateTimeInput(format = "%Y-%m-%d %H:%M:%S", attrs={'class': 'date_time_input'}))

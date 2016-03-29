@@ -21,24 +21,24 @@ class EstimatedCountPaginator(Paginator):
 		cls.connection_name = connection_name
 		return cls
 
-	def get_next(self, limit, offset, count):
-		# The parent method needs an int which is higher than "limit + offset"
-		# to return a url. Setting it to an unreasonably large value, so that
-		# the parent method will always return the url.
-		if self._estimated:
-			count = 2 ** 64
-		return super(EstimatedCountPaginator, self).get_next(limit, offset, count)
+#	def get_next(self, limit, offset, count):
+#		# The parent method needs an int which is higher than "limit + offset"
+#		# to return a url. Setting it to an unreasonably large value, so that
+#		# the parent method will always return the url.
+#		if self._estimated:
+#			count = 2 ** 64
+#		return super(EstimatedCountPaginator, self).get_next(limit, offset, count)
 
-	def get_count(self):
-		"""Return an estimate of the total number of objects if the estimate is greater than max_estimate"""
-		print "get_count"
-		estimate = self.get_estimated_count()
-		if estimate < self.max_estimate:
-			self._estimated = False
-			return super(EstimatedCountPaginator, self).get_count()
-		else:
-			self._estimated = True
-			return estimate
+#	def get_count(self):
+#		"""Return an estimate of the total number of objects if the estimate is greater than max_estimate"""
+#		print "get_count"
+#		estimate = self.get_estimated_count()
+#		if estimate < self.max_estimate:
+#			self._estimated = False
+#			return super(EstimatedCountPaginator, self).get_count()
+#		else:
+#			self._estimated = True
+#			return estimate
 
 	def get_estimated_count(self):
 		"""Get the estimated count by using the database query planner."""
@@ -88,7 +88,7 @@ class EstimatedCountPaginator(Paginator):
 			print type(why)
 			return 0
 		
-	def page(self):
-		data = super(EstimatedCountPaginator, self).page()
-		data['meta']['estimated_count'] = self._estimated
-		return data
+#	def page(self):
+#		data = super(EstimatedCountPaginator, self).page()
+#		data['meta']['estimated_count'] = self._estimated
+#		return data

@@ -32,7 +32,7 @@ except ImportError:
 	from secret_key import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = False
 
@@ -57,7 +57,9 @@ INSTALLED_APPS = (
 	'swap_lev1',
 	'aia_lev1',
 	'hmi_magnetogram',
-	'themis'
+	'themis',
+	'chrotel',
+	'xrt'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -120,6 +122,20 @@ DATABASES = {
 		'USER': 'themis',
 		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
+	},
+	'xrt': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'xrt',
+		'HOST': 'solarnetdb.oma.be',
+		'PORT': '5432',
+	},
+	'chrotel': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'sda',
+		'USER': 'chrotel',
+		'HOST': 'solarnetdb.oma.be',
+		'PORT': '5432',
 	}
 }
 
@@ -130,13 +146,13 @@ DATABASE_ROUTERS = ['SDA.database_routers.DataSetRouteur']
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Brussels'
+TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = False
 
-USE_TZ = False
+USE_TZ = True
 
 SHORT_DATETIME_FORMAT = DATETIME_FORMAT = u'Y-m-d\u202FH:i:s'
 
