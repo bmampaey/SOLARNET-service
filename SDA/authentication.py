@@ -19,7 +19,7 @@ class ApiKeyAuthentication(Authentication):
 		else:
 			username, api_key = data.split(':', 1)
 		
-		return username, api_ke
+		return username, api_key
 		
 	def is_authenticated(self, request, **kwargs):
 		try:

@@ -40,9 +40,9 @@ class UserResource(ModelResource):
 		
 		# Check that user is active and login is successfull
 		if user.is_active and user.do_login():
-			return self.create_response(request, {'success': True, 'username': user.username, 'api_key': user.api_key})
+			return self.create_response(request, {'username': user.username, 'api_key': user.api_key})
 		else:
-			return self.create_response(request, {'success': False, 'reason': 'Your account is disabled. Please contact the site administrators for help.'}, HttpForbidden)
+			return self.create_response(request, 'Your account is disabled. Please contact the site administrators for help.', HttpForbidden)
 	
 	def logout(self, request, **kwargs):
 		self.method_check(request, allowed=['get'])
