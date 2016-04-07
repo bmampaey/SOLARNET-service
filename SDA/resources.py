@@ -1,26 +1,16 @@
-from tastypie.authorization import DjangoAuthorization
-from tastypie.authentication import MultiAuthentication, BasicAuthentication, SessionAuthentication
+from SDA.authorizations import AlwaysReadAuthorization
+from tastypie.authentication import MultiAuthentication, SessionAuthentication
 
 
-class AnonymousGETAuthentication(BasicAuthentication):
+class AnonymousGETAuthentication(SessionAuthentication):
 	''' No authentication on GET '''
 	
 	def is_authenticated(self, request, **kwargs):
 		''' If GET, don't check authentication, otherwise fall back to parent '''
-		
 		if request.method == "GET":
 			return True
 		else:
 			return super(AnonymousGETAuthentication, self).is_authenticated(request, **kwargs)
-
-class AlwaysReadAuthorization(DjangoAuthorization):
-	''' Always allow read '''
-	def read_list(self, object_list, bundle):
-		return object_list
-	
-	def read_detail(self, object_list, bundle):
-		return True
-
 
 class ResourceMeta:
 	"""Base class to set common parameters to all resources"""
