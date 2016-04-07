@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from tastypie.http import HttpUnauthorized, HttpForbidden
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
+from tastypie.models import ApiKey
 
 # TODO this should be done with api keys and a custom user model
 class UserResource(ModelResource):
@@ -16,7 +17,7 @@ class UserResource(ModelResource):
 		allowed_methods = ['get', 'post']
 		resource_name = 'user'
 		list_allowed_methods = []
-        detail_allowed_methods = []
+		detail_allowed_methods = []
 	
 	def prepend_urls(self):
 		return [
@@ -51,8 +52,8 @@ class UserResource(ModelResource):
 			elif not user.is_active:
 				return self.create_response(request, {'success': False, 'reason': 'Your account is disabled. Please contact the site administrators for help.'}, HttpForbidden)
 			else:
-				login(request, user)
-				return self.create_response(request, {'success': True, 'username': user.username})
+				api_key, _ = ApiKey.objects.get_or_create(user = user)
+				return self.create_response(request, {'success': True, 'username': user.username, 'api_key': api_key})
 		else:
 			return self.create_response(request, {'success': False, 'reason': 'Please check that you are using the same email as previously.'}, HttpUnauthorized)
 	

@@ -3,7 +3,7 @@ from tastypie.exceptions import Unauthorized
 
 
 class AlwaysReadAuthorization(DjangoAuthorization):
-	''' Always allow read '''
+	''' Always allow read, for the rest check Django permissions '''
 	def read_list(self, object_list, bundle):
 		return object_list
 	
