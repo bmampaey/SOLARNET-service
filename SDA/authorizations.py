@@ -4,6 +4,7 @@ from tastypie.exceptions import Unauthorized
 
 class AlwaysReadAuthorization(DjangoAuthorization):
 	''' Always allow read, for the rest check Django permissions '''
+	# This is necessary because django require change permission even for just reading
 	def read_list(self, object_list, bundle):
 		return object_list
 	

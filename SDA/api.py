@@ -12,8 +12,8 @@ api.register(dataset.resources.KeywordResource())
 api.register(dataset.resources.TagResource())
 api.register(dataset.resources.DataLocationResource())
 
-import account.resources
-api.register(account.resources.UserResource())
+import web_account.resources
+api.register(web_account.resources.UserResource())
 
 import data_selection.resources
 api.register(data_selection.resources.UserDataSelectionResource())

@@ -1,13 +1,13 @@
 from __future__ import unicode_literals
 from django.db import models
 
-from django.contrib.auth.models import User
+from web_account.models import User
 from django.contrib.postgres.fields import ArrayField
 
 from dataset.models import Dataset
 
 class UserDataSelection(models.Model):
-	user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(help_text='Name of the data selection', max_length = 80, null=False, blank=False)
 	created = models.DateTimeField(help_text = 'Date of creation', null=False, blank=False, auto_now_add=True)
 	updated = models.DateTimeField(help_text = 'Date of last update', null=False, blank=False, auto_now=True)
