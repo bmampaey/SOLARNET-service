@@ -14,25 +14,26 @@ class ApiKeyAuthentication(Authentication):
 		try:
 			data = self.get_authorization_data(request)
 		except ValueError:
-			username = request.GET.get('username') or request.POST.get('username')
+			email = request.GET.get('email') or request.POST.get('email')
 			api_key = request.GET.get('api_key') or request.POST.get('api_key')
 		else:
-			username, api_key = data.split(':', 1)
+			email, api_key = data.split(':', 1)
 		
-		return username, api_key
+		return email, api_key
 		
 	def is_authenticated(self, request, **kwargs):
+		
 		try:
-			username, api_key = self.extract_credentials(request)
+			email, api_key = self.extract_credentials(request)
 		except ValueError:
 			return self.anonymous(request)
 		
-		if not username or not api_key:
+		if not email or not api_key:
 			return self.anonymous(request)
 		
 		try:
-			user = User.objects.get(username = username)
-		except (User.DoesNotExist, User.MultipleObjectsReturned):
+			user = User.objects.get(email = email)
+		except User.DoesNotExist:
 			return self.anonymous(request)
 		
 		if user.api_key == api_key:
@@ -40,10 +41,10 @@ class ApiKeyAuthentication(Authentication):
 			return True
 		else:
 			return False
-
+	
 	def get_identifier(self, request):
 		try:
-			username = self.extract_credentials(request)[0]
+			email, trash = self.extract_credentials(request)
 		except ValueError:
-			username = 'anonymous'
-		return username
+			email = 'anonymous'
+		return email

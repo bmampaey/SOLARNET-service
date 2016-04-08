@@ -6,18 +6,23 @@ from tastypie.http import HttpUnauthorized, HttpForbidden
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 
+from SDA.resources import ResourceMeta
 from web_account.models import User
 
 
 class UserResource(ModelResource):
 	'''Allow to login or logout a user from email only. On login create user if it does not exists.'''
-	class Meta:
+	class Meta(ResourceMeta):
 		queryset = User.objects.all()
 		fields = []
 		allowed_methods = ['get', 'post']
 		resource_name = 'user'
 		list_allowed_methods = []
 		detail_allowed_methods = []
+	
+	def dispatch(self, request_type, request, **kwargs):
+		import pdb; pdb.set_trace()
+		return super(UserResource, self).dispatch(request_type, request, **kwargs)
 	
 	def prepend_urls(self):
 		return [
@@ -46,7 +51,8 @@ class UserResource(ModelResource):
 	
 	def logout(self, request, **kwargs):
 		self.method_check(request, allowed=['get'])
-		if request.user and request.user.is_authenticated():
+		# bad tastypie, is_authenticated returns None on success
+		if self.is_authenticated(request) is None:
 			return self.create_response(request, {'success': True})
 		else:
 			return self.create_response(request, {'success': False}, HttpUnauthorized)
