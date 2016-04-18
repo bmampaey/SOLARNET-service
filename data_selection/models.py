@@ -1,10 +1,12 @@
 from __future__ import unicode_literals
+import urlparse
+
 from django.db import models
 from django.http import QueryDict
-
-from web_account.models import User
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 
+from web_account.models import User
 from dataset.models import Dataset
 
 class UserDataSelection(models.Model):
@@ -30,6 +32,10 @@ class UserDataSelection(models.Model):
 	@property
 	def dataset_names(self):
 		return self.data_selections.values_list('dataset', flat=True).distinct()
+	
+	@property
+	def ftp_link(self):
+		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{self.user.email}/{self.name}/'.format(self = self))
 	
 
 class DataSelection(models.Model):
@@ -58,4 +64,8 @@ class DataSelection(models.Model):
 			query_dict = QueryDict(self.query_string, mutable=True)
 			# TODO this is probably wrong and should use the correct resource and use build_filters
 			return self.dataset.metadata_model.objects.filter(**query_dict.dict())
+	
+	@property
+	def ftp_link(self):
+		return self.user_data_selection.ftp_link + '{self.dataset.name}/'.format(self = self)
 

@@ -9,7 +9,7 @@ class UserDataSelectionAdmin(admin.ModelAdmin):
 	'''Admin class for the UserDataSelection model'''
 	list_display = ["user", "name", "created"]
 	list_filter = ["user__name"]
-	readonly_fields = ['data_selections']
+	readonly_fields = ['data_selections', 'ftp_link']
 	
 	def data_selections(self, instance):
 		table_body = format_html_join('\n', '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>', ((ds.dataset, ds.query_string, ds.number_items, ds.created) for ds in instance.data_selections.all()))
@@ -30,3 +30,4 @@ class DataSelectionAdmin(admin.ModelAdmin):
 	'''Admin class for the DataSelection model'''
 	list_display = ["user_data_selection", "dataset", "created"]
 	list_filter = ["dataset"]
+	readonly_fields = ['ftp_link']

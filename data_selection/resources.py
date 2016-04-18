@@ -1,7 +1,3 @@
-import urlparse
-
-from django.conf import settings
-
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
 
@@ -16,7 +12,7 @@ class UserDataSelectionResource(ModelResource):
 	
 	data_selections = fields.ToManyField('data_selection.resources.DataSelectionResource', 'data_selections', full = True, null= True, blank = True)
 	number_items = fields.IntegerField(attribute = 'number_items', readonly = True, help_text = 'The cumulated number of metadata items in the data selections')
-	ftp_link = fields.CharField(readonly = True, help_text = "A FTP link to the data selection")
+	ftp_link = fields.CharField(attribute='ftp_link', readonly = True, help_text = "A FTP link to the data selection")
 	
 	class Meta(ResourceMeta):
 		queryset = UserDataSelection.objects.all()
@@ -28,9 +24,6 @@ class UserDataSelectionResource(ModelResource):
 			'created' : ALL,
 			'updated' : ALL,
 		}
-	
-	def dehydrate_ftp_link(self, bundle):
-		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user.name}/{obj.name}/'.format(obj = bundle.obj))
 	
 	def obj_create(self, bundle, **kwargs):
 		# make sure that a new user data selection belongs to the autenthicated user
@@ -48,7 +41,7 @@ class DataSelectionResource(ModelResource):
 	
 	user_data_selection = fields.ToOneField(UserDataSelectionResource, 'user_data_selection')
 	dataset = fields.ToOneField(DatasetResource, 'dataset', full = True)
-	ftp_link = fields.CharField(readonly = True, help_text = "A FTP link to the data selection")
+	ftp_link = fields.CharField(attribute='ftp_link', readonly = True, help_text = "A FTP link to the data selection")
 	
 	class Meta(ResourceMeta):
 		queryset = DataSelection.objects.all()
@@ -62,7 +55,3 @@ class DataSelectionResource(ModelResource):
 			'created' : ALL,
 			'number_items' : ALL,
 		}
-	
-	def dehydrate_ftp_link(self, bundle):
-		return bundle.obj.user_data_selection.ftp_link + '{obj.dataset.name}/'.format(obj = bundle.obj)
-		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user_data_selection.user.name}/{obj.user_data_selection.name}/{obj.dataset.name}/'.format(obj = bundle.obj))
