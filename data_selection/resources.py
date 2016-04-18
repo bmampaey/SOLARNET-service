@@ -30,10 +30,9 @@ class UserDataSelectionResource(ModelResource):
 		}
 	
 	def dehydrate_ftp_link(self, bundle):
-		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user.username}/{obj.name}/'.format(obj = bundle.obj))
+		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user.name}/{obj.name}/'.format(obj = bundle.obj))
 	
 	def obj_create(self, bundle, **kwargs):
-		import pdb; pdb.set_trace()
 		# make sure that a new user data selection belongs to the autenthicated user
 		return super(UserDataSelectionResource, self).obj_create(bundle, user=bundle.request.user)
 	
@@ -65,4 +64,5 @@ class DataSelectionResource(ModelResource):
 		}
 	
 	def dehydrate_ftp_link(self, bundle):
-		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user_data_selection.user.username}/{obj.user_data_selection.name}/{obj.dataset.name}/'.format(obj = bundle.obj))
+		return bundle.obj.user_data_selection.ftp_link + '{obj.dataset.name}/'.format(obj = bundle.obj)
+		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{obj.user_data_selection.user.name}/{obj.user_data_selection.name}/{obj.dataset.name}/'.format(obj = bundle.obj))

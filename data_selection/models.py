@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
+from django.http import QueryDict
 
 from web_account.models import User
 from django.contrib.postgres.fields import ArrayField
@@ -19,7 +20,7 @@ class UserDataSelection(models.Model):
 		db_table = 'user_data_selection'
 		
 	def __unicode__(self):
-		return u'%s by %s on %s' % (self.name, self.user.username, self.created)
+		return u'%s by %s on %s' % (self.name, self.user.get_username(), self.created)
 	
 	@property
 	def number_items(self):
@@ -46,10 +47,7 @@ class DataSelection(models.Model):
 		return u'%s for %s' % (self.dataset, self.user_data_selection)
 	
 	def save(self, *args, **kwargs):
-		if self.metadata_oids:
-			self.number_items = len(self.metadata_oids)
-		else:
-			self.number_items = self.metadata.count()
+		self.number_items = self.metadata.count()
 		super(DataSelection, self).save(*args, **kwargs)
 	
 	@property
@@ -59,5 +57,5 @@ class DataSelection(models.Model):
 		else:
 			query_dict = QueryDict(self.query_string, mutable=True)
 			# TODO this is probably wrong and should use the correct resource and use build_filters
-			return self.dataset.metadata_model.filter(**query_dict.dict())
+			return self.dataset.metadata_model.objects.filter(**query_dict.dict())
 
