@@ -4,6 +4,7 @@ from web_account.models import User
 
 class ApiKeyAuthentication(Authentication):
 	''' Similar to Tastypie ApiKeyAuthentication but with web account user model '''
+	
 	auth_type = 'apikey'
 	
 	def anonymous(self, request):

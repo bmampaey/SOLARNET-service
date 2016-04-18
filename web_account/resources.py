@@ -36,16 +36,16 @@ class UserResource(ModelResource):
 		# Extract the email from the request data
 		data = self.deserialize(request, request.body)
 		email = data.get('email', '')
-		
-		# We extract the username from the email
-		username, _ = email.split('@', 1)
+		# TODO check that email is valid?
+		# We extract the name from the email
+		name, _ = email.split('@', 1)
 		
 		# If the user does not exists we create it
-		user, created = User.objects.get_or_create(email = email, defaults = {'username' : username})
+		user, created = User.objects.get_or_create(email = email, defaults = {'name' : name})
 		
 		# Check that user is active and login is successfull
 		if user.is_active and user.do_login():
-			return self.create_response(request, {'username': user.username, 'api_key': user.api_key})
+			return self.create_response(request, {'name': user.name, 'api_key': user.api_key})
 		else:
 			return self.create_response(request, 'Your account is disabled. Please contact the site administrators for help.', HttpForbidden)
 	

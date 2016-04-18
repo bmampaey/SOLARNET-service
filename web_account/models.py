@@ -7,8 +7,8 @@ from hashlib import sha1
 import hmac
 
 class User(models.Model):
-	'''User for web accounts model, only email matters''' 
-	username = models.TextField('User name')
+	'''Model for web user, username is replaced by email, there is no password but an api key''' 
+	name = models.TextField('Full name of the user')
 	email = models.EmailField('Email address', unique = True)
 	api_key = models.TextField('API key', blank=True, default='', db_index=True)
 	is_active = models.BooleanField('The user is allowed to login', blank = True, null = False, default = True)
@@ -43,4 +43,4 @@ class User(models.Model):
 		return False
 	
 	def get_username(self):
-		return self.username
+		return self.email
