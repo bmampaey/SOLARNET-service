@@ -1,8 +1,8 @@
 from django.conf.urls import url
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-
-from tastypie.http import HttpUnauthorized, HttpForbidden
+from django.core.validators import EmailValidator
+from tastypie.http import HttpUnauthorized, HttpForbidden, HttpBadRequest
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 
@@ -32,7 +32,13 @@ class UserResource(ModelResource):
 		# Extract the email from the request data
 		data = self.deserialize(request, request.body)
 		email = data.get('email', '')
-		# TODO check that email is valid?
+		
+		# Check that email is valid
+		try:
+			EmailValidator()(email)
+		except Exception:
+			return self.create_response(request, 'Enter a valid email address.', HttpBadRequest)
+		
 		# We extract the name from the email
 		name, _ = email.split('@', 1)
 		

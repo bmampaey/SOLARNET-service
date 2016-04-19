@@ -42,6 +42,7 @@ class DataSelectionResource(ModelResource):
 	user_data_selection = fields.ToOneField(UserDataSelectionResource, 'user_data_selection')
 	dataset = fields.ToOneField(DatasetResource, 'dataset', full = True)
 	ftp_link = fields.CharField(attribute='ftp_link', readonly = True, help_text = "A FTP link to the data selection")
+	metadata_oids = fields.ListField(attribute='metadata_oids', help_text='List of metadata oids', null= True, blank = True)
 	
 	class Meta(ResourceMeta):
 		queryset = DataSelection.objects.all()

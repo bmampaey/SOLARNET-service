@@ -59,7 +59,7 @@ class DataSelection(models.Model):
 	@property
 	def metadata(self):
 		if self.metadata_oids:
-			return self.dataset.metadata_model.filter(oid__in=self.metadata_oids)
+			return self.dataset.metadata_model.objects.filter(oid__in=self.metadata_oids)
 		else:
 			query_dict = QueryDict(self.query_string, mutable=True)
 			# TODO this is probably wrong and should use the correct resource and use build_filters
