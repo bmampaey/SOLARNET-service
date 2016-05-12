@@ -1,9 +1,11 @@
 from copy import copy
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models.constants import LOOKUP_SEP
+from django.db.models import Q
 
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
+from tastypie.exceptions import InvalidFilterError
 
 from SDA.resources import ResourceMeta
 from dataset.models import DataLocation, Tag, Dataset, Characteristic, Instrument, Telescope, Keyword
@@ -199,11 +201,15 @@ class BaseMetadataResource(ModelResource):
 	def build_filters(self, filters=None, ignore_bad_filters=False):
 		# Allow more complex filtering on metadata using search
 		#import pdb; pdb.set_trace()
-		search_filter = filters.pop('search', None)
+		search_filters = filters.pop('search', None)
 		orm_filters = super(BaseMetadataResource, self).build_filters(filters, ignore_bad_filters)
 		
-		if search_filter is not None:
-			orm_filters['search'] = ComplexFilter.parseString(search_filter[0])[0].as_q()
+		if search_filters is not None:
+			try:
+				orm_filters['search'] = reduce(lambda a, b: a & ComplexFilter.parseString(b)[0].as_q(), search_filters, Q())
+			except ParseException, why:
+				if not ignore_bad_filters:
+					raise InvalidFilterError(str(why))
 		
 		return orm_filters
 	

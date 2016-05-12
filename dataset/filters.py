@@ -1,4 +1,4 @@
-from pyparsing import infixNotation, opAssoc, Suppress, CharsNotIn, Word, alphanums, quotedString, removeQuotes, ZeroOrMore
+from pyparsing import infixNotation, opAssoc, Suppress, CharsNotIn, Word, alphanums, quotedString, removeQuotes, ZeroOrMore, Empty
 from django.db.models import Q
 
 class Filter:
@@ -47,6 +47,17 @@ class NotOp:
 	
 	__repr__ = __str__
 
+class EmptyFilter:
+	def __init__(self):
+		pass
+	
+	def __str__(self):
+		return 'Empty'
+	
+	def as_q(self):
+		return Q()
+	
+	__repr__ = __str__
 
 BasicFilter = Word(alphanums, alphanums + '_') + Suppress('=') + (quotedString.setParseAction(removeQuotes) | ZeroOrMore(' ') + CharsNotIn('() '))
 BasicFilter.setParseAction(Filter)
@@ -55,5 +66,5 @@ ComplexFilter = infixNotation(BasicFilter, [
 	("not", 1, opAssoc.RIGHT, NotOp),
 	("and", 2, opAssoc.LEFT, AndOp),
 	("or",  2, opAssoc.LEFT, OrOp)
-])
+]) | Empty().setParseAction(EmptyFilter)
 
