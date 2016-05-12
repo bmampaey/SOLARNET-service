@@ -5,6 +5,7 @@ from django.db import models
 from django.http import QueryDict
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.db import DEFAULT_DB_ALIAS
 
 from web_account.models import User
 from dataset.models import Dataset
@@ -37,6 +38,29 @@ class UserDataSelection(models.Model):
 	def ftp_link(self):
 		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{self.user.email}/{self.name}/'.format(self = self))
 	
+	@property
+	def metadata(self):
+		metadata = dict()
+		for data_selection in self.data_selections.filter(dataset=dataset):
+			if data_selection.dataset in metadata:
+				metadata[data_selection.dataset] = data_selection.metadata
+			else:
+				metadata[data_selection.dataset] |= data_selection.metadata
+	
+	@property
+	def similar_metadata(self, for_dataset):
+		similars = dict()
+		for dataset, metadata in self.all_metadata.iteritems():
+			if dataset == for_dataset:
+				continue
+			
+		t1, t2 = dataset.metadata_model._meta.db_table, metadata.model._meta.db_table
+		where_clause, params = metadata.query.get_compiler(DEFAULT_DB_ALIAS).compile(metadata.query.where)
+		sql_string = 'SELECT "{t1}".* from "{t1}" JOIN "{t2}" ON "{t1}"."date_beg" <= "{t2}"."date_end" AND "{t1}"."date_end" >= "{t2}"."date_beg"'
+		if where_clause:
+			sql_string = (sql_string + 'WHERE {where_clause};').format(t1=t1, t2=t2, where_clause=where_clause)
+		else:
+			sql_string = (sql_string + ';').format(t1=t1, t2=t2)
 
 class DataSelection(models.Model):
 	user_data_selection = models.ForeignKey(UserDataSelection, related_name = 'data_selections', on_delete=models.CASCADE) # If the UserDataSelection is deleted, delete also the DataSelection
