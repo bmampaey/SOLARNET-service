@@ -6,6 +6,7 @@ import sys, os, errno
 import argparse
 import logging
 from datetime import timedelta, datetime
+import pytz
 
 from fuse import FUSE, Operations, LoggingMixIn
 import requests, urlparse
@@ -22,8 +23,8 @@ import aia_lev1.views, eit.views, swap_lev1.views, hmi_magnetogram.views, themis
 class HttpFuse(LoggingMixIn, Operations):
 	
 	FORBIDDEN_OPEN_FLAGS = os.O_WRONLY | os.O_RDWR | os.O_APPEND | os.O_CREAT | os.O_TRUNC
-	uid = 121
-	gid = 131
+	uid = 105
+	gid = 112
 	dir_mode = 16749
 	file_mode = 33060
 	
@@ -130,20 +131,20 @@ class HttpFuse(LoggingMixIn, Operations):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		elif file_name:
 			data_location = self.get_data_locations(user_name, selection_name, dataset_name, file_name = file_name).pop()
-			mtime = (data_location.updated - datetime(1970, 1, 1)).total_seconds()
+			mtime = (data_location.updated - datetime(1970, 1, 1, tzinfo = pytz.utc)).total_seconds()
 			return {'st_atime': mtime, 'st_ctime': mtime, 'st_gid': self.gid, 'st_mode': self.file_mode, 'st_mtime': mtime, 'st_nlink': 1, 'st_size': data_location.file_size, 'st_uid': self.uid}
 		elif dataset_name:
 			data_selections = self.get_data_selections(user_name, selection_name, dataset_name)
-			times = [(data_selection.created - datetime(1970, 1, 1)).total_seconds() for data_selection in data_selections]
+			times = [(data_selection.created - datetime(1970, 1, 1, tzinfo = pytz.utc)).total_seconds() for data_selection in data_selections]
 			return {'st_atime': max(times), 'st_ctime': min(times), 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': max(times), 'st_nlink': 2, 'st_size': len(data_selections), 'st_uid': self.uid}
 		elif selection_name:
 			user_data_selection = self.get_user_data_selections(user_name, selection_name)[0]
-			mtime = (user_data_selection.updated - datetime(1970, 1, 1)).total_seconds()
-			ctime = (user_data_selection.created - datetime(1970, 1, 1)).total_seconds()
+			mtime = (user_data_selection.updated - datetime(1970, 1, 1, tzinfo = pytz.utc)).total_seconds()
+			ctime = (user_data_selection.created - datetime(1970, 1, 1, tzinfo = pytz.utc)).total_seconds()
 			return {'st_atime': mtime, 'st_ctime': ctime, 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': mtime, 'st_nlink': 2, 'st_size': len(user_data_selection.data_selections.all()), 'st_uid': self.uid}
 		else:
 			user_data_selections = self.get_user_data_selections(user_name, selection_name)
-			times = [(user_data_selection.created - datetime(1970, 1, 1)).total_seconds() for user_data_selection in user_data_selections]
+			times = [(user_data_selection.created - datetime(1970, 1, 1, tzinfo = pytz.utc)).total_seconds() for user_data_selection in user_data_selections]
 			return {'st_atime': max(times), 'st_ctime': min(times), 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': max(times), 'st_nlink': 2, 'st_size': len(user_data_selections), 'st_uid': self.uid}
 	
 	def readdir(self, path, fh):
