@@ -18,8 +18,8 @@ class RecordFromVSO(records.RecordFromVSO):
 		
 		# See https://xrt.cfa.harvard.edu/resources/documents/XAG/XAG.pdf
 		field_values['date_beg'] = field_values['date_obs']
-		full_width_at_half_maximum = 17
-		field_values['wavemin'] = 430.5 - full_width_at_half_maximum
-		field_values['wavemax'] = 430.5 + full_width_at_half_maximum
+		# from VSO
+		field_values['wavemin'] = 0.88
+		field_values['wavemax'] = 33.5
 		
 		return field_values
