@@ -8,6 +8,8 @@ from tastypie import fields
 from SDA.resources import ResourceMeta
 from dataset.models import DataLocation, Tag, Dataset, Characteristic, Instrument, Telescope, Keyword
 
+from .filters import ComplexFilter
+
 class TagResource(ModelResource):
 	'''RESTful resource for model Tag'''
 	# TODO check how to add metadata in detail view ListField?
@@ -135,8 +137,7 @@ class DatasetResource(ModelResource):
 			"telescope": ALL,
 			"characteristics": ALL_WITH_RELATIONS
 		}
-		
-		
+	
 	def dehydrate_metadata(self, bundle):
 		# Find the metadata resource uri
 		try:
@@ -194,3 +195,23 @@ class BaseMetadataResource(ModelResource):
 				if not field.is_relation and not field.auto_created:
 	    				self._meta.filtering.setdefault(field.name, ALL)
 	    				self._meta.ordering.append(field.name)
+	
+	def build_filters(self, filters=None, ignore_bad_filters=False):
+		# Allow more complex filtering on metadata using search
+		#import pdb; pdb.set_trace()
+		search_filter = filters.pop('search', None)
+		orm_filters = super(BaseMetadataResource, self).build_filters(filters, ignore_bad_filters)
+		
+		if search_filter is not None:
+			orm_filters['search'] = ComplexFilter.parseString(search_filter[0])[0].as_q()
+		
+		return orm_filters
+	
+	def apply_filters(self, request, applicable_filters):
+		# Apply search filter
+		#import pdb; pdb.set_trace()
+		search_filter = applicable_filters.pop('search', None)
+		if search_filter is not None:
+			return super(BaseMetadataResource, self).apply_filters(request, applicable_filters).filter(search_filter)
+		else:
+			return super(BaseMetadataResource, self).apply_filters(request, applicable_filters)
