@@ -60,7 +60,7 @@ class RecordFromFitsFile(object):
 	
 	def get_oid(self):
 		'''Return the observation identifier'''
-		return int(self.field_values['date_beg'].strftime('%Y%m%d%H%M%S'))
+		return self.field_values['date_beg'].strftime('%Y%m%d%H%M%S')
 	
 	def get_file_url(self):
 		'''Return the URL of the data location'''
