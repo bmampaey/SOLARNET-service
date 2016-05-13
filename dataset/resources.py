@@ -10,7 +10,7 @@ from tastypie.exceptions import InvalidFilterError
 from SDA.resources import ResourceMeta
 from dataset.models import DataLocation, Tag, Dataset, Characteristic, Instrument, Telescope, Keyword
 
-from .filters import ComplexFilter
+from .filters import ComplexFilter, ParseException
 
 class TagResource(ModelResource):
 	'''RESTful resource for model Tag'''
@@ -147,16 +147,14 @@ class DatasetResource(ModelResource):
 		except (NoReverseMatch, AttributeError):
 			return None
 		
-		# Create the resource for the metadata model
-		class MetadataResource(BaseMetadataResource):
-				class Meta(BaseMetadataResource.Meta):
-					queryset = bundle.obj.metadata_model.objects.all()
+		# get the metadata resource for the dataset
+		metadata_resource = self._meta.api.canonical_resource_for(bundle.obj.id + '_metadata')
 		
 		# Get the filters from the GET query string
 		query_dict = bundle.request.GET.copy()
 		
 		# Ignore bad filters because a filter can be correct for one dataset but not the orther
-		filters = MetadataResource().build_filters(query_dict, ignore_bad_filters=True)
+		filters = metadata_resource.build_filters(query_dict, ignore_bad_filters=True)
 		
 		# Remove from query_dict any filter that was ignored
 		for item in query_dict.keys():
@@ -172,9 +170,9 @@ class DatasetResource(ModelResource):
 			uri = uri + '?' + query_dict.urlencode()
 		
 		return {
-				'uri': uri,
-				 'number_items': bundle.obj.metadata_model.objects.filter(**filters).count()
-			 }
+			'uri': uri,
+			'number_items': metadata_resource.apply_filters(bundle.request, filters).count()
+		}
 
 
 class BaseMetadataResource(ModelResource):
@@ -199,9 +197,9 @@ class BaseMetadataResource(ModelResource):
 	    				self._meta.ordering.append(field.name)
 	
 	def build_filters(self, filters=None, ignore_bad_filters=False):
-		# Allow more complex filtering on metadata using search
+		'''Allow more complex filtering on metadata using search parameter'''
 		#import pdb; pdb.set_trace()
-		search_filters = filters.pop('search', None)
+		search_filters = filters.getlist('search', None)
 		orm_filters = super(BaseMetadataResource, self).build_filters(filters, ignore_bad_filters)
 		
 		if search_filters is not None:
@@ -214,10 +212,12 @@ class BaseMetadataResource(ModelResource):
 		return orm_filters
 	
 	def apply_filters(self, request, applicable_filters):
-		# Apply search filter
+		'''Apply complex search filter'''
 		#import pdb; pdb.set_trace()
 		search_filter = applicable_filters.pop('search', None)
+		partially_filtered = super(BaseMetadataResource, self).apply_filters(request, applicable_filters)
 		if search_filter is not None:
-			return super(BaseMetadataResource, self).apply_filters(request, applicable_filters).filter(search_filter)
+			applicable_filters['search'] = search_filter
+			return partially_filtered.filter(search_filter)
 		else:
-			return super(BaseMetadataResource, self).apply_filters(request, applicable_filters)
+			return partially_filtered

@@ -1,4 +1,4 @@
-from pyparsing import infixNotation, opAssoc, Suppress, CharsNotIn, Word, alphanums, quotedString, removeQuotes, ZeroOrMore, Empty
+from pyparsing import infixNotation, opAssoc, Suppress, CharsNotIn, Word, alphanums, quotedString, removeQuotes, ZeroOrMore, Empty, ParseException
 from django.db.models import Q
 
 class Filter:

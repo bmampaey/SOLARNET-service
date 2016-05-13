@@ -1,6 +1,12 @@
 from tastypie.api import Api
 
-api = Api(api_name='v1')
+class MyApi(Api):
+	'''Specialized api that set the api on the ressource on registration'''
+	def register(self, resource, canonical=True):
+		super(MyApi, self).register(resource, canonical)
+		resource._meta.api = self
+
+api = MyApi(api_name='v1')
 
 
 import dataset.resources
