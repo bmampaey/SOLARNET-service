@@ -34,7 +34,7 @@ class BaseMetadata(models.Model):
 	oid = models.TextField('Observation ID', help_text = 'Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS', unique = True)
 	fits_header = models.TextField(null=False, blank=True)
 	data_location = models.ForeignKey(DataLocation, related_name='%(app_label)s_%(class)s', null=True, blank=True, on_delete=models.SET_NULL)
-	tags = models.ManyToManyField(Tag, related_name='%(app_label)s_%(class)s')
+	tags = models.ManyToManyField(Tag, related_name='%(app_label)s_%(class)s', blank=True)
 	date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True)
 	date_end = models.DateTimeField('DATE-END', help_text='End time of the observation [UTC]', blank=True, null=True)
 	wavemin = models.FloatField('WAVEMIN', help_text='Min value of the observation spectral range [nm]', blank=True, null=True)
@@ -45,7 +45,7 @@ class BaseMetadata(models.Model):
 		ordering = ['date_beg']
 	
 	def __unicode__(self):
-		return unicode(self.id)
+		return unicode(self.oid)
 	
 	@property
 	def tags_names(self):
