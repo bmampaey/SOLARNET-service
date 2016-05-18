@@ -27,13 +27,13 @@ class AndOp(BoolBinOp):
 	reprsymbol = 'AND'
 	
 	def as_q(self):
-		return reduce(lambda a, b: a.as_q() & b.as_q(), self.args)
+		return reduce(lambda a, b: a & b.as_q(), self.args, Q())
 
 class OrOp(BoolBinOp):
 	reprsymbol = 'OR'
 	
 	def as_q(self):
-		return reduce(lambda a, b: a.as_q() | b.as_q(), self.args)
+		return reduce(lambda a, b: a | b.as_q(), self.args, Q())
 
 class NotOp:
 	def __init__(self, t):

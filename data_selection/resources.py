@@ -58,6 +58,9 @@ class DataSelectionResource(ModelResource):
 		}
 	
 	def obj_create(self, bundle, **kwargs):
+		# fully hydrate the bundle so the dataset get hydrated
+		bundle = self.full_hydrate(bundle)
+		
 		# get the metadata resource for the dataset
 		metadata_resource = self._meta.api.canonical_resource_for(bundle.obj.dataset.id + '_metadata')
 		
