@@ -22,7 +22,7 @@ import web_account.resources
 api.register(web_account.resources.UserResource())
 
 import data_selection.resources
-api.register(data_selection.resources.UserDataSelectionResource())
+api.register(data_selection.resources.DataSelectionGroupResource())
 api.register(data_selection.resources.DataSelectionResource())
 
 import chrotel.resources

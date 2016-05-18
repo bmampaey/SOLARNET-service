@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
-from data_selection.models import UserDataSelection, DataSelection
+from data_selection.models import DataSelectionGroup, DataSelection
 
-@admin.register(UserDataSelection)
-class UserDataSelectionAdmin(admin.ModelAdmin):
-	'''Admin class for the UserDataSelection model'''
-	list_display = ["user", "name", "created"]
-	list_filter = ["user__name"]
+@admin.register(DataSelectionGroup)
+class DataSelectionGroupAdmin(admin.ModelAdmin):
+	'''Admin class for the DataSelectionGroup model'''
+	list_display = ['user', 'name', 'created']
+	list_filter = ['user__name']
 	readonly_fields = ['data_selections', 'ftp_link']
 	
 	def data_selections(self, instance):
@@ -23,11 +23,11 @@ class UserDataSelectionAdmin(admin.ModelAdmin):
 			return mark_safe('<span>None</span>')
 	
 	# short_description functions like a model field's verbose_name
-	data_selections.short_description = "Data selections"
+	data_selections.short_description = 'Data selections'
 
 @admin.register(DataSelection)
 class DataSelectionAdmin(admin.ModelAdmin):
 	'''Admin class for the DataSelection model'''
-	list_display = ["user_data_selection", "dataset", "created"]
-	list_filter = ["dataset"]
-	readonly_fields = ['ftp_link']
+	list_display = ['data_selection_group', 'dataset', 'created']
+	list_filter = ['dataset']
+	readonly_fields = ['ftp_link', 'number_items']
