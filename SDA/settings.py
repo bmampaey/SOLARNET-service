@@ -45,9 +45,10 @@ INSTALLED_APPS = [
 	'django_extensions', # Add useful management commands
 	'debug_toolbar', # Add useful info when debugging
 	'corsheaders', # Allow cross domain
-	'daterange_filter', # For easy admin filter
 	'tastypie', # RESTful api
 	'tastypie_swagger', # RESTful api viewer pip install git+https://github.com/concentricsky/django-tastypie-swagger.git --upgrade
+	'daterange_filter', # For easy admin filter
+	
 	# Our own apps
 	'dataset',
 	'web_account',
@@ -105,6 +106,7 @@ DATABASES = {
 		'USER': 'SDA',
 		'HOST': 'solarnetdb.oma.be',
 		'PORT': '5432',
+		'DEFAULT_INDEX_TABLESPACE': 'indexes'
 	}
 }
 
@@ -139,7 +141,7 @@ USE_I18N = False
 
 USE_L10N = False
 
-USE_TZ = False
+USE_TZ = True
 
 # Specify ISO time format with timezone
 DATETIME_FORMAT = 'Y-m-d H:i:s e'
@@ -152,8 +154,6 @@ STATIC_URL = '/static/'
 
 # Cross domain See https://github.com/ottoyiu/django-cors-headers/
 CORS_ORIGIN_ALLOW_ALL = True
-#CORS_ORIGIN_WHITELIST = ['solarnet.oma.be', 'chrome-extension://aejoelaoggembcahagimdiliamlcdmfm']
-#CORS_ALLOW_CREDENTIALS = True
 
 # FTP settings
 FTP_URL = 'ftp://solarnet.oma.be/'

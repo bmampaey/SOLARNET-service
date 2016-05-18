@@ -31,14 +31,14 @@ class Tag(models.Model):
 
 class BaseMetadata(models.Model):
 	'''Model for the common fields of Metadata models'''
-	oid = models.TextField('Observation ID', help_text = 'Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS', unique = True)
+	oid = models.TextField('Observation ID', help_text = 'Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS', unique=True, db_index=True)
 	fits_header = models.TextField(null=False, blank=True)
 	data_location = models.ForeignKey(DataLocation, related_name='%(app_label)s_%(class)s', null=True, blank=True, on_delete=models.SET_NULL)
 	tags = models.ManyToManyField(Tag, related_name='%(app_label)s_%(class)s', blank=True)
-	date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True)
-	date_end = models.DateTimeField('DATE-END', help_text='End time of the observation [UTC]', blank=True, null=True)
-	wavemin = models.FloatField('WAVEMIN', help_text='Min value of the observation spectral range [nm]', blank=True, null=True)
-	wavemax = models.FloatField('WAVEMAX', help_text='Max value of the observation spectral range [nm]', blank=True, null=True)
+	date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True, db_index=True)
+	date_end = models.DateTimeField('DATE-END', help_text='End time of the observation [UTC]', blank=True, null=True, db_index=True)
+	wavemin = models.FloatField('WAVEMIN', help_text='Min value of the observation spectral range [nm]', blank=True, null=True, db_index=True)
+	wavemax = models.FloatField('WAVEMAX', help_text='Max value of the observation spectral range [nm]', blank=True, null=True, db_index=True)
 	
 	class Meta:
 		abstract = True
