@@ -12,7 +12,7 @@ from web_account.models import User
 from dataset.models import Dataset
 
 class DataSelectionGroup(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, related_name = 'data_selection_groups', related_query_name = 'data_selection_group', on_delete=models.CASCADE)
 	name = models.CharField('Name of the data selection group', max_length = 80, null=False, blank=False)
 	created = models.DateTimeField('Date of creation', null=False, blank=False)
 	updated = models.DateTimeField('Date of last update', null=False, blank=False)
@@ -47,7 +47,7 @@ class DataSelectionGroup(models.Model):
 	
 	@property
 	def ftp_link(self):
-		return urlparse.urljoin(settings.FTP_URL, 'data_selections/{self.user.email}/{self.name}/'.format(self = self))
+		return urlparse.urljoin(settings.FTP_URL, '{self.user.email}/{self.name}/'.format(self = self))
 	
 	@property
 	def metadata(self):

@@ -34,7 +34,14 @@ class UserOnlyModifAuthorization(ReadOnlyAuthorization):
 			raise Unauthorized('You are not authenticated or active')
 	
 	def update_detail(self, object_list, bundle):
-		return bundle.request.user.is_authenticated() and bundle.request.user.is_active and getattr(bundle.obj, self.user_field) == bundle.request.user
+		if bundle.request.user.is_authenticated() and bundle.request.user.is_active:
+			# user field can be a double underscored reference e.g. something__something__user
+			user = bundle.obj
+			for attr in self.user_field.split('__'):
+				user = getattr(user, attr)
+			return user == bundle.request.user
+		else:
+			raise Unauthorized('You are not authenticated or active')
 	
 	def delete_list(self, object_list, bundle):
 		return self.update_list(object_list, bundle)

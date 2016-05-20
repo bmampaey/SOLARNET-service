@@ -156,4 +156,4 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_ALLOW_ALL = True
 
 # FTP settings
-FTP_URL = 'ftp://solarnet.oma.be/'
+FTP_URL = 'ftp://solarnet.oma.be/data_selections/'

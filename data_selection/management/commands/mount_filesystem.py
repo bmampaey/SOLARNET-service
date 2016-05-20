@@ -1,9 +1,14 @@
-import pwd, requests, urlparse
-from django.core.management.base import BaseCommand, CommandError
+import os, pwd, urllib2, urlparse, pytz, logging
+from datetime import datetime
 from fuse import FUSE, Operations, LoggingMixIn
 
+from django.core.management.base import BaseCommand, CommandError
+from django.db.models.functions import Substr
+from django.db.models import F, Value
+
 from ..logger import Logger
-from data_selection.models import UserDataSelection, DataSelection
+from data_selection.models import DataSelectionGroup, DataSelection
+from dataset.models import Dataset, DataLocation 
 
 def to_system_time(time):
 	return (time - datetime(1970, 1, 1, tzinfo = pytz.utc)).total_seconds()
@@ -14,77 +19,74 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 	dir_mode = 16749
 	file_mode = 33060
 	
-	def __init__(self, uid, gid):
+	def __init__(self, uid, gid, log = logging):
 		self.last_fd = 0
 		self.fd = dict()
 		self.uid = uid
 		self.gid = gid
+		self.log = log
 	
 	# Helpers
 	# =======
 	
 	def split_path(self, path):
-		file_name, dataset_name, selection_name, user_name = "","","",""
+		file_name, dataset_name, data_selection_group_name, user_id = "","","",""
 		while path and path != "/":
 			path, tail = os.path.split(path)
-			file_name, dataset_name, selection_name, user_name = dataset_name, selection_name, user_name, tail
-			logging.debug("file_name %s, dataset_name %s, selection_name %s, user_name %s", file_name, dataset_name, selection_name, user_name)
+			file_name, dataset_name, data_selection_group_name, user_id = dataset_name, data_selection_group_name, user_id, tail
+			self.log.debug("file_name %s, dataset_name %s, data_selection_group_name %s, user_id %s", file_name, dataset_name, data_selection_group_name, user_id)
 		
-		return user_name, selection_name, dataset_name, file_name
+		return user_id, data_selection_group_name, dataset_name, file_name
 	
-	def user_names(self):
-		return UserDataSelection.objects.order_by().values_list('user__username', flat=True).distinct()
+	def user_ids(self):
+		return DataSelectionGroup.objects.order_by().values_list('user__id', flat=True).distinct()
 	
-	def selection_names(self, user_name):
-		return UserDataSelection.objects.order_by().filter(user__username = user_name).values_list('name', flat=True).distinct()
+	def data_selection_group_names(self, user_id):
+		return DataSelectionGroup.objects.order_by().filter(user__id = user_id).values_list('name', flat=True).distinct()
 		
-	def dataset_names(self, user_name, selection_name):
-		return DataSelection.objects.order_by().filter(user_data_selection__user__username = user_name, user_data_selection__name=selection_name).values_list('dataset__name', flat=True).distinct() 
+	def dataset_names(self, user_id, data_selection_group_name):
+		return DataSelection.objects.order_by().filter(data_selection_group__user__id = user_id, data_selection_group__name=data_selection_group_name).values_list('dataset__name', flat=True).distinct() 
 	
-	def file_names(self, user_name, selection_name, dataset_name):
-		results = set()
-		for data_location in self.get_data_locations(user_name, selection_name, dataset_name):
-			results.add(os.path.basename(urlparse.urlparse(data_location.url).path))
-		return results
+	def file_names(self, user_id, data_selection_group_name, dataset_name):
+		return self.get_data_locations(user_id, data_selection_group_name, dataset_name).annotate(file_name=Substr(F('file_url'), Value('/([^/]+)$'))).values_list('file_name', flat = True).distinct()
+		
 	
-	def get_user_data_selections(self, user_name, selection_name = None):
-		if selection_name:
-			return UserDataSelection.objects.filter(user__username = user_name, name = selection_name)
-		elif user_name:
-			return UserDataSelection.objects.filter(user__username = user_name)
+	def get_data_selection_groups(self, user_id, data_selection_group_name = None):
+		if data_selection_group_name:
+			return DataSelectionGroup.objects.filter(user__id = user_id, name = data_selection_group_name)
+		elif user_id:
+			return DataSelectionGroup.objects.filter(user__id = user_id)
 		else:
-			return UserDataSelection.objects.filter()
+			return DataSelectionGroup.objects.all()
 	
-	def get_data_selections(self, user_name, selection_name, dataset_name = None):
+	def get_data_selections(self, user_id, data_selection_group_name, dataset_name = None):
 		if dataset_name:
-			return DataSelection.objects.filter(user_data_selection__user__username = user_name, user_data_selection__name=selection_name, dataset__name = dataset_name)
+			return DataSelection.objects.filter(data_selection_group__user__id = user_id, data_selection_group__name=data_selection_group_name, dataset__name = dataset_name)
 		else:
-			return DataSelection.objects.filter(user_data_selection__user__username = user_name, user_data_selection__name=selection_name)
+			return DataSelection.objects.filter(data_selection_group__user__id = user_id, data_selection_group__name=data_selection_group_name)
 	
-	def get_data_locations(self, user_name, selection_name, dataset_name, file_name = None):
-		results = set()
-		for data_selection in self.get_data_selections(user_name, selection_name, dataset_name):
-			data_locations = data_selection.dataset.data_location_model.objects.filter(meta_data_id__in=data_selection.data_ids)
-			if file_name:
-				results.update(data_locations.filter(url__endswith = '/'+file_name))
-			else:
-				results.update(data_locations)
-		return results
-	
+	def get_data_locations(self, user_id, data_selection_group_name, dataset_name, file_name = None):
+		data_selections = self.get_data_selections(user_id, data_selection_group_name, dataset_name)
+		dataset = Dataset.objects.get(name=dataset_name)
+		metadata = reduce(lambda a, b: a | b.metadata, data_selections, dataset.metadata_model.objects.none())
+		if file_name:
+			return DataLocation.objects.filter(**{'file_url__endswith' : '/' + file_name, dataset.metadata_model._meta.app_label + '_metadata__in' : metadata}).order_by().distinct()
+		else:
+			return DataLocation.objects.filter(**{dataset.metadata_model._meta.app_label + '_metadata__in' : metadata}).order_by().distinct()
 	
 	def exists(self, path):
-		user_name, selection_name, dataset_name, file_name = self.split_path(path)
-		if user_name:
-			if selection_name:
+		user_id, data_selection_group_name, dataset_name, file_name = self.split_path(path)
+		if user_id:
+			if data_selection_group_name:
 				if dataset_name:
 					if file_name:
-						return file_name in self.file_names(user_name, selection_name, dataset_name)
+						return file_name in self.file_names(user_id, data_selection_group_name, dataset_name)
 					else:
-						return self.get_data_selections(user_name, selection_name, dataset_name).exists()
+						return self.get_data_selections(user_id, data_selection_group_name, dataset_name).exists()
 				else:
-					return self.get_user_data_selections(user_name, selection_name).exists()
+					return self.get_data_selection_groups(user_id, data_selection_group_name).exists()
 			else:
-				return self.get_user_data_selections(user_name).exists()
+				return self.get_data_selection_groups(user_id).exists()
 		else:
 			return path == '/'
 		
@@ -114,42 +116,42 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 	
 	def getattr(self, path, fh=None):
-		user_name, selection_name, dataset_name, file_name = self.split_path(path)
+		user_id, data_selection_group_name, dataset_name, file_name = self.split_path(path)
 		if not self.exists(path):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		elif file_name:
-			data_location = self.get_data_locations(user_name, selection_name, dataset_name, file_name = file_name).pop()
+			data_location = self.get_data_locations(user_id, data_selection_group_name, dataset_name, file_name = file_name)[0]
 			mtime = to_system_time(data_location.updated)
 			return {'st_atime': mtime, 'st_ctime': mtime, 'st_gid': self.gid, 'st_mode': self.file_mode, 'st_mtime': mtime, 'st_nlink': 1, 'st_size': data_location.file_size, 'st_uid': self.uid}
 		elif dataset_name:
-			data_selections = self.get_data_selections(user_name, selection_name, dataset_name)
+			data_selections = self.get_data_selections(user_id, data_selection_group_name, dataset_name)
 			times = [to_system_time(data_selection.created) for data_selection in data_selections]
 			return {'st_atime': max(times), 'st_ctime': min(times), 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': max(times), 'st_nlink': 2, 'st_size': len(data_selections), 'st_uid': self.uid}
-		elif selection_name:
-			user_data_selection = self.get_user_data_selections(user_name, selection_name)[0]
-			mtime = to_system_time(user_data_selection.updated)
-			ctime = to_system_time(user_data_selection.created)
-			return {'st_atime': mtime, 'st_ctime': ctime, 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': mtime, 'st_nlink': 2, 'st_size': len(user_data_selection.data_selections.all()), 'st_uid': self.uid}
+		elif data_selection_group_name:
+			data_selection_group = self.get_data_selection_groups(user_id, data_selection_group_name)[0]
+			mtime = to_system_time(data_selection_group.updated)
+			ctime = to_system_time(data_selection_group.created)
+			return {'st_atime': mtime, 'st_ctime': ctime, 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': mtime, 'st_nlink': 2, 'st_size': len(data_selection_group.data_selections.all()), 'st_uid': self.uid}
 		else:
-			user_data_selections = self.get_user_data_selections(user_name, selection_name)
-			times = [to_system_time(user_data_selection.created) for user_data_selection in user_data_selections]
-			return {'st_atime': max(times), 'st_ctime': min(times), 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': max(times), 'st_nlink': 2, 'st_size': len(user_data_selections), 'st_uid': self.uid}
+			data_selection_groups = self.get_data_selection_groups(user_id, data_selection_group_name)
+			times = [to_system_time(data_selection_group.created) for data_selection_group in data_selection_groups]
+			return {'st_atime': max(times), 'st_ctime': min(times), 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': max(times), 'st_nlink': 2, 'st_size': len(data_selection_groups), 'st_uid': self.uid}
 	
 	def readdir(self, path, fh):
 		dirents = ['.', '..']
-		user_name, selection_name, dataset_name, file_name = self.split_path(path)
+		user_id, data_selection_group_name, dataset_name, file_name = self.split_path(path)
 		if not self.exists(path):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		elif file_name:
 			raise Exception("Received filename in readdir")
 		elif dataset_name:
-			return dirents + list(self.file_names(user_name, selection_name, dataset_name))
-		elif selection_name:
-			return dirents + list(self.dataset_names(user_name, selection_name))
-		elif user_name:
-			return dirents + list(self.selection_names(user_name))
+			return dirents + list(self.file_names(user_id, data_selection_group_name, dataset_name))
+		elif data_selection_group_name:
+			return dirents + list(self.dataset_names(user_id, data_selection_group_name))
+		elif user_id:
+			return dirents + list(self.data_selection_group_names(user_id))
 		else:
-			return dirents + list(self.user_names())
+			return dirents + map(str, self.user_ids())
 	
 	def readlink(self, path):
 		if not self.exists(path):
@@ -161,7 +163,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		raise OSError(errno.EACCES, os.strerror(errno.EACCES))
 	
 	def rmdir(self, path):
-		user_name, selection_name, dataset_name, file_name = self.split_path(path)
+		user_id, data_selection_group_name, dataset_name, file_name = self.split_path(path)
 		if not self.exists(path):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		elif file_name:
@@ -179,7 +181,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		return os.statvfs(path)
 	
 	def unlink(self, path):
-		user_name, selection_name, dataset_name, file_name = self.split_path(path)
+		user_id, data_selection_group_name, dataset_name, file_name = self.split_path(path)
 		if not self.exists(path):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		elif not file_name:
@@ -218,10 +220,10 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		elif not self.exists(path):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		elif path not in self.fd:
-			user_name, selection_name, dataset_name, file_name = self.split_path(path)
-			data_location = self.get_data_locations(user_name, selection_name, dataset_name, file_name).pop()
-			request = requests.get(data_location.url)
-			self.fd[path] = request.content
+			user_id, data_selection_group_name, dataset_name, file_name = self.split_path(path)
+			data_location = self.get_data_locations(user_id, data_selection_group_name, dataset_name, file_name)[0]
+			request = urllib2.urlopen(data_location.file_url)
+			self.fd[path] = request.read()
 		
 		self.last_fd += 1
 		return self.last_fd
@@ -247,7 +249,6 @@ class Command(BaseCommand):
 	
 	def add_arguments(self, parser):
 		parser.add_argument('mountpoint', help='The mountpoint for the fuse filesystem.')
-		parser.add_argument('--verbose', '-v', default=False, action='store_true', help='Set the logging level to verbose')
 		parser.add_argument('--debug', '-d', default=False, action='store_true', help='Set the logging level to debug')
 		parser.add_argument('--foreground', '-f', default=False, action='store_true', help='Run the script in foreground (handy for debugging')
 		parser.add_argument('--owner', '-o', default='ftp', help='The user that owns the files.')
@@ -260,4 +261,4 @@ class Command(BaseCommand):
 		except KeyError, why:
 			CommandError('No user %s' % options['owner'])
 		
-		fuse = FUSE(DataSelectionFilesystem(uid = owner.pw_uid, gid = owner.pw_gid), options['mountpoint'], foreground=options['foreground'], debug=options['debug'])
+		fuse = FUSE(DataSelectionFilesystem(uid = owner.pw_uid, gid = owner.pw_gid, log = log), options['mountpoint'], foreground=options['foreground'], debug=options['debug'])
