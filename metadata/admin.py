@@ -1,5 +1,5 @@
-from django.contrib import admin
-from django.contrib import messages
+from django.contrib import admin, messages
+from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
 from daterange_filter.filter import DateRangeFilter
@@ -34,21 +34,27 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 	list_filter = [('date_beg', DateRangeFilter)]
 	list_display = ['oid', 'date_beg']
 	readonly_fields = ['data_location']
-	action_form = AddTagForm
+#	action_form = AddTagForm
 	actions = ['add_tags']
 	
 	def add_tags(self, request, queryset):
 		form = AddTagForm(request.POST)
-		# action choices are added dynamically in django admin
-		form.fields['action'].choices = self.get_action_choices(request)
-		
-		if form.is_valid():
-			tags = form.cleaned_data['tags']
-			for metadata in queryset:
-				metadata.tags.add(*tags)
-			self.message_user(request, "Successfully tagged %s metadata." % queryset.count())
+		# Check if it is a real post (hidden inout in template)
+		if 'post' in request.POST:
+			if form.is_valid():
+				tags = form.cleaned_data['tags']
+				if tags:
+					for metadata in queryset:
+						metadata.tags.add(*tags)
+					self.message_user(request, "Successfully added tags to metadata %s metadata." % queryset.count())
+				else:
+					self.message_user(request, "No tag was selected, no metadata was tagged.", level=messages.WARNING)
+			else:
+				self.message_user(request, mark_safe("Error tagging metadata: %s." % form.errors), level=messages.ERROR)
 		else:
-			self.message_user(request, mark_safe("Error tagging metadata: %s." % form.errors), level=messages.ERROR)
+			# POST that is actually a GET
+			return render(request, 'metadata/add_tags_action.html', {'form': form, 'objects': queryset, 'title': 'Add tags to metadata'})
+		
 	add_tags.short_description = u'Add tags to selected metadata'
 
 @admin.register(AiaLev1)
