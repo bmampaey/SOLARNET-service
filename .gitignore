@@ -57,3 +57,7 @@ docs/_build/
 
 # Secret key
 **/secret_key.py
+
+# OSX files
+.DS_Store
+._.DS_Store
