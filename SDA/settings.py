@@ -51,15 +51,10 @@ INSTALLED_APPS = [
 	
 	# Our own apps
 	'dataset',
+	'metadata',
 	'web_account',
 	'data_selection',
-	'eit',
-	'swap_lev1',
-	'aia_lev1',
-	'hmi_magnetogram',
-	'themis',
-	'chrotel',
-	'xrt',
+
 ]
 
 MIDDLEWARE_CLASSES = [

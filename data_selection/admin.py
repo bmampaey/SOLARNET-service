@@ -30,4 +30,4 @@ class DataSelectionAdmin(admin.ModelAdmin):
 	'''Admin class for the DataSelection model'''
 	list_display = ['data_selection_group', 'dataset', 'created']
 	list_filter = ['dataset']
-	readonly_fields = ['ftp_link', 'number_items']
+	readonly_fields = ['number_items']

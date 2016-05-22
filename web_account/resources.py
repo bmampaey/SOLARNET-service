@@ -1,12 +1,11 @@
 from django.conf.urls import url
-from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
 from django.core.validators import EmailValidator
 from tastypie.http import HttpUnauthorized, HttpForbidden, HttpBadRequest
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 
 from SDA.resources import ResourceMeta
+from web_account.authentication import WebUserApiKeyAuthentication
 from web_account.models import User
 
 
@@ -19,6 +18,7 @@ class UserResource(ModelResource):
 		resource_name = 'user'
 		list_allowed_methods = []
 		detail_allowed_methods = []
+		authentication = WebUserApiKeyAuthentication()
 	
 	def prepend_urls(self):
 		return [

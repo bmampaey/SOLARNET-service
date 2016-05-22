@@ -3,18 +3,12 @@ from django.contrib.auth.models import Group
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 
-from daterange_filter.filter import DateRangeFilter
-
-from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword, DataLocation, Tag
-
-class ContentTypeChoiceField(forms.ModelChoiceField):
-	def label_from_instance(self, obj):
-		return "%s %s" % (obj.app_label, obj.model)
+from dataset.models import Telescope, Instrument, Characteristic, Dataset, Keyword, DataLocation
 
 class DatasetAdminForm(forms.ModelForm):
 	'''Form for the admin class for the Dataset model'''
 	# Display app label via the ContentTypeChoiceField, and limit to model Metadata (must be in lowcase as it is saved in lowcase)
-	_metadata_model = ContentTypeChoiceField(queryset=ContentType.objects.filter(model='metadata')) 
+	_metadata_model = forms.ModelChoiceField(queryset=ContentType.objects.filter(app_label='metadata').exclude(model='tag')) 
 	class Meta:
 		model = Dataset
 		fields = '__all__'
@@ -42,7 +36,7 @@ class DatasetAdmin(admin.ModelAdmin):
 			return True
 		elif obj is not None:
 			try:
-				group = Group.objects.get(name=obj.name)
+				group = Group.objects.get(name=obj.id)
 			except Group.DoesNotExist:
 				return False
 			else:
@@ -60,8 +54,7 @@ class DatasetAdmin(admin.ModelAdmin):
 			return queryset
 		else:
 			groups = [group.name for group in request.user.groups.all()]
-			return queryset.filter(name__in=groups)
-
+			return queryset.filter(id__in=groups)
 
 @admin.register(Keyword)
 class KeywordAdmin(admin.ModelAdmin):
@@ -89,23 +82,6 @@ class InstrumentAdmin(admin.ModelAdmin):
 	'''Admin class for the Instrument model'''
 	pass
 
-class FirstLetterListFilter(admin.SimpleListFilter):
-	title = 'First letter'
-	
-	# Parameter for the filter that will be used in the URL query.
-	parameter_name = 'starts_with'
-	
-	def lookups(self, request, model_admin):
-		'''List the first letter of existing tags'''
-		qs = model_admin.get_queryset(request)
-		return set((obj.name[0].upper(), obj.name[0].upper()) for obj in qs)
-
-	def queryset(self, request, queryset):
-		if self.value() is not None:
-			return queryset.filter(name__istartswith=self.value())
-		else:
-			return queryset
-
 
 class DatasetListFilter(admin.SimpleListFilter):
 	title = 'Dataset'
@@ -120,7 +96,7 @@ class DatasetListFilter(admin.SimpleListFilter):
 	def queryset(self, request, queryset):
 		# TODO check that it is correct
 		if self.value() is not None:
-			return queryset.filter(**{'%s_metadata__isnull' % self.value() : False})
+			return queryset.filter(**{'%s__isnull' % self.value() : False})
 		else:
 			return queryset
 
@@ -130,14 +106,4 @@ class DataLocationAdmin(admin.ModelAdmin):
 	'''Admin class for the DataLocation model'''
 	list_filter = [DatasetListFilter]
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-	'''Admin class for the Tag model'''
-	list_filter = [FirstLetterListFilter]
-
-class BaseMetadataAdmin(admin.ModelAdmin):
-	'''Admin class for the common options of Metadata models'''
-	list_filter = [('date_beg', DateRangeFilter), 'wavemin']
-	list_display = ['oid', 'date_beg', 'wavemin']
-	readonly_fields = ['data_location']
 

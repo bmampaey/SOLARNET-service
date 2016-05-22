@@ -42,12 +42,12 @@ class DataSelectionGroup(models.Model):
 
 	
 	@property
-	def dataset_names(self):
+	def datasets(self):
 		return self.data_selections.values_list('dataset', flat=True).distinct()
 	
 	@property
 	def ftp_link(self):
-		return urlparse.urljoin(settings.FTP_URL, '{self.user.email}/{self.name}/'.format(self = self))
+		return urlparse.urljoin(settings.FTP_URL, '{self.user.id}/{self.name}/'.format(self = self))
 	
 	@property
 	def metadata(self):
@@ -87,8 +87,4 @@ class DataSelection(models.Model):
 		queryset = self.dataset.metadata_model.objects.all()
 		queryset.query = self.query
 		return queryset
-	
-	@property
-	def ftp_link(self):
-		return self.data_selection_group.ftp_link + '{self.dataset.name}/'.format(self = self)
 

@@ -1,6 +1,6 @@
 from tastypie.authorization import ReadOnlyAuthorization, DjangoAuthorization
 from tastypie.exceptions import Unauthorized
-
+from django.db.models.constants import LOOKUP_SEP
 
 class AlwaysReadAuthorization(DjangoAuthorization):
 	''' Always allow read, for the rest check Django permissions '''
@@ -37,7 +37,7 @@ class UserOnlyModifAuthorization(ReadOnlyAuthorization):
 		if bundle.request.user.is_authenticated() and bundle.request.user.is_active:
 			# user field can be a double underscored reference e.g. something__something__user
 			user = bundle.obj
-			for attr in self.user_field.split('__'):
+			for attr in self.user_field.split(LOOKUP_SEP):
 				user = getattr(user, attr)
 			return user == bundle.request.user
 		else:

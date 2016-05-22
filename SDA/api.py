@@ -15,8 +15,17 @@ api.register(dataset.resources.CharacteristicResource())
 api.register(dataset.resources.TelescopeResource())
 api.register(dataset.resources.InstrumentResource())
 api.register(dataset.resources.KeywordResource())
-api.register(dataset.resources.TagResource())
 api.register(dataset.resources.DataLocationResource())
+
+import metadata.resources
+api.register(metadata.resources.TagResource())
+api.register(metadata.resources.AiaLev1Resource())
+api.register(metadata.resources.ChrotelResource())
+api.register(metadata.resources.EitResource())
+api.register(metadata.resources.HmiMagnetogramResource())
+api.register(metadata.resources.SwapLev1Resource())
+api.register(metadata.resources.ThemisResource())
+api.register(metadata.resources.XrtResource())
 
 import web_account.resources
 api.register(web_account.resources.UserResource())
@@ -24,25 +33,4 @@ api.register(web_account.resources.UserResource())
 import data_selection.resources
 api.register(data_selection.resources.DataSelectionGroupResource())
 api.register(data_selection.resources.DataSelectionResource())
-
-import chrotel.resources
-api.register(chrotel.resources.MetadataResource())
-
-import xrt.resources
-api.register(xrt.resources.MetadataResource())
-
-import eit.resources
-api.register(eit.resources.MetadataResource())
-
-import swap_lev1.resources
-api.register(swap_lev1.resources.MetadataResource())
-
-import aia_lev1.resources
-api.register(aia_lev1.resources.MetadataResource())
-
-import hmi_magnetogram.resources
-api.register(hmi_magnetogram.resources.MetadataResource())
-
-import themis.resources
-api.register(themis.resources.MetadataResource())
 

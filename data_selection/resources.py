@@ -4,6 +4,7 @@ from tastypie import fields
 
 from SDA.resources import ResourceMeta
 from SDA.authorizations import UserOnlyModifAuthorization
+from web_account.authentication import WebUserApiKeyAuthentication
 from data_selection.models import DataSelectionGroup, DataSelection
 
 from dataset.resources import DatasetResource
@@ -18,6 +19,7 @@ class DataSelectionGroupResource(ModelResource):
 	class Meta(ResourceMeta):
 		queryset = DataSelectionGroup.objects.all()
 		resource_name = 'data_selection_group'
+		authentication = WebUserApiKeyAuthentication()
 		authorization = UserOnlyModifAuthorization('user')
 		filtering = {
 			'user': ALL_WITH_RELATIONS,
@@ -42,11 +44,11 @@ class DataSelectionResource(ModelResource):
 	
 	data_selection_group = fields.ToOneField(DataSelectionGroupResource, 'data_selection_group')
 	dataset = fields.ToOneField(DatasetResource, 'dataset', full = True)
-	ftp_link = fields.CharField(attribute='ftp_link', readonly = True, help_text = "A FTP link to the data selection")
 	
 	class Meta(ResourceMeta):
 		queryset = DataSelection.objects.all()
 		resource_name = 'data_selection'
+		authentication = WebUserApiKeyAuthentication()
 		authorization = UserOnlyModifAuthorization('data_selection_group__user')
 		excludes = ['query']
 		filtering = {
@@ -62,7 +64,7 @@ class DataSelectionResource(ModelResource):
 		bundle = self.full_hydrate(bundle)
 		
 		# get the metadata resource for the dataset
-		metadata_resource = self._meta.api.canonical_resource_for(bundle.obj.dataset.id + '_metadata')
+		metadata_resource = self._meta.api.canonical_resource_for(bundle.obj.dataset.id)
 		
 		# create the QueryDict from the query string
 		query_dict = QueryDict(bundle.obj.query_string, mutable=True)
