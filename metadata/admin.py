@@ -27,8 +27,8 @@ class TagAdmin(admin.ModelAdmin):
 
 class BaseMetadataAdmin(admin.ModelAdmin):
 	'''Admin class for the common options of Metadata models'''
-	list_filter = [('date_beg', DateRangeFilter), 'wavemin']
-	list_display = ['oid', 'date_beg', 'wavemin']
+	list_filter = [('date_beg', DateRangeFilter)]
+	list_display = ['oid', 'date_beg']
 	readonly_fields = ['data_location']
 
 @admin.register(AiaLev1)
@@ -38,11 +38,13 @@ class AiaLev1Admin(BaseMetadataAdmin):
 
 @admin.register(Chrotel)
 class ChrotelAdmin(BaseMetadataAdmin):
-	pass
+	list_filter = BaseMetadataAdmin.list_filter + ["wavelnth"]
+	list_display = BaseMetadataAdmin.list_display + ["wavelnth"]
 
 @admin.register(Eit)
 class EitAdmin(BaseMetadataAdmin):
-	pass
+	list_filter = BaseMetadataAdmin.list_filter + ["wavelnth"]
+	list_display = BaseMetadataAdmin.list_display + ["wavelnth"]
 
 @admin.register(HmiMagnetogram)
 class HmiMagnetogramAdmin(BaseMetadataAdmin):
@@ -58,4 +60,5 @@ class ThemisAdmin(BaseMetadataAdmin):
 
 @admin.register(Xrt)
 class XrtAdmin(BaseMetadataAdmin):
-	pass
+	list_filter = BaseMetadataAdmin.list_filter + ["target"]
+	list_display = BaseMetadataAdmin.list_display + ["target", "noaa_num"]
