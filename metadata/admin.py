@@ -1,7 +1,11 @@
 from django.contrib import admin
+from django.contrib import messages
+from django.utils.safestring import mark_safe
+
 from daterange_filter.filter import DateRangeFilter
 
 from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt
+from metadata.forms import AddTagForm
 
 class FirstLetterListFilter(admin.SimpleListFilter):
 	title = 'First letter'
@@ -30,6 +34,22 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 	list_filter = [('date_beg', DateRangeFilter)]
 	list_display = ['oid', 'date_beg']
 	readonly_fields = ['data_location']
+	action_form = AddTagForm
+	actions = ['add_tags']
+	
+	def add_tags(self, request, queryset):
+		form = AddTagForm(request.POST)
+		# action choices are added dynamically in django admin
+		form.fields['action'].choices = self.get_action_choices(request)
+		
+		if form.is_valid():
+			tags = form.cleaned_data['tags']
+			for metadata in queryset:
+				metadata.tags.add(*tags)
+			self.message_user(request, "Successfully tagged %s metadata." % queryset.count())
+		else:
+			self.message_user(request, mark_safe("Error tagging metadata: %s." % form.errors), level=messages.ERROR)
+	add_tags.short_description = u'Add tags to selected metadata'
 
 @admin.register(AiaLev1)
 class AiaLev1Admin(BaseMetadataAdmin):
