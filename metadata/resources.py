@@ -5,7 +5,7 @@ from tastypie import fields
 from tastypie.exceptions import InvalidFilterError
 from tastypie.utils import trailing_slash
 from SDA.resources import ResourceMeta
-from dataset.resources import DataLocationResource
+from dataset.resources import Dataset, DataLocationResource
 from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt
 
 from .filters import ComplexFilter, ParseException
@@ -21,11 +21,18 @@ class TagResource(ModelResource):
 		filtering = {'name': ALL}
 	
 	def build_filters(self, filters=None, ignore_bad_filters=False):
-		# Allow more intuitive  tags filtering on dataset using dataset={dateset_id} instead of {dataset_id}__isnull=False
+		# Allow more intuitive tags filtering on dataset using dataset={dateset_id}
 		# This filter allows only to get tags for one dataset
 		orm_filters = super(TagResource, self).build_filters(filters, ignore_bad_filters)
 		if "dataset" in filters:
-			orm_filters[filters['dataset'] + '__isnull'] = False
+			try:
+				dataset = Dataset.objects.get(id=filters['dataset'])
+			except Dataset.DoesNotExist:
+				# filter that will always return an empty queryset
+				orm_filters['pk__isnull'] = True
+			else:
+				foreign_key_name = dataset._metadata_model.app_label + '_' + dataset._metadata_model.model 
+				orm_filters[foreign_key_name + '__isnull'] = False
 		
 		return orm_filters
 	
@@ -42,7 +49,7 @@ class BaseMetadataResource(ModelResource):
 	'''Base RESTful resource for Metadata models'''
 	
 	data_location = fields.ToOneField(DataLocationResource, 'data_location', full=True)
-	tags = fields.ToManyField(TagResource, 'tags', full=True)
+	tags = fields.ToManyField(TagResource, 'tags', full=True, blank=True)
 	
 	class Meta(ResourceMeta):
 		excludes = ['id']
