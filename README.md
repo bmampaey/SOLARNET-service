@@ -1,3 +1,18 @@
+SOLARNET Data Archive (SDA)
+=====================
+The SDA is an application supported by the [SOLARNET](http://www.solarnet-east.eu/) project, funded by the European Commission’s FP7 Capacities Programme under the Grant Agreement 312495.
+
+It's purpose is to collect metadata from as many solar observation as possible, especially those made thanks to the SOLARNET project, in a commmon repository.
+
+
+SDA API
+-------
+The SDA API is a [RestFul](https://en.wikipedia.org/wiki/Representational_state_transfer) API accessible at the url ...TBD.../api/v1/
+
+It allows to create/update/read/delete metadata in the archive and find the url of the corresponding data. It also allows to create/
+
+The API documentation is accessible at ...TBD.../api/doc/
+
 Adding a new dataset
 ====================
 
