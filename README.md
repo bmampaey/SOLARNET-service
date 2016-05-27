@@ -15,9 +15,9 @@ It allows to create/read/update/delete metadata in the archive and find the url 
 The API documentation is accessible at ...TBD.../api/doc/
 
 Different tools have been developped to access the API:
-- A web application, the [Solar Virtual Observatory](../../SVO/) (SVO) accessible at ...TBD.../SVO
-- A python client, the [SOLARNET-python-client](../../SOLARNET-python-client)
-- An IDL client, the [SOLARNET-IDL-client](../../SOLARNET-IDL-client)
+- A web application, the [Solar Virtual Observatory](https://github.com/bmampaey/SVO/) (SVO) accessible at ...TBD.../SVO
+- A python client, the [SOLARNET-python-client](https://github.com/bmampaey/SOLARNET-python-client)
+- An IDL client, the [SOLARNET-IDL-client](https://github.com/bmampaey/SOLARNET-IDL-client)
 
 Adding a new dataset
 --------------------
@@ -35,14 +35,14 @@ Each of these correspond to a table in the database (DB)
 Here are the steps to add a dataset:
 
 ### Add the dataset description
-As the SDA admin, connect to the [admin page](http://solarnet.oma.be/SDA/admin) and add, if necessary the instrument and the telescope, and then the dataset. 
+As the SDA admin, connect to the [admin page](...TBD.../SDA/admin) and add, if necessary the instrument and the telescope, and then the dataset. 
 
 Then add a group with the same name as the dataset id. Create, if necessary, the dataset admins, __make them staff__, and add them to the group.
 
 ### Add the keywords
 There is 2 ways of adding the keywords:
 
-1. Manually using the [admin page](http://solarnet.oma.be/SDA/admin). For this connect as one of the dataset admin and add each keyword in the DB.
+1. Manually using the [admin page](...TBD.../SDA/admin). For this connect as one of the dataset admin and add each keyword in the DB.
 
 2. Use the `extract_keywords` django command<sup>[1](#1)</sup> to parse several Fits files. The command will try to guess the correct values for the keywords and save them to the DB. The more file you provide, the better the results will be. If possible try to use files spread over the entire dataset, instead of consecutive files (this will allow to detect changes over time in the header of the files). When it is done, do verify the discovered keyword and correct them using the admin page like in 1.
 
@@ -65,6 +65,12 @@ There is 2 ways of adding data location and metadata:
 
 Adding tags to metadata
 -----------------------
+There is 2 ways of adding tags to metadata:
 
+1. Use the RestFul api to post the information.
+
+2. Manually using the [admin page](...TBD.../SDA/admin). For this connect as one of the dataset admin and add each tag in the DB.
+
+---------------------------------------------------------------------------
 #### Footnotes
 <a name="#1">1</a>: A django command is a script that is executed in the context of django. To execute the command, execute the manage.py file in the SDA folder followed by the command name and it's parameters. For example `cd SDA; ./manage.py write_model_file eit` will create the model file for the eit dataset
