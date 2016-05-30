@@ -22,7 +22,6 @@ class DataSelectionGroupResource(ModelResource):
 		authentication = WebUserApiKeyAuthentication()
 		authorization = UserOnlyModifAuthorization('user')
 		filtering = {
-			'user': ALL_WITH_RELATIONS,
 			'name': ALL,
 			'created' : ALL,
 			'updated' : ALL,

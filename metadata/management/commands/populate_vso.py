@@ -25,7 +25,7 @@ class Command(BaseCommand):
 		
 		# Import the record classes for the dataset
 		try:
-			records = import_module(options['dataset'] + '.management.records')
+			records = import_module('metadata.management.records' + options['dataset'])
 			Record = records.RecordFromVSO
 		except (ImportError, AttributeError):
 			raise CommandError('No RecordFromVSO class for dataset %s' % options['dataset'])

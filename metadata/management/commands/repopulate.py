@@ -16,7 +16,7 @@ class Command(BaseCommand):
 	def handle(self, **options):
 		# Create a populator for the dataset
 		try:
-			populate = import_module(options['dataset'] + '.management.populate')
+			populate = ('metadata.management.records' + options['dataset'])
 			populator = populate.Populator(Logger(self))
 		except Exception, why:
 			raise CommandError('Cannot create a populator for dataset %s: %s' % (options['dataset'], why))

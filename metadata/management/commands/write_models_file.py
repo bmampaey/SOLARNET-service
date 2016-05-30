@@ -8,7 +8,6 @@ from __future__ import unicode_literals
 from django.db import models
 from dataset.models import BaseMetadata
 
-class Metadata(BaseMetadata):
 '''
 
 field_template = '\t{keyword.db_column} = {field_type}(\'{keyword.name}\', help_text=\'{keyword.description}\', blank=True, null=True)'
@@ -49,7 +48,9 @@ class Command(BaseCommand):
 		# Get the keywords for the dataset
 		keywords = Keyword.objects.filter(dataset = dataset)
 		
-		print models_header,
+		print models_header
+		print 'class %s(BaseMetadata):' % dataset.name.replace(' ', '')
+		
 		if keywords.exists():
 			for keyword in keywords:
 				if keyword.db_column in ['id', 'oid', 'fits_header', 'data_location', 'tags']:
@@ -58,3 +59,9 @@ class Command(BaseCommand):
 					print field_template.format(keyword = keyword, field_type = field_for_type(keyword.python_type))
 		else:
 			print '\tpass'
+		
+		log.info('DO NOT FORGET:')
+		log.info('\t1.Create the metadata tables: ./manage.py makemigrations metadata && ./manage.py migrate metadata')
+		log.info('\t2.Define an admin configuration class in the file metadata/admin.py ')
+		log.info('\t3.Define a record configuration class in the file metadata/management/records/%s.py ', dataset.id)
+
