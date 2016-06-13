@@ -52,11 +52,12 @@ class DataSelectionGroup(models.Model):
 	@property
 	def metadata(self):
 		metadata = dict()
-		for data_selection in self.data_selections:
+		for data_selection in self.data_selections.all():
 			if data_selection.dataset in metadata:
 				metadata[data_selection.dataset] |= data_selection.metadata
 			else:
 				metadata[data_selection.dataset] = data_selection.metadata
+		return metadata
 
 
 class DataSelection(models.Model):

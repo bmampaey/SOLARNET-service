@@ -1,5 +1,5 @@
 SOLARNET Data Archive (SDA)
-=====================
+===========================
 The SDA is an application supported by the [SOLARNET](http://www.solarnet-east.eu/) project, funded by the European Commission’s FP7 Capacities Programme under the Grant Agreement 312495.
 
 It's purpose is to collect metadata from as many solar observations as possible, especially those made thanks to the SOLARNET project, in a commmon repository and make them available to the scientific community.
@@ -70,6 +70,12 @@ There is 2 ways of adding tags to metadata:
 1. Use the RestFul api to post the information.
 
 2. Manually using the [admin page](...TBD.../SDA/admin). For this connect as one of the dataset admin and add each tag in the DB.
+
+Mounting the data Selection file system
+---------------------------------------
+
+To allow the download of data selections via FTP, a Pseudo filesystem has been develloped to create the directory tree corresponding to the data selections. To mount it use the `mount_filesystem` django command<sup>[1](#1)</sup>
+
 
 ---------------------------------------------------------------------------
 #### Footnotes

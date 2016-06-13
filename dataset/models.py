@@ -8,6 +8,7 @@ class DataLocation(models.Model):
 	'''Data location model''' 
 	file_url = models.TextField(help_text = 'URL of the data at the remote site.', max_length=255, blank=True, null=True, validators = [URLValidator()], unique = True)
 	file_size = models.IntegerField(help_text = 'Size of the data in bytes.', default=0, blank=True, null=True)
+	file_path = models.TextField(help_text = 'Path of the data at the local site.', blank=True, null=True)
 	thumbnail_url = models.TextField(help_text = 'URL of the thumbnail at the remote site.', max_length=255, blank=True, null=True, default = None, validators = [URLValidator()])
 	updated = models.DateTimeField(help_text = 'Date of last update', null=False, blank=False, auto_now=True)
 	
