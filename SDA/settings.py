@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from secret_key import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Add extra DEBUG info for these ips
 # Also necessary to see the debug toolbar
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django_extensions', # Add useful management commands
-	'debug_toolbar', # Add useful info when debugging
+#	'debug_toolbar', # Add useful info when debugging
 	'corsheaders', # Allow cross domain
 	'tastypie', # RESTful api
 	'tastypie_swagger', # RESTful api viewer pip install git+https://github.com/concentricsky/django-tastypie-swagger.git --upgrade
@@ -83,7 +83,7 @@ TEMPLATES = [
 				'django.contrib.auth.context_processors.auth',
 				'django.contrib.messages.context_processors.messages',
 			],
-			'debug': True,
+			'debug': False,
 		},
 	},
 ]
@@ -144,8 +144,8 @@ DATETIME_FORMAT = 'Y-m-d H:i:s e'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_URL = '/static/'
-
+STATIC_URL = '/SDA/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Cross domain See https://github.com/ottoyiu/django-cors-headers/
 CORS_ORIGIN_ALLOW_ALL = True
