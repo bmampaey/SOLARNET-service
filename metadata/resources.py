@@ -18,6 +18,8 @@ class TagResource(ModelResource):
 	class Meta(ResourceMeta):
 		queryset = Tag.objects.all()
 		resource_name = 'tag'
+		max_limit = None
+		limit = None
 		filtering = {'name': ALL}
 	
 	def build_filters(self, filters=None, ignore_bad_filters=False):

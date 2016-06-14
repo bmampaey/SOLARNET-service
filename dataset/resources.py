@@ -73,6 +73,8 @@ class KeywordResource(ModelResource):
 		queryset = Keyword.objects.all()
 		resource_name = 'keyword'
 		allowed_methods = ['get']
+		max_limit = None
+		limit = None
 		filtering = {
 			'dataset': ALL_WITH_RELATIONS,
 			'db_column': ALL,
