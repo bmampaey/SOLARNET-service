@@ -10,6 +10,38 @@ from django.db import DEFAULT_DB_ALIAS
 from picklefield.fields import PickledObjectField
 from web_account.models import User
 from dataset.models import Dataset
+import collections
+
+
+class MetadataDict(collections.MutableMapping):
+	'''A lazy dict to access a DataSelectionGroup metadata'''
+	
+	def __init__(self, data_selection_group):
+		self.data_selection_group = data_selection_group
+		# A cache to save the computed metadata sets
+		self.cache = dict()
+	
+	def __getitem__(self, key):
+		# To compute the full metadata set, or all the data selections's metadata together
+		if key not in self.cache:
+			for data_selection in self.data_selection_group.data_selections.filter(dataset__name = key):
+				if key in self.cache:
+					self.cache[key] |= data_selection.metadata
+				else:
+					self.cache[key] = data_selection.metadata
+		return self.cache[key]
+	
+	def __setitem__(self, key, value):
+		raise TypeError('MetadataDict object does not support item assignment')
+	
+	def __delitem__(self, key):
+		raise TypeError('MetadataDict object does not support item deletion')
+	
+	def __iter__(self):
+		return iter(self.data_selection_group.data_selections.values_list('dataset__name', flat=True).order_by().distinct())
+	
+	def __len__(self):
+		return self.data_selection_group.data_selections.values_list('dataset__name', flat=True).order_by().distinct().count()
 
 class DataSelectionGroup(models.Model):
 	user = models.ForeignKey(User, related_name = 'data_selection_groups', related_query_name = 'data_selection_group', on_delete=models.CASCADE)
@@ -51,14 +83,7 @@ class DataSelectionGroup(models.Model):
 	
 	@property
 	def metadata(self):
-		metadata = dict()
-		for data_selection in self.data_selections.all():
-			if data_selection.dataset in metadata:
-				metadata[data_selection.dataset] |= data_selection.metadata
-			else:
-				metadata[data_selection.dataset] = data_selection.metadata
-		return metadata
-
+		return MetadataDict(self)
 
 class DataSelection(models.Model):
 	data_selection_group = models.ForeignKey(DataSelectionGroup, related_name = 'data_selections', on_delete=models.CASCADE) # If the DataSelectionGroup is deleted, delete also the DataSelection
