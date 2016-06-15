@@ -12,7 +12,10 @@ class RecordFromVSO(records.RecordFromVSO):
 	
 	def get_file_url(self):
 		return self.vso_record.fileid
-		
+	
+	def get_relative_file_path(self):
+		return self.file_url[67:]
+	
 	def get_field_values(self):
 		field_values = super(RecordFromVSO, self).get_field_values()
 		

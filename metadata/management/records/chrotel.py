@@ -13,7 +13,10 @@ class RecordFromVSO(records.RecordFromVSO):
 	
 	def get_header_file_url(self):
 		return urlparse(self.vso_record.fileid)._replace(scheme='http').geturl()
-		
+	
+	def get_relative_file_path(self):
+		return self.file_url[103:]
+	
 	def get_field_values(self):
 		field_values = super(RecordFromVSO, self).get_field_values()
 		

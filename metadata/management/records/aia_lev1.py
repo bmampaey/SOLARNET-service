@@ -16,6 +16,9 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 	#: The base file URL 
 	base_file_url = 'http://sdo.oma.be/data/'
 	
+	def get_relative_file_path(self):
+		return self.file_path[39:]
+	
 	def get_thumbnail_url(self):
 		return 'http://sdo.oma.be/PMD/preview_data/aia_lev1/{recnum}'.format(recnum = self.field_values['recnum'])
 	

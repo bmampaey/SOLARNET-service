@@ -2,7 +2,7 @@ from importlib import import_module
 from glob import glob
 
 from django.core.management.base import BaseCommand, CommandError
-from dataset.models import Tag
+from metadata.models import Tag
 from ..logger import Logger
 
 class Command(BaseCommand):
@@ -21,7 +21,7 @@ class Command(BaseCommand):
 		
 		# Import the record classes for the dataset
 		try:
-			records = import_module('metadata.management.records' + options['dataset'])
+			records = import_module('metadata.management.records.' + options['dataset'])
 			Record = records.RecordFromFitsFile
 		except (ImportError, AttributeError):
 			raise CommandError('No RecordFromFitsFile class for dataset %s' % options['dataset'])

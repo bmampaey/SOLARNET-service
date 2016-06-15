@@ -16,7 +16,10 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 	base_file_directory = '/data/soho-archive/eit/lz/'
 	
 	#: The base file URL 
-	base_file_url = 'http://sidc.be/eitlz/'
+	base_file_url = 'http://sidc.be/eitlz/'	
+	
+	def get_relative_file_path(self):
+		return self.file_path[26:]
 	
 	def get_file_url(self):
 		file_abspath = os.path.abspath(self.file_path)

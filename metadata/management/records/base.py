@@ -124,7 +124,7 @@ class RecordFromFitsFile(object):
 		# It needs to be an atomic transaction so that if the metadata creation fails, the data location is not saved
 		with transaction.atomic():
 			# Get or create data location (file_url is unique)
-			data_location, created = DataLocation.objects.get_or_create(file_url = self.file_url, defaults = dict(file_size = self.file_size, thumbnail_url = self.thumbnail_url))
+			data_location, created = DataLocation.objects.get_or_create(file_url = self.file_url, defaults = dict(file_size = self.file_size, file_path = self.relative_file_path, thumbnail_url = self.thumbnail_url))
 			
 			# Update or create metadata
 			metadata, created = self.metadata_model.objects.update_or_create(oid = self.oid, defaults = dict(data_location = data_location, fits_header = self.fits_header.tostring(), **self.field_values))

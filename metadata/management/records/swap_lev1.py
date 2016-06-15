@@ -17,6 +17,9 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 	#: The base file URL 
 	base_file_url = 'http://proba2.oma.be/swap/data/bsd/'
 	
+	def get_relative_file_path(self):
+		return self.file_path[22:]
+	
 	def get_thumbnail_url(self):
 		return 'http://proba2.oma.be/swap/data/qlviewer/' + self.field_values['date_obs'].strftime('%Y/%m/%d/') + os.path.splitext(self.field_values['file_tmr'])[0] + '.png'
 	
