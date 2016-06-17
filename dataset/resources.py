@@ -109,6 +109,12 @@ class DatasetResource(ModelResource):
 			"characteristics": ALL_WITH_RELATIONS
 		}
 	
+	def apply_filters(self, request, applicable_filters):
+		# Avoid duplicate results
+		#import pdb;pdb.set_trace()
+		return super(DatasetResource, self).apply_filters(request, applicable_filters).distinct()
+
+	
 	def dehydrate_metadata(self, bundle):
 		# Find the metadata resource uri
 		try:

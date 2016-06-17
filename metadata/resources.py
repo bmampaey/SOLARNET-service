@@ -100,6 +100,8 @@ class BaseMetadataResource(ModelResource):
 		'''Apply complex search filter'''
 		#import pdb; pdb.set_trace()
 		search_filter = applicable_filters.pop('search', None)
+		# if one of the filters is tags__in, then we should add .distinct()
+		# but this makes the queries run very slow
 		partially_filtered = super(BaseMetadataResource, self).apply_filters(request, applicable_filters)
 		if search_filter is not None:
 			applicable_filters['search'] = search_filter
