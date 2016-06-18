@@ -1,39 +1,60 @@
 import os, zipfile, urllib2
-from cStringIO import StringIO
 from django.views.generic.detail import SingleObjectMixin
 from django_downloadview import VirtualDownloadView, VirtualFile, BytesIteratorIO
 
 from data_selection.models import DataSelectionGroup, DataSelection
 
-#https://code.djangoproject.com/wiki/CookBookDynamicZip
-#http://chase-seibert.github.io/blog/2010/07/23/django-zip-files-create-dynamic-in-memory-archives-with-pythons-zipfile.html
- # fix for Linux zip files read in Windows
- #   for file in zip.filelist:
- #	   file.create_system = 0  
+class AppendOnlyFile:
+	'''Fake file that can only be appended to'''
+	def __init__(self):
+		self.buffer= b''
+		self.pos = 0
+	
+	def tell(self):
+		return self.pos
+	
+	def seek(self):
+		raise BufferError('Cannot seek on append only file')
+	
+	def write(self, value):
+		self.buffer += value
+		self.pos += len(value)
+	
+	def read(self):
+		return self.buffer
+	
+	def flush(self):
+		pass
+	
+	def clear(self):
+		self.buffer = b''
+	
+	def close(self):
+		self.buffer = b''
+		self.pos = 0
 
 def ZIP(data_selections):
-	'''Generator that returns a data selection as a zip file'''
+	'''Generator that returns data selections as a zip file'''
 	data_selections = data_selections
-	buffer = StringIO()
+	buffer = AppendOnlyFile()
 	zip_file = zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED, allowZip64 = True)
 	for data_selection in data_selections:
 		for data_location in data_selection.metadata.values('data_location__file_path', 'data_location__file_url'):
 			file_name = os.path.join(data_selection.dataset.name, data_location['data_location__file_path'])
 			request = urllib2.urlopen(data_location['data_location__file_url'])
+			# clear the buffer before writting
+			buffer.clear()
 			zip_file.writestr(file_name, request.read())
-			buffer.flush()
-			buffer.seek(0)
 			yield buffer.read()
 	
-	# it is important to close the files as it writes some more data to the file
+	# it is important to close the files as it writes some more data (central directory) to the file
 	# and to send also that data
+	buffer.clear()
 	zip_file.close()
-	buffer.flush()
-	buffer.seek(0)
 	yield buffer.read()
 
 class DownloadDataSelectionGroupView(SingleObjectMixin, VirtualDownloadView):
-	'''See http://django-downloadview.readthedocs.org/'''
+	'''View to download a zip archive of a data selection group'''
 	attachment = True
 	mimetype = 'application/zip'
 	model = DataSelectionGroup
@@ -48,7 +69,7 @@ class DownloadDataSelectionGroupView(SingleObjectMixin, VirtualDownloadView):
 		return virtual_file
 
 class DownloadDataSelectionView(SingleObjectMixin, VirtualDownloadView):
-	'''See http://django-downloadview.readthedocs.org/'''
+	'''View to download a zip archive of a data selection'''
 	attachment = True
 	mimetype = 'application/zip'
 	model = DataSelection
