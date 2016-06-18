@@ -1,6 +1,7 @@
 from django.http import QueryDict
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie import fields
+from tastypie.cache import NoCache
 
 from SDA.resources import ResourceMeta
 from SDA.authorizations import UserOnlyModifAuthorization
@@ -26,6 +27,8 @@ class DataSelectionGroupResource(ModelResource):
 			'created' : ALL,
 			'updated' : ALL,
 		}
+		# Disable cache
+		cache = NoCache()
 	
 	def obj_create(self, bundle, **kwargs):
 		# make sure that a new user data selection belongs to the autenthicated user
@@ -57,6 +60,8 @@ class DataSelectionResource(ModelResource):
 			'created' : ALL,
 			'number_items' : ALL,
 		}
+		# Disable cache
+		cache = NoCache()
 	
 	def obj_create(self, bundle, **kwargs):
 		# fully hydrate the bundle so the dataset get hydrated
