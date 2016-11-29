@@ -26,8 +26,8 @@ def path_parts(path):
 class DataSelectionFilesystem(LoggingMixIn, Operations):
 	
 	FORBIDDEN_OPEN_FLAGS = os.O_WRONLY | os.O_RDWR | os.O_APPEND | os.O_CREAT | os.O_TRUNC
-	dir_mode = 16749
-	file_mode = 33060
+	dir_mode = 16749 # r-xr-xr-x
+	file_mode = 33060 # r-xr-xr-x
 	
 	def __init__(self, uid, gid, log = logging):
 		self.last_fd = 0
@@ -179,7 +179,18 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 			raise OSError(errno.EACCES, os.strerror(errno.EACCES), path)
 	
 	def statfs(self, path):
-		return os.statvfs(path)
+		return dict(
+			f_bsize=4096,
+			f_frsize=4096,
+			f_blocks=0,
+			f_bfree=0,
+			f_bavail=0,
+			f_files=1,
+			f_ffree=0,
+			f_favail=0,
+			f_flag=4096, # What?
+			f_namemax=255
+		)
 	
 	def unlink(self, path):
 		if not self.exists(path):
