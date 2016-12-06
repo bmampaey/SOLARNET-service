@@ -97,11 +97,13 @@ WSGI_APPLICATION = 'SDA.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'SDA',
-		'USER': 'SDA',
-		'HOST': 'solarnetdb.oma.be',
+		'NAME': 'solarnet',
+		'USER': 'solarnet',
+		# Do not put password here, instead write it in the .pgpass file of the user running django
+                # 'PASSWORD': '*****',
+		'HOST': 'sdobase.oma.be',
 		'PORT': '5432',
-		'DEFAULT_INDEX_TABLESPACE': 'indexes'
+		'DEFAULT_INDEX_TABLESPACE': 'ssd'
 	}
 }
 
