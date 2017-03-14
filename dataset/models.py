@@ -40,7 +40,7 @@ class Characteristic(models.Model):
 		return unicode(self.name)
 
 class Dataset(models.Model):
-	id = models.TextField('Dataset id.', primary_key=True, max_length=20, validators=[RegexValidator(r'^[a-z][_a-z0-9]*$')])
+	id = models.TextField('Dataset id.', primary_key=True, max_length=20, validators=[RegexValidator(r'^[a-z][_a-z0-9]*$')], help_text='Must start with a lower case lettre, then only lower case letters, numbers and underscores are allowed')
 	name = models.TextField('Dataset display name.', unique = True, blank=False, null=False, max_length=40)
 	description = models.TextField('Dataset description', blank=True, null=True)
 	contact = models.TextField(help_text = 'Contact email for the data set.', blank=True, null=True, max_length=50, validators=[EmailValidator()])
