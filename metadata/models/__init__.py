@@ -6,3 +6,4 @@ from .hmi_magnetogram import HmiMagnetogram
 from .swap_lev1 import SwapLev1
 from .themis import Themis
 from .xrt import Xrt
+from .ibis import Ibis

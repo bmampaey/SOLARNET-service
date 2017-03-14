@@ -26,6 +26,7 @@ api.register(metadata.resources.HmiMagnetogramResource())
 api.register(metadata.resources.SwapLev1Resource())
 api.register(metadata.resources.ThemisResource())
 api.register(metadata.resources.XrtResource())
+api.register(metadata.resources.IbisResource())
 
 import web_account.resources
 api.register(web_account.resources.UserResource())
