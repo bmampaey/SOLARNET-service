@@ -20,7 +20,7 @@ class RecordFromFitsFile(object):
 	#: Fields to exclude from record
 	exclude_fields = []
 	
-	#: The HDU for this record (a number or a name)
+	#: The default HDU for this record (a number or a name)
 	HDU = 0
 	
 	#: The base directory in which are the files
@@ -31,7 +31,7 @@ class RecordFromFitsFile(object):
 	#: Otherwise override get_file_url
 	base_file_url = None
 	
-	def __init__(self, file_path, lax = False):
+	def __init__(self, file_path, hdu = None, lax = False):
 		
 		if not getattr(self, 'metadata_model'):
 			raise ImproperlyConfigured('Metadata model has not been set')
@@ -39,12 +39,19 @@ class RecordFromFitsFile(object):
 		#: The path to a fits file
 		self.file_path = file_path
 		
+		#: The hdu of the file to parse
+		if hdu is None:
+			self.hdu = self.HDU
+		else:
+			self.hdu = hdu
+		
 		#: If true, will not raise an exception if one of the metadata field is lacking or bad in the Fits header
 		#: Unless the field is mandatory (null == False in the model)
 		self.lax = lax
 	
 	def __getattr__(self, attr):
 		'''Lazy load the attributes'''
+		
 		if not hasattr(self, 'get_' + attr):
 			raise AttributeError('object has no attribute %s and no get method for this attribute' % attr)
 		else:
@@ -67,7 +74,6 @@ class RecordFromFitsFile(object):
 		if self.base_file_directory is None or self.base_file_url is None:
 			raise ImproperlyConfigured('Please set base_file_directory  and base_file_url or override get_file_url')
 		
-		
 		file_abspath = os.path.abspath(self.file_path)
 		if not file_abspath.startswith(self.base_file_directory):
 			raise ValueError('File path is not in directory %s: check base_file_directory' % self.base_file_directory)
@@ -76,7 +82,6 @@ class RecordFromFitsFile(object):
 		if file_relpath.startswith('/') and self.base_file_url.endswith('/'):
 			file_relpath = file_relpath[:-1]
 		return self.base_file_url + file_relpath
-
 	
 	def get_thumbnail_url(self):
 		'''Return the URL of the thumbnail of the data location'''
@@ -84,9 +89,9 @@ class RecordFromFitsFile(object):
 	
 	def get_fits_header(self):
 		'''Return the Fits header of the file'''
-		hdus = pyfits.open(self.file_path)
-		fits_header = hdus[self.HDU].header
-		hdus.close(output_verify='ignore')
+		extensions = pyfits.open(self.file_path)
+		fits_header = extensions[self.hdu].header
+		extensions.close(output_verify='ignore')
 		return fits_header
 	
 	def get_file_size(self):
@@ -133,6 +138,14 @@ class RecordFromFitsFile(object):
 			metadata.tags = tags
 		
 		return data_location, metadata
+	
+	def resave(self, metadata):
+		'''Update the record MetaData into the database'''
+		self.fits_header = pyfits.Header.fromstring(metadata.fits_header)
+		for field, value in self.field_values.items():
+			setattr(metadata, field, value)
+		metadata.save()
+		return metadata
 
 class RecordFromVSO(RecordFromFitsFile):
 	'''Record created from a VSO record'''

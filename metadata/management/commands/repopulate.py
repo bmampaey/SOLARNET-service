@@ -1,25 +1,39 @@
-from datetime import datetime
-from dateutil.parser import parse as parse_date
 from importlib import import_module
+
 from django.core.management.base import BaseCommand, CommandError
 from ..logger import Logger
 
 class Command(BaseCommand):
-	help = 'Populate the Metadata and DataLocation for a dataset'
+	help = 'Repopulate the Metadata from the fits_header field '
 	
 	def add_arguments(self, parser):
 		parser.add_argument('dataset', help='The id of the dataset.')
-		parser.add_argument('start_date', type = lambda s: parse_date(s), help='The start date.')
-		parser.add_argument('end_date', nargs = '?', type = lambda s: parse_date(s), default = datetime.utcnow(), help='The end date.')
-		parser.add_argument('--update', default = False, action='store_true', help='Update metadata even if already present in DB')
+		parser.add_argument('oids', nargs='*', metavar='OID', help='OID to reparse, all if not specified.')
+		parser.add_argument('--lax', default = False, action='store_true', help='Allow some metadata field to be absent from the Fits file header')
 		
 	def handle(self, **options):
-		# Create a populator for the dataset
-		try:
-			populate = ('metadata.management.records' + options['dataset'])
-			populator = populate.Populator(Logger(self))
-		except Exception, why:
-			raise CommandError('Cannot create a populator for dataset %s: %s' % (options['dataset'], why))
 		
-		# Run the populator
-		populator.run(options['start_date'], options['end_date'], options['update'])
+		log = Logger(self)
+		
+		# Import the record classes for the dataset
+		try:
+			records = import_module('metadata.management.records.' + options['dataset'])
+			Record = records.RecordFromFitsFile
+		except (ImportError, AttributeError):
+			raise CommandError('No RecordFromFitsFile class for dataset %s' % options['dataset'])
+		
+		# Get the list of metadata to repopulate
+		if options['oids']:
+			metadata_list = Record.metadata_model.objects.filter(oid__in=options['oids']).iterator()
+		else:
+			metadata_list = Record.metadata_model.objects.iterator()
+		
+		# Repopulate the dataset
+		for metadata in metadata_list:
+			try:
+				record = Record(None, lax=options['lax'])
+				record.resave(metadata)
+			except Exception, why:
+				log.error('Error resaving record for "%s": %s', metadata, why)
+			else:
+				log.info('Resaved record for %s', metadata)
