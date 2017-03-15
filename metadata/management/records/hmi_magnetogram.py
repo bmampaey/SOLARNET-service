@@ -1,16 +1,14 @@
-from datetime import datetime, timedelta
 import pytz
+from datetime import datetime, timedelta
 from dateutil.parser import parse as parse_date
 
-from metadata.management import records
+from metadata.management.records import FitsRecordFromDisk
 from metadata.models import HmiMagnetogram
 
-class RecordFromFitsFile(records.RecordFromFitsFile):
-	'''Record created from a Fist file on disk'''
-	
+class Record(FitsRecordFromDisk):
 	metadata_model = HmiMagnetogram
 	exclude_fields = ['date_beg', 'date_end', 'wavemin', 'wavemax', 't_obs', 't_rec']
-	HDU = 1
+	hdu = 1
 	
 	#: The base directory in which are the files
 	base_file_directory = '/data/SDO/'
@@ -25,7 +23,7 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 		return 'http://sdo.oma.be/PMD/preview_data/hmi_m_45s/{recnum}'.format(recnum = self.field_values['recnum'])
 	
 	def get_field_values(self):
-		field_values = super(RecordFromFitsFile, self).get_field_values()
+		field_values = super(Record, self).get_field_values()
 		
 		# T_OBS T_REC are in TAI
 		for field_name, keyword_name in [('t_obs', 'T_OBS'), ('t_rec', 'T_REC')]:
@@ -51,6 +49,7 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 			datetime(2009, 1, 1, tzinfo = pytz.UTC): timedelta(seconds=34),
 			datetime(2012, 7, 1, tzinfo = pytz.UTC): timedelta(seconds=35),
 			datetime(2015, 7, 1, tzinfo = pytz.UTC): timedelta(seconds=36),
+			datetime(2017, 1, 1, tzinfo = pytz.UTC): timedelta(seconds=37),
 		}
 		last_offset = max(date for date in TAI_to_UTC if utc >= date)
 		return (utc + TAI_to_UTC[last_offset]).replace(tzinfo=None)

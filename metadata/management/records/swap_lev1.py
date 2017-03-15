@@ -1,15 +1,13 @@
 import os
 from datetime import timedelta
 
-from metadata.management import records
+from metadata.management.records import FitsRecordFromDisk
 from metadata.models import SwapLev1
 
-class RecordFromFitsFile(records.RecordFromFitsFile):
-	'''Record created from a Fist file on disk'''
-	
+class Record(FitsRecordFromDisk):
 	metadata_model = SwapLev1
 	exclude_fields = ['date_beg', 'date_end', 'wavemin', 'wavemax']
-	HDU = 0
+	hdu = 0
 	
 	#: The base directory in which are the files
 	base_file_directory = '/data/proba2/swap/bsd/'
@@ -25,7 +23,7 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 	
 	def get_field_values(self):
 		
-		field_values = super(RecordFromFitsFile, self).get_field_values()
+		field_values = super(Record, self).get_field_values()
 		
 		field_values['date_beg'] = field_values['date_obs']
 		field_values['date_end'] = field_values['date_beg'] + timedelta(seconds=field_values['exptime'])

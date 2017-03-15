@@ -1,9 +1,7 @@
-from datetime import timedelta
-
-from metadata.management import records
+from metadata.management.records import FitsRecordFromVSO
 from metadata.models import Xrt
 
-class RecordFromVSO(records.RecordFromVSO):
+class Record(FitsRecordFromVSO):
 	metadata_model = Xrt
 	exclude_fields = ['date_beg', 'date_end', 'wavemin', 'wavemax']
 	instrument = 'XRT'
@@ -17,7 +15,7 @@ class RecordFromVSO(records.RecordFromVSO):
 		return self.file_url[67:]
 	
 	def get_field_values(self):
-		field_values = super(RecordFromVSO, self).get_field_values()
+		field_values = super(Record, self).get_field_values()
 		
 		# See https://xrt.cfa.harvard.edu/resources/documents/XAG/XAG.pdf
 		field_values['date_beg'] = field_values['date_obs']

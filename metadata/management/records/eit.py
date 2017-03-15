@@ -2,15 +2,13 @@ import os
 from dateutil.parser import parse as parse_date
 from datetime import timedelta
 
-from metadata.management import records
+from metadata.management.records import FitsRecordFromDisk
 from metadata.models import Eit
 
-class RecordFromFitsFile(records.RecordFromFitsFile):
-	'''Record created from a Fist file on disk'''
-	
+class Record(FitsRecordFromDisk):
 	metadata_model = Eit
 	exclude_fields = ['date_beg', 'date_end', 'wavemin', 'wavemax', 'blocks_horz', 'blocks_vert', 'image_of_seq', 'n_missing_blocks', 'num_leb_proc', 'camera_err', 'line_sync', 'readout_port', 'shutter_close_time', 'commanded_exposure_time', 'corrected_date_obs', 'leb_proc']
-	HDU = 0
+	hdu = 0
 	
 	#: The base directory in which are the files
 	base_file_directory = '/data/soho-archive/eit/lz/'
@@ -33,7 +31,7 @@ class RecordFromFitsFile(records.RecordFromFitsFile):
 	
 	def get_field_values(self):
 		
-		field_values = super(RecordFromFitsFile, self).get_field_values()
+		field_values = super(Record, self).get_field_values()
 		
 		# EIT has additional keywords in comments
 		comments = dict()

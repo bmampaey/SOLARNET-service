@@ -1,24 +1,24 @@
 from datetime import timedelta
 from urlparse import urlparse
 
-from metadata.management import records
+from metadata.management.records import FitsRecordFromVSO
 from metadata.models import Chrotel
 
-class RecordFromVSO(records.RecordFromVSO):
+class Record(FitsRecordFromVSO):
 	metadata_model = Chrotel
 	exclude_fields = ['date_beg', 'date_end', 'wavemin', 'wavemax']
 	instrument = 'ChroTel'
 	min_header_size = 5760
 	zipped = True
 	
-	def get_header_file_url(self):
+	def get_corrected_file_url(self):
 		return urlparse(self.vso_record.fileid)._replace(scheme='http').geturl()
 	
 	def get_relative_file_path(self):
 		return self.file_url[103:]
 	
 	def get_field_values(self):
-		field_values = super(RecordFromVSO, self).get_field_values()
+		field_values = super(Record, self).get_field_values()
 		
 		# See http://www.kis.uni-freiburg.de/en/observatories/chrotel/data/
 		field_values['date_beg'] = field_values['date_obs']

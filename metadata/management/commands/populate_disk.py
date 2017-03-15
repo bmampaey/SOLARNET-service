@@ -13,7 +13,6 @@ class Command(BaseCommand):
 		parser.add_argument('files', nargs='+', metavar='file', help='Path to a fits file.')
 		parser.add_argument('--HDU', type=int, help='The HDU of the fits file to read')
 		parser.add_argument('--update', default = False, action='store_true', help='Update metadata even if already present in DB')
-		parser.add_argument('--lax', default = False, action='store_true', help='Allow some metadata field to be absent from the Fits file header')
 		parser.add_argument('--tags', default = [], nargs='*', help='A list of tag names to set to the metadata')
 		
 	def handle(self, **options):
@@ -30,6 +29,8 @@ class Command(BaseCommand):
 		tags = list()
 		for tag_name in options['tags']:
 			tag, created = Tag.objects.get_or_create(name=tag_name)
+			if created:
+				log.info('Created Tag %s', tag_name)
 			tags.append(tag)
 		
 		# Glob the file paths
@@ -41,9 +42,7 @@ class Command(BaseCommand):
 		# Populate the dataset
 		for file_path in file_paths:
 			try:
-				record = Record(file_path, hdu = options['HDU'], lax=options['lax'])
+				record = Record(file_path, hdu = options['HDU'], log=log)
 				record.save(tags=tags, update=options['update'])
 			except Exception, why:
 				log.error('Error creating record for "%s": %s', file_path, why)
-			else:
-				log.info('Created record for %s', file_path)
