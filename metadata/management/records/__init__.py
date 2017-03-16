@@ -1,1 +1,1 @@
-from .base import RecordFromFitsFile, RecordFromVSO
+from .base import FitsRecordFromDisk, FitsRecordFromHTTP, FitsRecordFromVSO

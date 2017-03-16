@@ -27,6 +27,7 @@ api.register(metadata.resources.SwapLev1Resource())
 api.register(metadata.resources.ThemisResource())
 api.register(metadata.resources.XrtResource())
 api.register(metadata.resources.IbisResource())
+api.register(metadata.resources.GrisLev1Resource())
 
 import web_account.resources
 api.register(web_account.resources.UserResource())

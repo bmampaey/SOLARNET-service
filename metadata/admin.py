@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 
 from daterange_filter.filter import DateRangeFilter
 
-from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis
+from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis, GrisLev1
 from metadata.forms import AddTagForm
 
 class FirstLetterListFilter(admin.SimpleListFilter):
@@ -91,4 +91,9 @@ class XrtAdmin(BaseMetadataAdmin):
 
 @admin.register(Ibis)
 class IbisAdmin(BaseMetadataAdmin):
-	pass
+	list_filter = BaseMetadataAdmin.list_filter + ["channel"]
+	list_display = BaseMetadataAdmin.list_display + ["channel"]
+
+@admin.register(GrisLev1)
+class GrisLev1Admin(BaseMetadataAdmin):
+	list_display = BaseMetadataAdmin.list_display + ["waveleng"]

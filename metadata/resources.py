@@ -6,7 +6,7 @@ from tastypie.exceptions import InvalidFilterError
 from tastypie.utils import trailing_slash
 from SDA.resources import ResourceMeta
 from dataset.resources import Dataset, DataLocationResource
-from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis
+from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis, GrisLev1
 
 from .filters import ComplexFilter, ParseException
 
@@ -161,3 +161,9 @@ class IbisResource(BaseMetadataResource):
 	class Meta(BaseMetadataResource.Meta):
 		queryset = Ibis.objects.all()
 		resource_name = 'ibis'
+
+class GrisLev1Resource(BaseMetadataResource):
+	
+	class Meta(BaseMetadataResource.Meta):
+		queryset = GrisLev1.objects.all()
+		resource_name = 'gris_lev1'
