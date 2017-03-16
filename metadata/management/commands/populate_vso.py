@@ -12,22 +12,23 @@ class Command(BaseCommand):
 	help = 'Populate the Metadata and DataLocation for a dataset from VSO records'
 	
 	def add_arguments(self, parser):
-		parser.add_argument('dataset', help='The id of the dataset.')
-		parser.add_argument('start_date', type = lambda s: parse_date(s), help='The start date.')
-		parser.add_argument('end_date', nargs = '?', type = lambda s: parse_date(s), default = datetime.utcnow(), help='The end date.')
+		parser.add_argument('dataset', help='The id of the dataset')
+		parser.add_argument('start_date', type = lambda s: parse_date(s), help='The start date')
+		parser.add_argument('end_date', nargs = '?', type = lambda s: parse_date(s), default = datetime.utcnow(), help='The end date')
 		parser.add_argument('--update', default = False, action='store_true', help='Update metadata even if already present in DB')
 		parser.add_argument('--tags', default = [], nargs='*', help='A list of tag names to set to the metadata')
+		parser.add_argument('--debug', default = False, action='store_true', help='Show debugging info')
 		
 	def handle(self, **options):
 		
-		log = Logger(self)
+		log = Logger(self, debug=options['debug'])
 		
 		# Import the record classes for the dataset
 		try:
 			records = import_module('metadata.management.records.' + options['dataset'])
 			Record = records.Record
 		except (ImportError, AttributeError):
-			raise CommandError('No RecordFromVSO class for dataset %s' % options['dataset'])
+			raise CommandError('No Record class for dataset %s' % options['dataset'])
 		
 		tags = list()
 		for tag_name in options['tags']:
@@ -40,7 +41,7 @@ class Command(BaseCommand):
 		for vso_record in vso_records(Record.instrument, options['start_date'], options['end_date']):
 			try:
 				record = Record(vso_record, log=log)
-				record.save(tags=tags, update=options['update'])
+				record.create(tags=tags, update=options['update'])
 			except Exception, why:
 				log.error('Error creating record for "%s": %s', vso_record.fileid, why)
 

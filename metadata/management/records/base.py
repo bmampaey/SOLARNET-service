@@ -93,7 +93,7 @@ class FitsRecord(object):
 			try:
 				field_values[field.name] = field.to_python(field_value)
 			except Exception, why:
-				self.log.error('Could not convert value %s to type %s: %s', field_value, f.__class__.__name__, why)
+				self.log.error('Could not convert value %s to type %s: %s', field_value, field.__class__.__name__, why)
 		
 		return field_values
 	
@@ -123,7 +123,8 @@ class FitsRecord(object):
 					self.log.info('Updated Metadata with oid %s', self.oid)
 				
 				# Add the tags
-				metadata.tags.add(*tags, bulk=True)
+				if tags:
+					metadata.tags.add(*tags)
 			
 			return data_location, metadata
 	
@@ -131,7 +132,7 @@ class FitsRecord(object):
 	def update(cls, metadata):
 		'''Update an existing metadata from it's fits header'''
 		
-		record = cls(fits_header = pyfits.Header.fromstring(metadata.fits_header), oid = metadata.oid)
+		record = cls(None, fits_header = pyfits.Header.fromstring(metadata.fits_header), oid = metadata.oid)
 		for field, value in record.field_values.items():
 			setattr(metadata, field, value)
 		metadata.save()
@@ -151,11 +152,14 @@ class FitsRecordFromDisk(FitsRecord):
 	#: Otherwise override get_file_url
 	base_file_url = None
 	
-	def __init__(self, file_path, **kwargs):
+	def __init__(self, file_path, hdu = None, **kwargs):
 		
 		super(FitsRecordFromDisk, self).__init__(**kwargs)
 		
 		self.file_path = file_path
+		
+		if hdu is not None:
+			self.hdu = hdu
 	
 	def get_file_size(self):
 		return os.path.getsize(self.file_path)
@@ -195,6 +199,9 @@ class FitsRecordFromHTTP(FitsRecord):
 	#: If None, try to guess from the file extension
 	zipped = None
 	
+	#: Authentication for the webserver
+	auth = None
+	
 	def __init__(self, file_url, **kwargs):
 		
 		super(FitsRecordFromHTTP, self).__init__(**kwargs)
@@ -221,8 +228,9 @@ class FitsRecordFromHTTP(FitsRecord):
 		fits_file = StringIO.StringIO()
 		
 		while True:
+			self.log.debug('Reading file %s from %s to %s', self.file_url, range_start, range_end - 1)
 			# We set the desired range in the HTTP header, note that both bounds are inclusive 
-			response = requests.get(self.file_url, headers = {'Range': 'Bytes=%s-%s' % (range_start, range_end - 1)})
+			response = requests.get(self.file_url, headers = {'Range': 'Bytes=%s-%s' % (range_start, range_end - 1)}, auth=self.auth)
 			
 			if zipped:
 				fits_file.write(decompressor.decompress(response.content))
@@ -253,7 +261,7 @@ class FitsRecordFromHTTP(FitsRecord):
 	
 	def get_file_size(self):
 		'''Return the size of the file'''
-		response = requests.head(self.file_url)
+		response = requests.head(self.file_url, auth=self.auth)
 		return response.headers['content-length']
 
 class FitsRecordFromVSO(FitsRecordFromHTTP):

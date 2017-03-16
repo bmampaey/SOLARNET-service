@@ -6,7 +6,7 @@ from django.db import transaction
 
 from dataset.models import DataLocation
 
-class Record(records):
+class Record(FitsRecordFromDisk):
 	metadata_model = Ibis
 	exclude_fields = ['date_beg', 'wavemin', 'wavemax']
 	hdu = 1
@@ -42,8 +42,8 @@ class Record(records):
 	def create(self, tags = None, update = False):
 		# Ibis has more than one image per file
 		# So we save them all as separate metadata
-		for hdu in range(0, len(self.extensions)):
-			self.hdu = hdu + 1
+		for hdu in range(1, len(self.extensions)):
+			self.hdu = hdu
 			self.log.info('Processing HDU %s', self.hdu)
 			
 			super(Record, self).create(tags=tags, update=update)
