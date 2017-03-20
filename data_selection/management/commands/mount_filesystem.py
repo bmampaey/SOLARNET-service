@@ -1,11 +1,14 @@
-import os, pwd, urllib2, urlparse, pytz, errno, logging
+import os, pwd, urlparse, pytz, errno, logging, requests
 from datetime import datetime
+from functools import wraps
+
 from fuse import FUSE, Operations, LoggingMixIn
 
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.functions import Substr
 from django.db.models import Q, F, Value
+from django.db import connection
 
 from ..logger import Logger
 from web_account.models import User
@@ -22,6 +25,37 @@ def path_parts(path):
 		parts.insert(0, tail)
 	return parts
 
+def close_connection(func):
+	'''Decorator to close the Django database connection at the end'''
+	#see http://stackoverflow.com/questions/1303654/threaded-django-task-doesnt-automatically-handle-transactions-or-db-connections
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		try:
+			result = func(*args, **kwargs)
+		except Exception, why:
+			connection.close()
+			raise
+		else:
+			connection.close()
+			return result
+	
+	return wrapper
+
+class HttpBuffer(object):
+	'''Very loose HTTP buffer, does not do any verification or buffering'''
+	def __init__(self, url):
+		self.url = url
+	
+	def __getitem__(self, arg):
+		if not isinstance(arg, slice):
+			raise TypeError('list indices must be slice')
+		
+		response = requests.get(self.url, headers = {'Range': 'Bytes=%s-%s' % (arg.start, arg.stop - 1)}, timeout=50)
+		
+		if response.status_code in (200, 206):
+			return response.content
+		else:
+			return b''
 
 class DataSelectionFilesystem(LoggingMixIn, Operations):
 	
@@ -40,6 +74,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 	# Helpers
 	# =======
 	
+	@close_connection
 	def split_path(self, path):
 		'''Convert a path like /user__id/data_selection_group__name/dataset__name/data_location__file_path to it's associated model instances'''
 		user, data_selection_group, dataset, file_path = None, None, None, None
@@ -62,6 +97,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		
 		return user, data_selection_group, dataset, file_path
 	
+	@close_connection
 	def exists(self, path):
 		# Split path raise an error if any part along the path is wrong, except for file_path
 		try:
@@ -72,8 +108,9 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		if file_path is None:
 			return True
 		else:
-			return data_selection_group.metadata[dataset].filter(Q(data_location__file_path__exact = file_path) | Q(data_location__file_path__startswith = file_path + '/')).exists()
+			return data_selection_group.metadata[dataset].filter(Q(data_location__file_path__exact = file_path) | Q(data_location__file_path__startswith = file_path + '/'), data_location__offline=False).exists()
 	
+	@close_connection
 	def is_file(self, path):
 		# Split path raise an error if any part along the path is wrong, except for file_path
 		try:
@@ -84,7 +121,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		if file_path is None:
 			return True
 		else:
-			return data_selection_group.metadata[dataset].filter(data_location__file_path = file_path).exists()
+			return data_selection_group.metadata[dataset].filter(data_location__file_path = file_path, data_location__offline=False).exists()
 	
 	
 	# Filesystem methods
@@ -110,14 +147,14 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		else:
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 	
+	@close_connection
 	def getattr(self, path, fh=None):
-		
 		try:
 			user, data_selection_group, dataset, file_path = self.split_path(path)
 		except ObjectDoesNotExist:
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		if file_path:
-			data_locations = data_selection_group.metadata[dataset].filter(data_location__file_path = file_path).values('data_location__file_size', 'data_location__updated')
+			data_locations = data_selection_group.metadata[dataset].filter(data_location__file_path = file_path, data_location__offline=False).values('data_location__file_size', 'data_location__updated')
 			if len(data_locations) > 0: # We have a file
 				mtime = to_system_time(data_locations[0]['data_location__updated'])
 				file_size = data_locations[0]['data_location__file_size']
@@ -134,6 +171,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		else:
 			return {'st_atime': self.mount_time, 'st_ctime': self.mount_time, 'st_gid': self.gid, 'st_mode': self.dir_mode, 'st_mtime': self.mount_time, 'st_nlink': 2, 'st_size': 4096, 'st_uid': self.uid}
 	
+	@close_connection
 	def readdir(self, path, fh):
 		dirents = ['.', '..']
 		try:
@@ -144,10 +182,10 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		if file_path:
 			# TODO test with a full file path
 			# retrieve the good part from file path
-			return dirents + list(data_selection_group.metadata[dataset].filter(data_location__file_path__startswith=file_path).annotate(sub_path=Substr(Substr(F('data_location__file_path'), Value(len(file_path) + 1)), Value('^/([^/]+)'))).values_list('sub_path', flat=True).order_by().distinct())
+			return dirents + list(data_selection_group.metadata[dataset].filter(data_location__file_path__startswith=file_path, data_location__offline=False).annotate(sub_path=Substr(Substr(F('data_location__file_path'), Value(len(file_path) + 1)), Value('^/([^/]+)'))).values_list('sub_path', flat=True).order_by().distinct())
 		elif dataset:
 			# retrieve the good part from file path
-			return dirents + list(data_selection_group.metadata[dataset].annotate(sub_path=Substr(F('data_location__file_path'), Value('^([^/]+)'))).values_list('sub_path', flat=True).order_by().distinct())
+			return dirents + list(data_selection_group.metadata[dataset].filter(data_location__offline=False).annotate(sub_path=Substr(F('data_location__file_path'), Value('^([^/]+)'))).values_list('sub_path', flat=True).order_by().distinct())
 		elif data_selection_group:
 			return dirents + list(data_selection_group.data_selections.order_by().values_list('dataset__name', flat=True).distinct())
 		elif user:
@@ -220,10 +258,11 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 			raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 		else:
 			raise OSError(errno.EACCES, os.strerror(errno.EACCES), path)
-
+	
 	# File methods
 	# ============
-
+	
+	@close_connection
 	def open(self, path, flags):
 		if flags & self.FORBIDDEN_OPEN_FLAGS:
 			raise OSError(errno.EACCES, os.strerror(errno.EACCES), path)
@@ -232,29 +271,28 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 				user, data_selection_group, dataset, file_path = self.split_path(path)
 			except ObjectDoesNotExist:
 				raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
-			urls = dataset.metadata_model.objects.filter(data_location__file_path = file_path).values_list('data_location__file_url', flat=True)
+			urls = dataset.metadata_model.objects.filter(data_location__file_path = file_path, data_location__offline=False).values_list('data_location__file_url', flat=True)
 			if len(urls) > 0:
-				request = urllib2.urlopen(urls[0])
-				self.fd[path] = request.read()
+				self.fd[path] = HttpBuffer(urls[0])
 			else:
 				raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
-			
 		
 		self.last_fd += 1
 		return self.last_fd
-
+	
 	def create(self, path, mode, fi=None):
 		raise OSError(errno.EACCES, os.strerror(errno.EACCES), path)
-
+	
 	def read(self, path, length, offset, fh):
+		
 		return self.fd[path][offset:offset+length]
-
+	
 	def write(self, path, buf, offset, fh):
 		raise OSError(errno.EACCES, os.strerror(errno.EACCES), path)
 	
 	def truncate(self, path, length, fh=None):
 		raise OSError(errno.EACCES, os.strerror(errno.EACCES), path)
-
+	
 	def release(self, path, fh):
 		if path in self.fd:
 			del self.fd[path]
@@ -276,4 +314,4 @@ class Command(BaseCommand):
 		except KeyError, why:
 			CommandError('No user %s' % options['owner'])
 		
-		fuse = FUSE(DataSelectionFilesystem(uid = owner.pw_uid, gid = owner.pw_gid, log = log), options['mountpoint'], foreground=options['foreground'], debug=options['debug'])
+		fuse = FUSE(DataSelectionFilesystem(uid = owner.pw_uid, gid = owner.pw_gid, log = log), options['mountpoint'], foreground=options['foreground'], debug=options['debug'], nothreads=False)
