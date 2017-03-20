@@ -11,6 +11,7 @@ class DataLocation(models.Model):
 	file_path = models.TextField(help_text = 'Path of the data at the local site.', db_index=True, blank=True, null=True)
 	thumbnail_url = models.TextField(help_text = 'URL of the thumbnail at the remote site.', max_length=255, blank=True, null=True, default = None, validators = [URLValidator()])
 	updated = models.DateTimeField(help_text = 'Date of last update', null=False, blank=False, auto_now=True)
+	offline = models.BooleanField(help_text = 'The data is not available for download', null=False, blank=False, default=False)
 	
 	class Meta:
 		db_table = 'data_location'

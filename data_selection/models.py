@@ -71,7 +71,6 @@ class DataSelectionGroup(models.Model):
 	@property
 	def number_items(self):
 		return sum(data_selection.number_items for data_selection in self.data_selections.all())
-
 	
 	@property
 	def datasets(self):

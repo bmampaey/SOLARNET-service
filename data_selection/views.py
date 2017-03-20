@@ -1,4 +1,4 @@
-import os, zipfile, urllib2
+import os, zipfile, requests
 from django.views.generic.detail import SingleObjectMixin
 from django_downloadview import VirtualDownloadView, VirtualFile, BytesIteratorIO
 
@@ -36,22 +36,37 @@ class AppendOnlyFile:
 def ZIP(data_selections):
 	'''Generator that returns data selections as a zip file'''
 	data_selections = data_selections
-	buffer = AppendOnlyFile()
-	zip_file = zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED, allowZip64 = True)
+	zip_buffer = AppendOnlyFile()
+	zip_file = zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED, allowZip64 = True)
+	missing_files = ''
 	for data_selection in data_selections:
-		for data_location in data_selection.metadata.values('data_location__file_path', 'data_location__file_url'):
+		for data_location in data_selection.metadata.values('data_location__file_path', 'data_location__file_url', 'data_location__offline', 'data_location__file_size'):
 			file_name = os.path.join(data_selection.dataset.name, data_location['data_location__file_path'])
-			request = urllib2.urlopen(data_location['data_location__file_url'])
-			# clear the buffer before writting
-			buffer.clear()
-			zip_file.writestr(file_name, request.read())
-			yield buffer.read()
+			
+			if data_location['data_location__offline']:
+				missing_files += file_name + ' is not accessible online, please contact dataset manager\n'
+			# TODO increase server memory size
+			elif data_location['data_location__file_size'] > 100 * 1024 * 1024:
+				missing_files += file_name + ' is too large, please use FTP\n'
+			else:
+				response = requests.get(data_location['data_location__file_url'], timeout=50)
+				if response.status_code in (200, 206):
+					zip_file.writestr(file_name, response.content)
+					yield zip_buffer.read()
+				else:
+					missing_files += file_name + ' error downloading, please retry or contact dataset manager\n'
+			
+			# clear the buffer before next writing
+			zip_buffer.clear()
+	
+	# Add the missing files
+	if missing_files:
+		zip_file.writestr('missing_files.txt', missing_files)
 	
 	# it is important to close the files as it writes some more data (central directory) to the file
 	# and to send also that data
-	buffer.clear()
 	zip_file.close()
-	yield buffer.read()
+	yield zip_buffer.read()
 
 class DownloadDataSelectionGroupView(SingleObjectMixin, VirtualDownloadView):
 	'''View to download a zip archive of a data selection group'''
