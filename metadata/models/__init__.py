@@ -8,3 +8,4 @@ from .themis import Themis
 from .xrt import Xrt
 from .ibis import Ibis
 from .gris_lev1 import GrisLev1
+from .rosa import Rosa
