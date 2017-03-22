@@ -1,5 +1,4 @@
-from datetime import timedelta, datetime, time
-from urlparse import urlparse
+from datetime import datetime, time
 from requests.auth import HTTPDigestAuth
 from django.utils.dateparse import parse_time
 from django.utils.timezone import utc

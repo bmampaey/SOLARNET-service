@@ -1,7 +1,6 @@
-import pytz
 from datetime import datetime, timedelta
 from dateutil.parser import parse as parse_date
-
+from django.utils.timezone import utc
 from metadata.management.records import FitsRecordFromDisk
 from metadata.models import HmiMagnetogram
 
@@ -46,10 +45,10 @@ class Record(FitsRecordFromDisk):
 	
 	def to_tai(self, utc):
 		TAI_to_UTC = {
-			datetime(2009, 1, 1, tzinfo = pytz.UTC): timedelta(seconds=34),
-			datetime(2012, 7, 1, tzinfo = pytz.UTC): timedelta(seconds=35),
-			datetime(2015, 7, 1, tzinfo = pytz.UTC): timedelta(seconds=36),
-			datetime(2017, 1, 1, tzinfo = pytz.UTC): timedelta(seconds=37),
+			datetime(2009, 1, 1, tzinfo = utc): timedelta(seconds=34),
+			datetime(2012, 7, 1, tzinfo = utc): timedelta(seconds=35),
+			datetime(2015, 7, 1, tzinfo = utc): timedelta(seconds=36),
+			datetime(2017, 1, 1, tzinfo = utc): timedelta(seconds=37),
 		}
 		last_offset = max(date for date in TAI_to_UTC if utc >= date)
 		return (utc + TAI_to_UTC[last_offset]).replace(tzinfo=None)

@@ -1,8 +1,5 @@
 import requests
-from requests.auth import HTTPDigestAuth
 from lxml import html
-from fnmatch import fnmatch
-from urlparse import urlparse
 
 from django.core.management.base import BaseCommand, CommandError
 from ..logger import Logger
@@ -77,7 +74,7 @@ class Command(BaseCommand):
 				
 				try:
 					record = Record(file_url, log=log)
-					record.create()
+					record.create(update=options['update'])
 				except Exception, why:
 					log.error('Error creating record for "%s": %s', file_url, why)
 			else:

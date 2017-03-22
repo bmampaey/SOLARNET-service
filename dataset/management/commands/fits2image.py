@@ -7,6 +7,7 @@ from datetime import timedelta, datetime
 from django.core.management.base import BaseCommand, CommandError
 import numpy, pyfits
 from skimage import io, exposure
+from ..logger import Logger
 
 class Command(BaseCommand):
 	help = 'Generate a preview image from a fits file, rescaling intensities between a lower and upper percentile'
@@ -28,6 +29,8 @@ class Command(BaseCommand):
 			log.info('Converting file %s', filename)
 			fits = pyfits.open(filename)
 			img = fits[options['HDU']].data
+			while img.ndim > 2:
+				img = img[0]
 			lower_percentile, upper_percentile = numpy.percentile(img, (options['lower_percentile'], options['upper_percentile']))
 			img_rescale = exposure.rescale_intensity(img, in_range=(lower_percentile, upper_percentile))
 			outfilename, trash = os.path.splitext(os.path.basename(filename))

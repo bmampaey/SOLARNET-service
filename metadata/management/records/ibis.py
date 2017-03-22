@@ -1,10 +1,7 @@
 from datetime import timedelta
-import pyfits
 from metadata.management.records import FitsRecordFromDisk
 from metadata.models import Ibis
-from django.db import transaction
 
-from dataset.models import DataLocation
 
 class Record(FitsRecordFromDisk):
 	metadata_model = Ibis
