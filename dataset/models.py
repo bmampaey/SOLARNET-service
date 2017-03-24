@@ -81,7 +81,7 @@ class Keyword(models.Model):
 		('datetime', 'datetime (iso format)'),
 	)
 	dataset = models.ForeignKey(Dataset, db_column = 'dataset', related_name = 'keywords', on_delete = models.DO_NOTHING)
-	db_column = models.TextField('Column name of the corresponding keyword in the metadata table.', blank=False, null=False, max_length=30, validators=[RegexValidator(r'^[a-z][_a-z]*$')])
+	db_column = models.TextField('Column name of the corresponding keyword in the metadata table.', blank=False, null=False, max_length=30, validators=[RegexValidator(r'^[a-z][_a-z0-9]*$')])
 	name = models.CharField(help_text = 'Fits like name of the keyword. Can contain space and dashes.', blank=False, null=False, max_length=70)
 	python_type = models.CharField(help_text = 'Python type of the keyword.', blank=False, null=False, max_length=12, default = 'string', choices = PYTHON_TYPE_CHOICES)
 	unit = models.CharField(help_text = 'Physical unit (SI compliant) of the keyword.', blank=True, null=True, max_length=70)
