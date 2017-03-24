@@ -21,9 +21,9 @@ class Record(FitsRecordFromHTTP):
 			'TARGET': 'AR 12192',
 			'GOES_CLS': 'X1.0',
 			'CHANNEL': {
-				'Continuum3500': {'WAVELNTH': 3500, 'CADENCE': 4.577, 'XPOSURE': 0.1},
-				'Continuum4170': {'WAVELNTH': 4170, 'CADENCE': 2.112, 'XPOSURE': 0.018},
-				'Gband': {'WAVELNTH': 4300, 'CADENCE': 2.112, 'XPOSURE': 0.017},
+				'Continuum3500': {'WAVELNTH': 3500, 'WAVEMIN': 344.9,'WAVEMAX': 355.1,'CADENCE': 4.577, 'XPOSURE': 0.1, 'CDELT1': 0.138, 'CDELT2': 0.138, 'CUNIT1': 'arcsec', 'CUNIT2': 'arcsec'},
+				'Continuum4170': {'WAVELNTH': 4170, 'WAVEMIN': 414.4,'WAVEMAX': 419.6, 'CADENCE': 2.112, 'XPOSURE': 0.018, 'CDELT1': 0.069, 'CDELT2': 0.069, 'CUNIT1': 'arcsec', 'CUNIT2': 'arcsec'},
+				'Gband': {'WAVELNTH': 4305.5, 'WAVEMIN': 430.09,'WAVEMAX': 431.01, 'CADENCE': 2.112, 'XPOSURE': 0.017, 'CDELT1': 0.069, 'CDELT2': 0.069, 'CUNIT1': 'arcsec', 'CUNIT2': 'arcsec'},
 			},
 		},
 		'2ndtarget': {
@@ -35,9 +35,9 @@ class Record(FitsRecordFromHTTP):
 			'TARGET': 'AR 12192',
 			'GOES_CLS': 'X1.0',
 			'CHANNEL': {
-				'Continuum3500': {'WAVELNTH': 3500, 'CADENCE': 4.577, 'XPOSURE': 0.1},
-				'Continuum4170': {'WAVELNTH': 4170, 'CADENCE': 2.112, 'XPOSURE': 0.018},
-				'Gband': {'WAVELNTH': 4300, 'CADENCE': 2.112, 'XPOSURE': 0.017},
+				'Continuum3500': {'WAVELNTH': 3500, 'WAVEMIN': 344.9,'WAVEMAX': 355.1,'CADENCE': 4.577, 'XPOSURE': 0.1, 'CDELT1': 0.138, 'CDELT2': 0.138, 'CUNIT1': 'arcsec', 'CUNIT2': 'arcsec'},
+				'Continuum4170': {'WAVELNTH': 4170, 'WAVEMIN': 414.4,'WAVEMAX': 419.6, 'CADENCE': 2.112, 'XPOSURE': 0.018, 'CDELT1': 0.069, 'CDELT2': 0.069, 'CUNIT1': 'arcsec', 'CUNIT2': 'arcsec'},
+				'Gband': {'WAVELNTH': 4305.5, 'WAVEMIN': 430.09,'WAVEMAX': 431.01, 'CADENCE': 2.112, 'XPOSURE': 0.017, 'CDELT1': 0.069, 'CDELT2': 0.069, 'CUNIT1': 'arcsec', 'CUNIT2': 'arcsec'},
 			},
 		}
 	}
@@ -64,20 +64,21 @@ class Record(FitsRecordFromHTTP):
 		channel = next(channel for channel in self.data_properties[target]['CHANNEL'] if channel in self.relative_file_path)
 		
 		# Set regular keywords
+		data_properties = self.data_properties[target]
 		for keyword in 'OBSRVTRY', 'TELESCOP', 'INSTRUME', 'POINTING', 'TARGET', 'GOES_CLS':
-			fits_header[keyword] = self.data_properties[target][keyword]
-		fits_header['CHANNEL'] = channel
-		fits_header['WAVELNTH'] = self.data_properties[target]['CHANNEL'][channel]['WAVELNTH']
-		fits_header['CADENCE'] = self.data_properties[target]['CHANNEL'][channel]['CADENCE']
-		fits_header['XPOSURE'] = self.data_properties[target]['CHANNEL'][channel]['XPOSURE']
+			fits_header[keyword] = data_properties[keyword]
 		
-		# Set special keywords
+		channel_properties = self.data_properties[target]['CHANNEL']
+		for keyword in 'WAVELNTH', 'WAVEMIN', 'WAVEMAX', 'XPOSURE', 'CDELT1', 'CDELT2', 'CUNIT1', 'CUNIT2':
+			fits_header[keyword] = channel_properties[keyword]
+		
+		fits_header['CHANNEL'] = channel
+		
+		# Set computed keywords
 		start_date = self.data_properties[target]['DATE-BEG'] + timedelta(seconds=self.file_number * self.data_properties[target]['CHANNEL'][channel]['CADENCE'])
 		end_date = start_date + timedelta(seconds=self.data_properties[target]['CHANNEL'][channel]['XPOSURE'])
 		fits_header['DATE-BEG'] = start_date.isoformat()
 		fits_header['DATE-END'] = end_date.isoformat()
-		fits_header['WAVEMIN'] = fits_header['WAVELNTH'] / 10.
-		fits_header['WAVEMAX'] = fits_header['WAVELNTH'] / 10.
 		
 		return fits_header
 
