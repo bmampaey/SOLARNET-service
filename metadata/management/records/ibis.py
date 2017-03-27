@@ -32,8 +32,18 @@ class Record(FitsRecordFromDisk):
 		field_values = super(Record, self).get_field_values()
 		
 		field_values['date_beg'] = field_values['date_obs']
-		# TODO check if there is a better value
-		field_values['wavemin'] = field_values['wavemax'] = field_values['wavelnth'] / 10.0
+		# Values given by Ilaria
+		if field_values['wavelnth'] > 6000 and field_values['wavelnth'] < 8000:
+			field_values['wavemin'] = (field_values['wavelnth'] - 0.0125) / 10.
+			field_values['wavemax'] = (field_values['wavelnth'] + 0.0125) / 10.
+		elif field_values['wavelnth'] > 8000 and field_values['wavelnth'] < 9000:
+			field_values['wavemin'] = (field_values['wavelnth'] - 0.0225) / 10.
+			field_values['wavemax'] = (field_values['wavelnth'] + 0.0225) / 10.
+		else:
+			raise ValueError('Does not know how to compute wavemin and wavemax for wavelnth of %s' % field_values['wavelnth'])
+		
+		field_values['target'] = 'pore'
+		
 		return field_values
 	
 	def create(self, tags = None, update = False):

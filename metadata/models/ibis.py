@@ -79,3 +79,4 @@ class Ibis(BaseMetadata):
 	x_start = models.BigIntegerField('X_START', help_text='X Start position of image', blank=True, null=True)
 	xtension = models.TextField('XTENSION', help_text='', blank=True, null=True)
 	y_start = models.BigIntegerField('Y_START', help_text='Y Start position of image', blank=True, null=True)
+	target = models.TextField('TARGET', help_text='Indicates the observation region', blank=True, null=True)
