@@ -6,7 +6,7 @@ from tastypie.exceptions import InvalidFilterError
 from tastypie.utils import trailing_slash
 from SDA.resources import ResourceMeta
 from dataset.resources import Dataset, DataLocationResource
-from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis, GrisLev1, Rosa
+from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis, GrisLev1, Rosa, Chromis, Crisp
 
 from .filters import ComplexFilter, ParseException
 
@@ -33,7 +33,7 @@ class TagResource(ModelResource):
 				# filter that will always return an empty queryset
 				orm_filters['pk__isnull'] = True
 			else:
-				foreign_key_name = dataset._metadata_model.app_label + '_' + dataset._metadata_model.model 
+				foreign_key_name = dataset._metadata_model.app_label + '_' + dataset._metadata_model.model
 				orm_filters[foreign_key_name + '__isnull'] = False
 		
 		return orm_filters
@@ -173,3 +173,15 @@ class RosaResource(BaseMetadataResource):
 	class Meta(BaseMetadataResource.Meta):
 		queryset = Rosa.objects.all()
 		resource_name = 'rosa'
+
+class ChromisResource(BaseMetadataResource):
+	
+	class Meta(BaseMetadataResource.Meta):
+		queryset = Chromis.objects.all()
+		resource_name = 'chromis'
+
+class CrispResource(BaseMetadataResource):
+	
+	class Meta(BaseMetadataResource.Meta):
+		queryset = Crisp.objects.all()
+		resource_name = 'crisp'

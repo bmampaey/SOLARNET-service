@@ -73,7 +73,7 @@ def get_keywords(header, log, excluded = []):
 			value.strip(' \t\n-')
 			if not value:
 				# We omit empty history
-				continue	
+				continue
 			# history keywords are not unique
 			db_column = 'history_%d' % history_index
 			history_index += 1
@@ -83,7 +83,7 @@ def get_keywords(header, log, excluded = []):
 			value.strip(' \t\n-')
 			if not value:
 				# We omit empty comment
-				continue	
+				continue
 			# comment keywords are not unique
 			db_column = 'comment_%d' % comment_index
 			comment_index += 1
@@ -193,7 +193,10 @@ class Command(BaseCommand):
 		
 		# Insert the keyword info into the DB
 		for keyword, infos in all_keywords.iteritems():
-			obj, created = Keyword.objects.get_or_create(dataset = dataset, name = keyword, defaults = infos)
+			try:
+				obj, created = Keyword.objects.get_or_create(dataset = dataset, name = keyword, defaults = infos)
+			except Exception, why:
+				log.error('Could not create keyword %s: %s', keyword, why)
 			if created:
 				log.info('Created keyword %s with info %s', keyword, infos)
 			else:

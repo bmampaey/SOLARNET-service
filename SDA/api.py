@@ -29,6 +29,8 @@ api.register(metadata.resources.XrtResource())
 api.register(metadata.resources.IbisResource())
 api.register(metadata.resources.GrisLev1Resource())
 api.register(metadata.resources.RosaResource())
+api.register(metadata.resources.ChromisResource())
+api.register(metadata.resources.CrispResource())
 
 import web_account.resources
 api.register(web_account.resources.UserResource())
@@ -36,4 +38,3 @@ api.register(web_account.resources.UserResource())
 import data_selection.resources
 api.register(data_selection.resources.DataSelectionGroupResource())
 api.register(data_selection.resources.DataSelectionResource())
-

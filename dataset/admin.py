@@ -19,34 +19,13 @@ class DatasetAdmin(admin.ModelAdmin):
 			return self.readonly_fields + ("id",)
 		return self.readonly_fields
 	
-	def has_add_permission(self, request):
-		return request.user.is_superuser
-	
-	def has_change_permission(self, request, obj=None):
-		# Allow to change only datasets for wich the user has access to
-		if request.user.is_superuser:
-			return True
-		elif obj is not None:
-			try:
-				group = Group.objects.get(name=obj.id)
-			except Group.DoesNotExist:
-				return False
-			else:
-				return group in request.user.groups.all()
-		else:
-			return True
-	
-	def has_delete_permission(self, request, obj=None):
-		return request.user.is_superuser
-	
 	def get_queryset(self, request):
 		# Display only datasets for wich the user has access to
 		queryset = super(DatasetAdmin, self).get_queryset(request)
 		if request.user.is_superuser:
 			return queryset
-		else:
-			groups = [group.name for group in request.user.groups.all()]
-			return queryset.filter(id__in=groups)
+		return queryset.filter(id__in = request.user.groups.values_list('name', flat = True))
+
 
 @admin.register(Keyword)
 class KeywordAdmin(admin.ModelAdmin):
@@ -58,6 +37,17 @@ class KeywordAdmin(admin.ModelAdmin):
 		if obj:
 			return self.readonly_fields + ("db_column",)
 		return self.readonly_fields
+	
+	def formfield_for_foreignkey(self, db_field, request, **kwargs):
+		if not request.user.is_superuser and db_field.name == 'dataset':
+			kwargs['queryset'] = Dataset.objects.filter(id__in = request.user.groups.values_list('name', flat = True))
+		return super(KeywordAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+	
+	def get_queryset(self, request):
+		queryset = super(KeywordAdmin, self).get_queryset(request)
+		if request.user.is_superuser:
+			return queryset
+		return queryset.filter(dataset_id__in = request.user.groups.values_list('name', flat = True))
 
 @admin.register(Characteristic)
 class CharacteristicAdmin(admin.ModelAdmin):
@@ -97,5 +87,3 @@ class DatasetListFilter(admin.SimpleListFilter):
 class DataLocationAdmin(admin.ModelAdmin):
 	'''Admin class for the DataLocation model'''
 	list_filter = [DatasetListFilter]
-
-

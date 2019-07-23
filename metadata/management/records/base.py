@@ -229,7 +229,7 @@ class FitsRecordFromHTTP(FitsRecord):
 		
 		while True:
 			self.log.debug('Reading file %s from %s to %s', self.file_url, range_start, range_end - 1)
-			# We set the desired range in the HTTP header, note that both bounds are inclusive 
+			# We set the desired range in the HTTP header, note that both bounds are inclusive
 			response = requests.get(self.file_url, headers = {'Range': 'Bytes=%s-%s' % (range_start, range_end - 1)}, auth=self.auth)
 			
 			if zipped:
@@ -245,7 +245,7 @@ class FitsRecordFromHTTP(FitsRecord):
 				fits_header = pyfits.Header.fromfile(fits_file)
 			except IOError:
 				# Header is partial, we need to read more from the file
-				# Per fits standard, fits file header size is always a multiple of 2880 
+				# Per fits standard, fits file header size is always a multiple of 2880
 				range_start = range_end
 				range_end = range_start + 2880
 			else:
