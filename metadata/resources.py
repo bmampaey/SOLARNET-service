@@ -65,8 +65,8 @@ class BaseMetadataResource(ModelResource):
 		if getattr(self._meta, 'object_class', None) is not None:
 			for field in self._meta.object_class._meta.get_fields():
 				if not field.is_relation and not field.auto_created:
-	    				self._meta.filtering.setdefault(field.name, ALL)
-	    				self._meta.ordering.append(field.name)
+					self._meta.filtering.setdefault(field.name, ALL)
+					self._meta.ordering.append(field.name)
 	
 	def base_urls(self):
 		# Override base urls to group ressources under a common  path

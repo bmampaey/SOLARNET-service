@@ -15,6 +15,9 @@ class DataLocationResource(ModelResource):
 	class Meta(ResourceMeta):
 		queryset = DataLocation.objects.all()
 		resource_name = 'data_location'
+		filtering = {
+			"file_url": ALL,
+		}
 
 class TelescopeResource(ModelResource):
 	'''RESTful resource for model Telescope'''
@@ -148,4 +151,3 @@ class DatasetResource(ModelResource):
 			'uri': uri,
 			'number_items': metadata_resource.apply_filters(bundle.request, filters).count()
 		}
-
