@@ -12,10 +12,14 @@ class DataLocationResource(ModelResource):
 	'''Resource for DataLocation models'''
 	# TODO check how to add metadata in detail view ListField?
 	# Better add the related fields at run time
+	
+	dataset = fields.ToOneField('dataset.resources.DatasetResource', 'dataset')
+	
 	class Meta(ResourceMeta):
 		queryset = DataLocation.objects.all()
 		resource_name = 'data_location'
 		filtering = {
+			"dataset": ALL_WITH_RELATIONS,
 			"file_url": ALL,
 		}
 
