@@ -28,10 +28,12 @@ DEBUG = False
 
 # Add extra DEBUG info for these ips
 # Also necessary to see the debug toolbar
-INTERNAL_IPS = ['192.168.142.128']
+INTERNAL_IPS = ['*']
 
 ALLOWED_HOSTS = ['*']
 
+ADMIN = [('Benjamin Mampaey', 'benjamin.mampaey@oma.be')]
+EMAIL_HOST = 'smtp.oma.be'
 
 # Application definition
 
@@ -100,10 +102,11 @@ DATABASES = {
 		'NAME': 'solarnet',
 		'USER': 'solarnet',
 		# Do not put password here, instead write it in the .pgpass file of the user running django
-                # 'PASSWORD': '*****',
+		# 'PASSWORD': '*****',
 		'HOST': 'sdobase.oma.be',
 		'PORT': '5432',
-		'DEFAULT_INDEX_TABLESPACE': 'ssd'
+		'DEFAULT_INDEX_TABLESPACE': 'ssd',
+		'CONN_MAX_AGE': 0
 	}
 }
 
@@ -163,3 +166,24 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # FTP settings
 FTP_URL = 'ftp://solarnet.oma.be/data_selections/'
+
+TASTYPIE_FULL_DEBUG = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
