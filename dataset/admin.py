@@ -65,30 +65,11 @@ class InstrumentAdmin(admin.ModelAdmin):
 	'''Admin class for the Instrument model'''
 	pass
 
-
-class DatasetListFilter(admin.SimpleListFilter):
-	title = 'Dataset'
-	
-	# Parameter for the filter that will be used in the URL query.
-	parameter_name = 'dataset'
-	
-	def lookups(self, request, model_admin):
-		'''List the existing datasets'''
-		return [(dataset.id, dataset.name) for dataset in Dataset.objects.all()]
-
-	def queryset(self, request, queryset):
-		# TODO check that it is correct
-		if self.value() is not None:
-			return queryset.filter(**{'%s__isnull' % self.value() : False})
-		else:
-			return queryset
-
-
 @admin.register(DataLocation)
 class DataLocationAdmin(admin.ModelAdmin):
 	'''Admin class for the DataLocation model'''
 	list_display = ["file_url", "dataset"]
-	list_filter = ["dataset__name"]
+	list_filter = ["dataset"]
 	search_fields = ["file_url"]
 	
 	def get_readonly_fields(self, request, obj=None):
