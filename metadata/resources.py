@@ -58,6 +58,7 @@ class BaseMetadataResource(ModelResource):
 		detail_uri_name = 'oid'
 		filtering = {'tags': ALL_WITH_RELATIONS}
 		ordering = []
+		abstract = True
 	
 	def __init__(self):
 		super(BaseMetadataResource, self).__init__()
@@ -117,71 +118,83 @@ class BaseMetadataResource(ModelResource):
 class AiaLev1Resource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = AiaLev1.objects.all()
 		resource_name = 'aia_lev1'
 
 class ChrotelResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Chrotel.objects.all()
 		resource_name = 'chrotel'
 
 class EitResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Eit.objects.all()
 		resource_name = 'eit'
 
 class HmiMagnetogramResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = HmiMagnetogram.objects.all()
 		resource_name = 'hmi_magnetogram'
 
 class SwapLev1Resource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = SwapLev1.objects.all()
 		resource_name = 'swap_lev1'
 
 class ThemisResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Themis.objects.all()
 		resource_name = 'themis'
 
 class XrtResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Xrt.objects.all()
 		resource_name = 'xrt'
 
 class IbisResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Ibis.objects.all()
 		resource_name = 'ibis'
 
 class GrisLev1Resource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = GrisLev1.objects.all()
 		resource_name = 'gris_lev1'
 
 class RosaResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Rosa.objects.all()
 		resource_name = 'rosa'
 
 class ChromisResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Chromis.objects.all()
 		resource_name = 'chromis'
 
 class CrispResource(BaseMetadataResource):
 	
 	class Meta(BaseMetadataResource.Meta):
+		abstract = False
 		queryset = Crisp.objects.all()
 		resource_name = 'crisp'
