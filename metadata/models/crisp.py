@@ -85,7 +85,6 @@ class Crisp(BaseMetadata):
 	dw3_name = models.TextField('DW3 NAME', help_text='Type of correction', blank=True, null=True)
 	dw3_naxes = models.BigIntegerField('DW3 NAXES', help_text='3 axes in the lookup table', blank=True, null=True)
 	elev_ang = models.FloatField('ELEV_ANG', help_text='Elevation angle (mean value)', blank=True, null=True)
-	extend = models.BigIntegerField('EXTEND', help_text='The file has extension(s).', blank=True, null=True)
 	filename = models.TextField('FILENAME', help_text='', blank=True, null=True)
 	filled = models.BigIntegerField('FILLED', help_text='Missing pixels have been filled.', blank=True, null=True)
 	filter1 = models.TextField('FILTER1', help_text='Inferred from filename.', blank=True, null=True)
