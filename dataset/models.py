@@ -8,7 +8,7 @@ class DataLocation(models.Model):
 	'''Data location model'''
 	dataset = models.ForeignKey('Dataset', on_delete = models.DO_NOTHING, related_name = 'data_locations')
 	file_url = models.TextField(help_text = 'URL of the data at the remote site', max_length=255, validators = [URLValidator()])
-	file_size = models.IntegerField(help_text = 'Size of the data in bytes', default=0, blank=True, null=True)
+	file_size = models.BigIntegerField(help_text = 'Size of the data in bytes', default=0, blank=True, null=True)
 	file_path = models.TextField(help_text = 'Path of the data at the local site', db_index=True, blank=True, null=True, validators = [RegexValidator(regex=r'^[^/]+(?:/[^/]+)*$')])
 	thumbnail_url = models.TextField(help_text = 'URL of the thumbnail at the remote site', max_length=255, blank=True, null=True, default = None, validators = [URLValidator()])
 	updated = models.DateTimeField(help_text = 'Date of last update', null=False, blank=False, auto_now=True)
