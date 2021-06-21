@@ -6,7 +6,7 @@ from dataset.models import Dataset
 class Data(RedirectView):
 	'''View to download the data by looking up it's dataset id and metadata oid'''
 	# TODO allow to download by oid or using filter (see django_filter), if there is more than one gives back the first one
-	http_method_names = [u'get', u'head']
+	http_method_names = ['get', 'head']
 	permanent = True
 	
 	def get_redirect_url(self, dataset_id, metadata_oid):
@@ -17,7 +17,7 @@ class Data(RedirectView):
 class Thumbnail(RedirectView):
 	'''View to download the thumbnail by looking up it's dataset id and metadata oid'''
 	# TODO allow to download by oid or using filter (see django_filter), if there is more than one gives back the first one
-	http_method_names = [u'get', u'head']
+	http_method_names = ['get', 'head']
 	permanent = True
 	
 	def get_redirect_url(self, dataset_id, metadata_oid):

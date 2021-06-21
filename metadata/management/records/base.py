@@ -1,6 +1,6 @@
 import os
 import requests
-import StringIO
+import io
 import pyfits
 import zlib
 import logging
@@ -28,7 +28,7 @@ class FitsRecord(object):
 		
 		self.log = log
 		
-		for key, value in kwargs.iteritems():
+		for key, value in kwargs.items():
 			setattr(self, key, value)
 	
 	def __getattr__(self, attr):
@@ -92,7 +92,7 @@ class FitsRecord(object):
 			# Convert the keyword value into the appropriate python type for the field
 			try:
 				field_values[field.name] = field.to_python(field_value)
-			except Exception, why:
+			except Exception as why:
 				self.log.error('Could not convert value %s to type %s: %s', field_value, field.__class__.__name__, why)
 		
 		return field_values
@@ -133,7 +133,7 @@ class FitsRecord(object):
 		'''Update an existing metadata from it's fits header'''
 		
 		record = cls(None, fits_header = pyfits.Header.fromstring(metadata.fits_header), oid = metadata.oid)
-		for field, value in record.field_values.items():
+		for field, value in list(record.field_values.items()):
 			setattr(metadata, field, value)
 		metadata.save()
 
@@ -225,7 +225,7 @@ class FitsRecordFromHTTP(FitsRecord):
 		range_end = self.header_offset + self.min_header_size
 		
 		# We store the response in a pseudo file for pyfits
-		fits_file = StringIO.StringIO()
+		fits_file = io.StringIO()
 		
 		while True:
 			self.log.debug('Reading file %s from %s to %s', self.file_url, range_start, range_end - 1)

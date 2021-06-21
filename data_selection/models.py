@@ -1,5 +1,5 @@
-from __future__ import unicode_literals
-import urlparse
+
+import urllib.parse
 
 from django.db import models
 from django.db.models.functions import Now
@@ -56,7 +56,7 @@ class DataSelectionGroup(models.Model):
 		db_table = 'data_selection_group'
 		
 	def __unicode__(self):
-		return u'%s by %s on %s' % (self.name, self.user.get_username(), self.created)
+		return '%s by %s on %s' % (self.name, self.user.get_username(), self.created)
 	
 	def save(self, *args, **kwargs):
 		# Update the updated time
@@ -78,7 +78,7 @@ class DataSelectionGroup(models.Model):
 	
 	@property
 	def ftp_link(self):
-		return urlparse.urljoin(settings.FTP_URL, '{self.user.id}/{self.name}/'.format(self = self))
+		return urllib.parse.urljoin(settings.FTP_URL, '{self.user.id}/{self.name}/'.format(self = self))
 	
 	@property
 	def metadata(self):
@@ -96,7 +96,7 @@ class DataSelection(models.Model):
 		db_table = 'data_selection'
 		
 	def __unicode__(self):
-		return u'%s for %s' % (self.dataset, self.data_selection_group)
+		return '%s for %s' % (self.dataset, self.data_selection_group)
 	
 	def save(self, *args, **kwargs):
 		# Update the counter

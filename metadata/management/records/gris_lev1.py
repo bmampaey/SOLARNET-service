@@ -22,13 +22,13 @@ class Record(FitsRecordFromHTTP):
 		for card in self.fits_header.cards:
 			try:
 				card.verify('silentfix')
-			except Exception, why:
+			except Exception as why:
 				self.log.warning('Bad card in header %s: %s', card, why)
 				continue
 			if card.keyword.lower() == 'ut':
 				try:
 					ut = parse_time(card.value)
-				except ValueError, why:
+				except ValueError as why:
 					self.log.warning('UT keyword has a ill formated value %s: %s', card.value, why)
 				else:
 					min_time = min(min_time, ut)

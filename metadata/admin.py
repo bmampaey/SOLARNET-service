@@ -2,8 +2,6 @@ from django.contrib import admin, messages
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
-from daterange_filter.filter import DateRangeFilter
-
 from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis, GrisLev1, Rosa, Chromis, Crisp
 from metadata.forms import AddTagForm
 
@@ -31,7 +29,7 @@ class TagAdmin(admin.ModelAdmin):
 
 class BaseMetadataAdmin(admin.ModelAdmin):
 	'''Admin class for the common options of Metadata models'''
-	list_filter = [('date_beg', DateRangeFilter)]
+	list_filter = [('date_beg')]
 	list_display = ['oid', 'date_beg']
 	readonly_fields = ['data_location']
 #	action_form = AddTagForm
@@ -55,7 +53,7 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 			# POST that is actually a GET
 			return render(request, 'metadata/add_tags_action.html', {'form': form, 'objects': queryset, 'title': 'Add tags to metadata'})
 		
-	add_tags.short_description = u'Add tags to selected metadata'
+	add_tags.short_description = 'Add tags to selected metadata'
 
 @admin.register(AiaLev1)
 class AiaLev1Admin(BaseMetadataAdmin):

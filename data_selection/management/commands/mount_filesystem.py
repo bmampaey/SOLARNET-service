@@ -1,4 +1,4 @@
-import os, pwd, urlparse, pytz, errno, logging, requests
+import os, pwd, urllib.parse, pytz, errno, logging, requests
 from datetime import datetime
 from functools import wraps
 
@@ -32,7 +32,7 @@ def close_connection(func):
 	def wrapper(*args, **kwargs):
 		try:
 			result = func(*args, **kwargs)
-		except Exception, why:
+		except Exception as why:
 			connection.close()
 			raise
 		else:
@@ -191,7 +191,7 @@ class DataSelectionFilesystem(LoggingMixIn, Operations):
 		elif user:
 			return dirents + list(user.data_selection_groups.values_list('name', flat=True))
 		else:
-			return dirents + map(str, DataSelectionGroup.objects.order_by().values_list('user__id', flat=True).distinct())
+			return dirents + list(map(str, DataSelectionGroup.objects.order_by().values_list('user__id', flat=True).distinct()))
 	
 	def readlink(self, path):
 		if not self.exists(path):
@@ -311,7 +311,7 @@ class Command(BaseCommand):
 		log = Logger(self, debug = options['debug'])
 		try:
 			owner = pwd.getpwnam(options['owner'])
-		except KeyError, why:
+		except KeyError as why:
 			CommandError('No user %s' % options['owner'])
 		
 		fuse = FUSE(DataSelectionFilesystem(uid = owner.pw_uid, gid = owner.pw_gid, log = log), options['mountpoint'], foreground=options['foreground'], debug=options['debug'], nothreads=False)

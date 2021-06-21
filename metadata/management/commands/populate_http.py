@@ -2,7 +2,7 @@ from importlib import import_module
 import requests
 from lxml import html
 from fnmatch import fnmatch
-from urlparse import urlparse
+from urllib.parse import urlparse
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
@@ -64,7 +64,7 @@ def get_links(base_url, max_depth=None, matches = [], excludes = [], auth=None, 
 				
 				for element, attribute, link, pos in doc.iterlinks():
 					log.debug('Yielding %s', link)
-						yield link
+					yield link
 					skip = skip_link(base_url, element, attribute, link, excludes = excludes)
 					if skip:
 						log.debug('Skipping %s : %s', link, skip)
@@ -72,7 +72,7 @@ def get_links(base_url, max_depth=None, matches = [], excludes = [], auth=None, 
 						log.debug('Added %s for later inspection', link)
 						urls.append((link, depth+1))
 			
-			except Exception, why:
+			except Exception as why:
 				log.error('Critical error while getting url: %s', why)
 
 class Command(BaseCommand):
@@ -121,4 +121,3 @@ class Command(BaseCommand):
 #					log.error('Error creating record for "%s": %s', file_url, why)
 			else:
 				log.debug('Skipping file at %s', file_url)
-

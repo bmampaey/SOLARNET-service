@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from django.db import models
 from dataset.models import DataLocation
 
@@ -7,7 +7,7 @@ class Tag(models.Model):
 	name = models.TextField(primary_key=True, max_length=255, blank=False, null=False)
 			
 	def __unicode__(self):
-		return unicode(self.name)
+		return str(self.name)
 
 class BaseMetadata(models.Model):
 	'''Model for the common fields of Metadata models'''
@@ -25,7 +25,7 @@ class BaseMetadata(models.Model):
 		ordering = ['date_beg']
 	
 	def __unicode__(self):
-		return unicode(self.oid)
+		return str(self.oid)
 	
 	@property
 	def tags_names(self):

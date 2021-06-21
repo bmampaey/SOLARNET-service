@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # To avoid the secret key being sent to github, we save it in another file
-from secret_key import SECRET_KEY
+from .secret_key import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -49,7 +49,6 @@ INSTALLED_APPS = [
 	'corsheaders', # Allow cross domain
 	'tastypie', # RESTful api
 	'tastypie_swagger', # RESTful api viewer pip install git+https://github.com/concentricsky/django-tastypie-swagger.git --upgrade
-	'daterange_filter', # For easy admin filter
 	
 	# Our own apps
 	'dataset',
@@ -59,16 +58,15 @@ INSTALLED_APPS = [
 
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
-	'corsheaders.middleware.CorsMiddleware', # Allow cross domain
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'corsheaders.middleware.CorsMiddleware', # Allow cross domain
 ]
 
 ROOT_URLCONF = 'SDA.urls'
@@ -103,9 +101,9 @@ DATABASES = {
 		'USER': 'solarnet',
 		# Do not put password here, instead write it in the .pgpass file of the user running django
 		# 'PASSWORD': '*****',
-		'HOST': 'sdobase.oma.be',
+		'HOST': 'pgsql-as.oma.be',
 		'PORT': '5432',
-		'DEFAULT_INDEX_TABLESPACE': 'ssd',
+		# 'DEFAULT_INDEX_TABLESPACE': 'ssd',
 		'CONN_MAX_AGE': 0
 	}
 }
@@ -187,3 +185,5 @@ LOGGING = {
         },
     },
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

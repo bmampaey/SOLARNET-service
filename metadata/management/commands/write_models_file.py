@@ -48,17 +48,17 @@ class Command(BaseCommand):
 		# Get the keywords for the dataset
 		keywords = Keyword.objects.filter(dataset = dataset)
 		
-		print models_header
-		print 'class %s(BaseMetadata):' % dataset.name.replace(' ', '')
+		print(models_header)
+		print('class %s(BaseMetadata):' % dataset.name.replace(' ', ''))
 		
 		if keywords.exists():
 			for keyword in keywords:
 				if keyword.db_column in ['id', 'oid', 'fits_header', 'data_location', 'tags']:
 					raise CommandError('Keywords %s is duplicate of existing keyword in BaseMetadata' % keyword.db_column)
 				elif keyword.db_column not in ['date_beg', 'date_end', 'wavemin', 'wavemax']:
-					print field_template.format(keyword = keyword, field_type = field_for_type(keyword.python_type))
+					print(field_template.format(keyword = keyword, field_type = field_for_type(keyword.python_type)))
 		else:
-			print '\tpass'
+			print('\tpass')
 		
 		log.info('DO NOT FORGET:')
 		log.info('\t1.Create the metadata tables: ./manage.py makemigrations metadata && ./manage.py migrate metadata')

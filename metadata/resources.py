@@ -9,19 +9,22 @@ from dataset.resources import Dataset, DataLocationResource
 from metadata.models import Tag, AiaLev1, Chrotel, Eit, HmiMagnetogram, SwapLev1, Themis, Xrt, Ibis, GrisLev1, Rosa, Chromis, Crisp
 
 from .filters import ComplexFilter, ParseException
+from functools import reduce
+
+__all__ = ['TagResource']
 
 class TagResource(ModelResource):
 	'''RESTful resource for model Tag'''
 	# TODO check how to add metadata in detail view ListField?
 	# Better add the related fields at run time
-	
+
 	class Meta(ResourceMeta):
 		queryset = Tag.objects.all()
 		resource_name = 'tag'
 		max_limit = None
 		limit = None
 		filtering = {'name': ALL}
-	
+
 	def build_filters(self, filters=None, ignore_bad_filters=False):
 		# Allow more intuitive tags filtering on dataset using dataset={dateset_id}
 		# This filter allows only to get tags for one dataset
@@ -35,13 +38,13 @@ class TagResource(ModelResource):
 			else:
 				foreign_key_name = dataset._metadata_model.app_label + '_' + dataset._metadata_model.model
 				orm_filters[foreign_key_name + '__isnull'] = False
-		
+
 		return orm_filters
-	
+
 	def apply_filters(self, request, applicable_filters):
 		# Avoid duplicate results
 		return super(TagResource, self).apply_filters(request, applicable_filters).distinct()
-	
+
 	def build_schema(self):
 		data = super(TagResource, self).build_schema()
 		data['filtering']['dataset'] = 'exact'
@@ -49,17 +52,17 @@ class TagResource(ModelResource):
 
 class BaseMetadataResource(ModelResource):
 	'''Base RESTful resource for Metadata models'''
-	
+
 	data_location = fields.ToOneField(DataLocationResource, 'data_location', full=True)
 	tags = fields.ToManyField(TagResource, 'tags', full=True, blank=True)
-	
+
 	class Meta(ResourceMeta):
 		excludes = ['id']
 		detail_uri_name = 'oid'
 		filtering = {'tags': ALL_WITH_RELATIONS}
 		ordering = []
 		abstract = True
-	
+
 	def __init__(self):
 		super(BaseMetadataResource, self).__init__()
 		# Add filtering and ordering by all regular fields
@@ -68,7 +71,7 @@ class BaseMetadataResource(ModelResource):
 				if not field.is_relation and not field.auto_created:
 					self._meta.filtering.setdefault(field.name, ALL)
 					self._meta.ordering.append(field.name)
-	
+
 	def base_urls(self):
 		# Override base urls to group ressources under a common  path
 		return [
@@ -77,7 +80,7 @@ class BaseMetadataResource(ModelResource):
 			url(r"^metadata/(?P<resource_name>%s)/set/(?P<%s_list>.*?)%s$" % (self._meta.resource_name, self._meta.detail_uri_name, trailing_slash), self.wrap_view('get_multiple'), name="api_get_multiple"),
 			url(r"^metadata/(?P<resource_name>%s)/(?P<%s>.*?)%s$" % (self._meta.resource_name, self._meta.detail_uri_name, trailing_slash), self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
 		]
-	
+
 	def build_filters(self, filters=None, ignore_bad_filters=False):
 		'''Allow more complex filtering on metadata using search parameter'''
 		# Strangely tastypie will pass a querydict or a dict for the filters keyword
@@ -85,18 +88,18 @@ class BaseMetadataResource(ModelResource):
 			search_filters = filters.getlist('search', None)
 		except AttributeError:
 			search_filters = filters.get('search', None)
-		
+
 		orm_filters = super(BaseMetadataResource, self).build_filters(filters, ignore_bad_filters)
-		
+
 		if search_filters is not None:
 			try:
 				orm_filters['search'] = reduce(lambda a, b: a & ComplexFilter.parseString(b)[0].as_q(), search_filters, Q())
-			except ParseException, why:
+			except ParseException as why:
 				if not ignore_bad_filters:
 					raise InvalidFilterError(str(why))
-		
+
 		return orm_filters
-	
+
 	def apply_filters(self, request, applicable_filters):
 		'''Apply complex search filter'''
 		#import pdb; pdb.set_trace()
@@ -109,91 +112,91 @@ class BaseMetadataResource(ModelResource):
 			return partially_filtered.filter(search_filter)
 		else:
 			return partially_filtered
-	
+
 	def build_schema(self):
 		data = super(BaseMetadataResource, self).build_schema()
 		data['filtering']['search'] = 'exact'
 		return data
 
 class AiaLev1Resource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = AiaLev1.objects.all()
 		resource_name = 'aia_lev1'
 
 class ChrotelResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Chrotel.objects.all()
 		resource_name = 'chrotel'
 
 class EitResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Eit.objects.all()
 		resource_name = 'eit'
 
 class HmiMagnetogramResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = HmiMagnetogram.objects.all()
 		resource_name = 'hmi_magnetogram'
 
 class SwapLev1Resource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = SwapLev1.objects.all()
 		resource_name = 'swap_lev1'
 
 class ThemisResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Themis.objects.all()
 		resource_name = 'themis'
 
 class XrtResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Xrt.objects.all()
 		resource_name = 'xrt'
 
 class IbisResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Ibis.objects.all()
 		resource_name = 'ibis'
 
 class GrisLev1Resource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = GrisLev1.objects.all()
 		resource_name = 'gris_lev1'
 
 class RosaResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Rosa.objects.all()
 		resource_name = 'rosa'
 
 class ChromisResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Chromis.objects.all()
 		resource_name = 'chromis'
 
 class CrispResource(BaseMetadataResource):
-	
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Crisp.objects.all()

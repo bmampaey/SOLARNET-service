@@ -28,7 +28,7 @@ class Record(FitsRecordFromDisk):
 		for field_name, keyword_name in [('t_obs', 'T_OBS'), ('t_rec', 'T_REC')]:
 			try:
 				field_values[field_name] = parse_date(self.fits_header[keyword_name].split('_')[0])
-			except Exception, why:
+			except Exception as why:
 					if not self.lax:
 						raise
 		

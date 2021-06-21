@@ -1,5 +1,6 @@
 from pyparsing import infixNotation, opAssoc, Suppress, CharsNotIn, Word, alphanums, quotedString, removeQuotes, ZeroOrMore, Empty, ParseException
 from django.db.models import Q
+from functools import reduce
 
 class Filter:
 	def __init__(self, t):

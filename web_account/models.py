@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.timezone import now
 
@@ -16,7 +16,7 @@ class User(models.Model):
 	last_login = models.DateTimeField('Date of last succesfull login', null = True, blank = True)
 	
 	def __unicode__(self):
-		return unicode(self.email)
+		return str(self.email)
 	
 	def save(self, *args, **kwargs):
 			if not self.api_key:

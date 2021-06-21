@@ -32,6 +32,6 @@ class Command(BaseCommand):
 		for metadata in metadata_list:
 			try:
 				Record.update(metadata)
-			except Exception, why:
+			except Exception as why:
 				log.error('Error resaving record for "%s": %s', metadata, why)
 

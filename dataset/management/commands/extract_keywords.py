@@ -18,9 +18,9 @@ def value_type(value):
 	'''Return the string representation of the type'''
 	if isinstance(value, float):
 		return 'float'
-	elif isinstance(value, (int, long)):
+	elif isinstance(value, int):
 		return 'long'
-	elif isinstance(value, (int, long)):
+	elif isinstance(value, int):
 		return 'int'
 	elif isinstance(value, datetime):
 		return 'datetime'
@@ -61,7 +61,7 @@ def get_keywords(header, log, excluded = []):
 			keyword = card.keyword
 			value = card.value
 			comment = card.comment
-		except Exception, why:
+		except Exception as why:
 			log.error('Could not parse card %s: %s. Skipping.', card, why)
 			continue
 		
@@ -118,7 +118,7 @@ class Command(BaseCommand):
 		
 	def handle(self, **options):
 		# Parse the options
-		excluded = map(lambda s: s.upper(), options['exclude'])
+		excluded = [s.upper() for s in options['exclude']]
 		if not options['comments']:
 			excluded.append('COMMENT')
 		if not options['history']:
@@ -136,7 +136,7 @@ class Command(BaseCommand):
 		# Get the dataset Metadata model
 		try:
 			Metadata = dataset.metadata_model
-		except Exception, why:
+		except Exception as why:
 			raise CommandError('Cannot import %s Metadata model: %s' % (options['dataset'], why))
 		
 		# Get the metadata to inspect
@@ -159,7 +159,7 @@ class Command(BaseCommand):
 			
 			keywords = get_keywords(header, log, excluded)
 			for keyword in keywords:
-				for info, value in keyword.iteritems():
+				for info, value in keyword.items():
 					all_keywords[keyword['name']][info][value] += 1
 		
 		# Write a backup of all keywords in case of problem
@@ -168,39 +168,39 @@ class Command(BaseCommand):
 			try:
 				with open(backup_filename, 'w') as f:
 					pickle.dump(all_keywords, f, pickle.HIGHEST_PROTOCOL)
-			except Exception, why:
+			except Exception as why:
 				log.error('Could not write backup file %s: %s', backup_filename, why)
 		
 		
 		# Ask user to select between possible info values if there is more than one
-		for keyword, infos in all_keywords.iteritems():
-			for info, values in infos.iteritems():
+		for keyword, infos in all_keywords.items():
+			for info, values in infos.items():
 				if len(values) > 1:
 					selections = values.most_common()
 					total = sum(values.values())
 					while True:
-						print 'Please select best option for keyword',  keyword, info, ':'
+						print('Please select best option for keyword',  keyword, info, ':')
 						for i, (value, count) in enumerate(selections):
-							print '{i}. {v} [{c}/{t}]'.format(i=i, v=value, c=count, t = total)
-						selection = raw_input('option number: ')
+							print('{i}. {v} [{c}/{t}]'.format(i=i, v=value, c=count, t = total))
+						selection = input('option number: ')
 						if selection.isdigit() and int(selection) < len(selections):
 							infos[info] = selections[int(selection)][0]
 							break
 						else:
-							print 'Invalid selection', selection
+							print('Invalid selection', selection)
 				else:
 					infos[info] = values.most_common(1)[0][0]
 		
 		# Insert the keyword info into the DB
-		for keyword, infos in all_keywords.iteritems():
+		for keyword, infos in all_keywords.items():
 			try:
 				obj, created = Keyword.objects.get_or_create(dataset = dataset, name = keyword, defaults = infos)
-			except Exception, why:
+			except Exception as why:
 				log.error('Could not create keyword %s: %s', keyword, why)
 			if created:
 				log.info('Created keyword %s with info %s', keyword, infos)
 			else:
 				log.warning('Keyword %s already exists', keyword)
-				for info, value in infos.iteritems():
+				for info, value in infos.items():
 					if getattr(obj, info) != value:
 						log.error('%s differ from existing (%s) to extracted (%s)', info, getattr(obj, info), value)

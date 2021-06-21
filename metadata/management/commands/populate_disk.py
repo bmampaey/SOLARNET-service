@@ -45,5 +45,5 @@ class Command(BaseCommand):
 			try:
 				record = Record(file_path, hdu = options['HDU'], log=log)
 				record.create(tags=tags, update=options['update'])
-			except Exception, why:
+			except Exception as why:
 				log.error('Error creating record for "%s": %s', file_path, why)

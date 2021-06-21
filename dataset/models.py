@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator, EmailValidator, URLValidator
@@ -19,14 +19,14 @@ class DataLocation(models.Model):
 		unique_together = [('dataset', 'file_url')]
 	
 	def __unicode__(self):
-		return unicode(self.file_url)
+		return str(self.file_url)
 
 class Telescope(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False, max_length = 20)
 	description = models.TextField(help_text = 'Telescope description', blank=True, null=True)
 	
 	def __unicode__(self):
-		return unicode(self.name)
+		return str(self.name)
 
 class Instrument(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False, max_length = 20)
@@ -34,13 +34,13 @@ class Instrument(models.Model):
 	telescope = models.ForeignKey(Telescope, related_name = 'instruments', on_delete = models.DO_NOTHING)
 	
 	def __unicode__(self):
-		return unicode(self.name)
+		return str(self.name)
 
 class Characteristic(models.Model):
 	name = models.TextField(primary_key=True, blank=False, null=False)
 	
 	def __unicode__(self):
-		return unicode(self.name)
+		return str(self.name)
 
 class Dataset(models.Model):
 	id = models.TextField('Dataset id', primary_key=True, max_length=20, validators=[RegexValidator(r'^[a-z][_a-z0-9]*$')], help_text='Must start with a lower case lettre, then only lower case letters, numbers and underscores are allowed')
@@ -60,7 +60,7 @@ class Dataset(models.Model):
 		verbose_name_plural = 'Datasets'
 	
 	def __unicode__(self):
-		return unicode(self.name)
+		return str(self.name)
 	
 	@property
 	def metadata_model(self):
@@ -95,4 +95,4 @@ class Keyword(models.Model):
 		unique_together = [('dataset', 'db_column'), ('dataset', 'name')]
 
 	def __unicode__(self):
-		return unicode(self.name)
+		return str(self.name)

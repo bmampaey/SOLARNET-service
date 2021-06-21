@@ -2,7 +2,7 @@ SOLARNET Data Archive (SDA)
 ===========================
 The SDA is an application supported by the [SOLARNET](http://www.solarnet-east.eu/) project, funded by the European Commission’s FP7 Capacities Programme under the Grant Agreement 312495.
 
-It's purpose is to collect metadata from as many solar observations as possible, especially those made thanks to the SOLARNET project, in a commmon repository and make them available to the scientific community.
+It's purpose is to collect metadata from as many solar observations as possible, especially those made thanks to the SOLARNET project, in a common repository and make them available to the scientific community.
 
 The first version was released in February 2016, and the second version is currently in active development
 
@@ -35,7 +35,7 @@ Each of these correspond to a table in the database (DB)
 Here are the steps to add a dataset:
 
 ### Add the dataset description
-As the SDA admin, connect to the [admin page](...TBD.../SDA/admin) and add, if necessary the instrument and the telescope, and then the dataset. 
+As the SDA admin, connect to the [admin page](...TBD.../SDA/admin) and add, if necessary the instrument and the telescope, and then the dataset.
 
 Then add a group with the same name as the dataset id. Create, if necessary, the dataset admins, __make them staff__, and add them to the group.
 

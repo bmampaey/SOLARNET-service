@@ -1,5 +1,5 @@
 from copy import copy
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.db.models.constants import LOOKUP_SEP
 
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
@@ -139,7 +139,7 @@ class DatasetResource(ModelResource):
 		filters = metadata_resource.build_filters(query_dict, ignore_bad_filters=True)
 		
 		# Remove from query_dict any filter that was ignored
-		for item in query_dict.keys():
+		for item in list(query_dict.keys()):
 			try:
 				field_name, trash = item.split(LOOKUP_SEP, 1)
 			except ValueError:

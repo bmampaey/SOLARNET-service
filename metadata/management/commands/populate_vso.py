@@ -42,7 +42,7 @@ class Command(BaseCommand):
 			try:
 				record = Record(vso_record, log=log)
 				record.create(tags=tags, update=options['update'])
-			except Exception, why:
+			except Exception as why:
 				log.error('Error creating record for "%s": %s', vso_record.fileid, why)
 
 

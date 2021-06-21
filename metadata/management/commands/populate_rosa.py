@@ -56,7 +56,7 @@ class Command(BaseCommand):
 				try:
 					record = Record(file_url, log=log)
 					record.create(update=options['update'])
-				except Exception, why:
+				except Exception as why:
 					log.error('Error creating record for "%s": %s', file_url, why)
 			else:
 				log.info('Skipping file at %s, not a fits file', file_url)

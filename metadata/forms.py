@@ -3,7 +3,7 @@ from django import forms
 from metadata.models import Tag
 
 class MultipleChoiceFieldNoValidation(forms.MultipleChoiceField):
-	'''Choice field that does not do choice validation, with hidden inpu'''
+	'''Choice field that does not do choice validation, with hidden input'''
 	widget = forms.MultipleHiddenInput
 	def validate(self, value):
 		pass
