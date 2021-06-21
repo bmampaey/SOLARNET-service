@@ -24,7 +24,7 @@ def field_for_type(python_type):
 	elif python_type == 'float':
 		return 'models.FloatField'
 	elif python_type == 'bool':
-		return 'models.NullBooleanField'
+		return 'models.BooleanField'
 	else:
 		raise CommandError('Unknown model field type for python type %s' % python_type)
 
@@ -64,4 +64,3 @@ class Command(BaseCommand):
 		log.info('\t1.Create the metadata tables: ./manage.py makemigrations metadata && ./manage.py migrate metadata')
 		log.info('\t2.Define an admin configuration class in the file metadata/admin.py ')
 		log.info('\t3.Define a record configuration class in the file metadata/management/records/%s.py ', dataset.id)
-
