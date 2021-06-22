@@ -1,5 +1,5 @@
-
 from django.db import models
+
 from .base import BaseMetadata
 
 class Crisp(BaseMetadata):
