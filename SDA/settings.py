@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'SDA.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': 'solarnet',
+		'NAME': 'solarnet2',
 		'USER': 'solarnet',
 		# Do not put password here, instead write it in the .pgpass file of the user running django
 		# 'PASSWORD': '*****',
@@ -186,4 +186,4 @@ LOGGING = {
     },
 }
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
