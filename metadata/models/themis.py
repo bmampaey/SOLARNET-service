@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['Themis']
 
 class Themis(BaseMetadata):
 	accumul = models.IntegerField('ACCUMUL', help_text='None', blank=True, null=True)

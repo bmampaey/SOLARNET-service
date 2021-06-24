@@ -1,7 +1,9 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
 
+
+__all__ = ['Ibis']
 
 class Ibis(BaseMetadata):
 	baseclmp = models.BigIntegerField('BASECLMP', help_text='Baseline clamp value', blank=True, null=True)

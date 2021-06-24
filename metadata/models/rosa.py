@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['Rosa']
 
 class Rosa(BaseMetadata):
 	cadence = models.FloatField('CADENCE', help_text='', blank=True, null=True)

@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['SwapLev1']
 
 class SwapLev1(BaseMetadata):
 	artefx = models.TextField('ARTEFX', help_text='(off,on,cosmic rays) on-board artefact removal', blank=True, null=True)

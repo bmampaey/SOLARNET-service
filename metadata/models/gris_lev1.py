@@ -1,7 +1,9 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
 
+
+__all__ = ['GrisLev1']
 
 class GrisLev1(BaseMetadata):
 	accumula = models.BigIntegerField('ACCUMULA', help_text='number of accumulations', blank=True, null=True)

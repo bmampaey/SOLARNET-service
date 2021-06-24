@@ -1,7 +1,9 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
 
+
+__all__ = ['Chromis']
 
 class Chromis(BaseMetadata):
 	ao_lock = models.FloatField('AO_LOCK', help_text='Fraction of time the AO was locking, 2s average', blank=True, null=True)

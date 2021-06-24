@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['Xrt']
 
 class Xrt(BaseMetadata):
 	achf_ver = models.IntegerField('ACHF_VER', help_text='', blank=True, null=True)

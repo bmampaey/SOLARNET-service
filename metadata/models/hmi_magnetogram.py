@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['HmiMagnetogram']
 
 class HmiMagnetogram(BaseMetadata):
 	bld_vers = models.TextField('BLD_VERS', help_text='Code release build number of program that created this record', blank=True, null=True)

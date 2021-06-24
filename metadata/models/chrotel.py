@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['Chrotel']
 
 class Chrotel(BaseMetadata):
 	azimuth = models.FloatField('AZIMUTH', help_text='telescope azimuth', blank=True, null=True)

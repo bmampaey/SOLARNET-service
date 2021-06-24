@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['AiaLev1']
 
 class AiaLev1(BaseMetadata):
 	acs_cgt = models.TextField('ACS_CGT', help_text='ACS ID of Controlling Guide Telescope - ACS_AN_NUM_CGT', blank=True, null=True)

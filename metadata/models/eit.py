@@ -1,6 +1,8 @@
 from django.db import models
 
-from .base import BaseMetadata
+from .base_metadata import BaseMetadata
+
+__all__ = ['Eit']
 
 class Eit(BaseMetadata):
 	blocks_horz = models.IntegerField('BLOCKS_HORZ', help_text='None', blank=True, null=True)
