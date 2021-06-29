@@ -8,7 +8,8 @@ class Themis(BaseMetadata):
 	'''Model for the metadata of dataset Themis'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'Themis'
+		verbose_name = 'Themis metadata'
+		verbose_name_plural = 'Themis metadata'
 	
 	accumul = models.IntegerField(verbose_name = 'ACCUMUL', help_text='', blank=True, null=True)
 	actifmir = models.BooleanField(verbose_name = 'ACTIFMIR', help_text='', blank=True, null=True)

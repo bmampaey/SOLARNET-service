@@ -9,7 +9,8 @@ class GrisLevel1(BaseMetadata):
 	'''Model for the metadata of dataset GRIS level 1'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'GRIS level 1'
+		verbose_name = 'GRIS level 1 metadata'
+		verbose_name_plural = 'GRIS level 1 metadata'
 	
 	accumula = models.BigIntegerField(verbose_name = 'ACCUMULA', help_text='number of accumulations', blank=True, null=True)
 	adunorm = models.BigIntegerField(verbose_name = 'ADUNORM', help_text='normalization factor to ADU', blank=True, null=True)

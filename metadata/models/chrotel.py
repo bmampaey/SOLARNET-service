@@ -8,7 +8,8 @@ class Chrotel(BaseMetadata):
 	'''Model for the metadata of dataset ChroTel'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'ChroTel'
+		verbose_name = 'ChroTel metadata'
+		verbose_name_plural = 'ChroTel metadata'
 	
 	azimuth = models.FloatField(verbose_name = 'AZIMUTH', help_text='telescope azimuth', blank=True, null=True)
 	bkpltemp = models.FloatField(verbose_name = 'BKPLTEMP', help_text='Camera backplane temperature', blank=True, null=True)

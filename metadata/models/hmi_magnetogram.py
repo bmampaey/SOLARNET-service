@@ -8,7 +8,8 @@ class HmiMagnetogram(BaseMetadata):
 	'''Model for the metadata of dataset HMI magnetogram'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'HMI magnetogram'
+		verbose_name = 'HMI magnetogram metadata'
+		verbose_name_plural = 'HMI magnetogram metadata'
 	
 	bld_vers = models.TextField(verbose_name = 'BLD_VERS', help_text='Code release build number of program that created this record', blank=True, null=True)
 	bunit = models.TextField(verbose_name = 'BUNIT', help_text='BUNIT: physical units of data, Gauss', blank=True, null=True)

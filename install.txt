@@ -1,0 +1,66 @@
+# Commands used to install the SOLARNET service on Ubuntu server 20.04
+# Commands were ran as user benjmam
+
+# Install some debian packages
+sudo apt install < apt_requirements.txt
+
+# Install some python packages (this will install them locally in the benjmam home directory)
+pip install -r pip_requirements.txt
+
+# Create the log directory
+sudo mkdir /var/log/solarnet_service/
+sudo chown benjmam /var/log/solarnet_service/
+
+# Configure apache2
+sudo a2enmod ssl
+sudo a2enmod headers
+
+# Then install the config files for virtual host 80 and 443 in /etc/apache2/sites-available and enable them
+sudo a2ensite default-ssl
+sudo systemctl restart apache2
+
+# Configure the system to mount the fuse filesystems
+sudo mkdir -p /mnt/svo/data_selection
+sudo chown benjmam /mnt/svo/data_selection
+sudo ln -s /opt/SOLARNET/service/scripts/mount.svo_data_selection /usr/sbin/mount.svo_data_selection
+
+# Add the following line to /etc/fstab
+benjmam		/mnt/svo/data_selection/	svo_data_selection		0	0
+
+# Change /etc/fuse.conf and add user_allow_other
+
+# Configure the system for the FTP server
+sudo chown ftp:ftp /mnt/svo/
+sudo chmod -w /mnt/svo/
+
+# Change vsftpd.conf to add the following settings
+25c25
+< anonymous_enable=NO
+---
+> anonymous_enable=YES
+28c28
+< local_enable=YES
+---
+> local_enable=NO
+57a58
+> dual_log_enable=YES
+74c75
+< #xferlog_std_format=YES
+---
+> xferlog_std_format=YES
+155a157,169
+>
+> # Directory which vsftpd will try to change into after an anonymous login
+> anon_root=/mnt/svo/
+> #
+> # Stop prompting for a password on the command line.
+> no_anon_password=YES
+> #
+> # Show the user and group as ftp:ftp, regardless of the owner.
+> hide_ids=YES
+> #
+> # Limit the range of ports that can be used for passive FTP
+> pasv_min_port=40000
+> pasv_max_port=50000
+
+# TODO Run collectstatic

@@ -8,7 +8,8 @@ class Crisp(BaseMetadata):
 	'''Model for the metadata of dataset CRISP'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'CRISP'
+		verbose_name = 'CRISP metadata'
+		verbose_name_plural = 'CRISP metadata'
 	
 	ao_lock = models.FloatField(verbose_name = 'AO_LOCK', help_text='Fraction of time the AO was locking, 2s average', blank=True, null=True)
 	ao_nmode = models.BigIntegerField(verbose_name = 'AO_NMODE', help_text='Number of AO corrected Mirror modes', blank=True, null=True)

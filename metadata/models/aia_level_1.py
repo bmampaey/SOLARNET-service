@@ -8,7 +8,8 @@ class AiaLevel1(BaseMetadata):
 	'''Model for the metadata of dataset AIA level 1'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'AIA level 1'
+		verbose_name = 'AIA level 1 metadata'
+		verbose_name_plural = 'AIA level 1 metadata'
 	
 	acs_cgt = models.TextField(verbose_name = 'ACS_CGT', help_text='ACS ID of Controlling Guide Telescope - ACS_AN_NUM_CGT', blank=True, null=True)
 	acs_eclp = models.TextField(verbose_name = 'ACS_ECLP', help_text='ACS eclipse flag - ACS_AN_FLAG_CSS_ECLIPSE', blank=True, null=True)

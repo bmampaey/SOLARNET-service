@@ -1,7 +1,6 @@
-
-
 from django.apps import AppConfig
 
 
 class MetadataConfig(AppConfig):
-    name = 'metadata'
+	name = 'metadata'
+	verbose_name = 'Metadata'

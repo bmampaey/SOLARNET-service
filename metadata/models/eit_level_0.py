@@ -8,7 +8,8 @@ class EitLevel0(BaseMetadata):
 	'''Model for the metadata of dataset EIT level 0'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'EIT level 0'
+		verbose_name = 'EIT level 0 metadata'
+		verbose_name_plural = 'EIT level 0 metadata'
 	
 	blocks_horz = models.IntegerField(verbose_name = 'BLOCKS_HORZ', help_text='', blank=True, null=True)
 	blocks_vert = models.IntegerField(verbose_name = 'BLOCKS_VERT', help_text='', blank=True, null=True)

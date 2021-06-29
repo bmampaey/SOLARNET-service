@@ -1,0 +1,12 @@
+#!/bin/bash
+
+BASE_DIR=$(dirname $(dirname $(realpath "$0")))
+
+SERVER_ADDRESS="0.0.0.0:8800"
+EXEC_ARGS="runserver --insecure $SERVER_ADDRESS --settings project.settings.dev"
+
+# Stop the server
+pkill -f "$EXEC_ARGS"
+
+# Start the server
+"$BASE_DIR/manage.py" $EXEC_ARGS

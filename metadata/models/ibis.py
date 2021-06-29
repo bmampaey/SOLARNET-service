@@ -9,7 +9,8 @@ class Ibis(BaseMetadata):
 	'''Model for the metadata of dataset IBIS'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'IBIS'
+		verbose_name = 'IBIS metadata'
+		verbose_name_plural = 'IBIS metadata'
 	
 	baseclmp = models.BigIntegerField(verbose_name = 'BASECLMP', help_text='Baseline clamp value', blank=True, null=True)
 	binning = models.BigIntegerField(verbose_name = 'BINNING', help_text='BINNING FACTOR', blank=True, null=True)

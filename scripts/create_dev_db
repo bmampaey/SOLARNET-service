@@ -1,0 +1,21 @@
+#!/bin/bash
+# Create a local empty dev_solarnet2 database
+
+
+LOCAL_DB_NAME="dev_solarnet2"
+LOCAL_DB_USER="solarnet"
+export DJANGO_SUPERUSER_USERNAME="benjamin.mampaey@oma.be"
+export DJANGO_SUPERUSER_PASSWORD="benjamin"
+export DJANGO_SUPERUSER_EMAIL="benjamin.mampaey@oma.be"
+BASE_DIR=$(dirname $(dirname $(realpath "$0")))
+
+dropdb --host=localhost --username=postgres --if-exists $LOCAL_DB_NAME
+
+if createdb --host=localhost --username=postgres --owner=$LOCAL_DB_USER --encoding=UTF8 "$LOCAL_DB_NAME"; then
+	"$BASE_DIR/scripts/manage_dev" migrate
+	"$BASE_DIR/scripts/manage_dev" createsuperuser --noinput
+	"$BASE_DIR/scripts/manage_dev" loaddata --ignorenonexistent "$BASE_DIR/api/tests/test_fixture.json"
+	"$BASE_DIR/scripts/manage_dev" loaddata --ignorenonexistent "$BASE_DIR/dataset/tests/test_fixture.json"
+	"$BASE_DIR/scriptsmanage_dev" loaddata --ignorenonexistent "$BASE_DIR/metadata/tests/test_fixture.json"
+	"$BASE_DIR/scripts/manage_dev" loaddata --ignorenonexistent "$BASE_DIR/data_location/tests/test_fixture.json"
+fi

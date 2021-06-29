@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Call manage.py with the dev settings
+
+BASE_DIR=$(dirname $(dirname $(realpath "$0")))
+
+if [[ $# -eq 0 ]] ; then
+	"$BASE_DIR/manage.py" help --settings project.settings.dev
+else
+	"$BASE_DIR/manage.py" "$@" --settings project.settings.dev
+fi

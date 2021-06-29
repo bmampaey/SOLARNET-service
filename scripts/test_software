@@ -1,0 +1,38 @@
+#!/bin/bash
+
+BASE_DIR=$(dirname $(dirname $(realpath "$0")))
+
+KEEPDB='--keepdb'
+TESTS=()
+
+for i in "$@"; do
+	case $i in
+		--newdb)
+			KEEPDB=''
+		;;
+		*)
+			TESTS+=("$i")
+		;;
+	esac
+done
+
+
+# Display the deprecation warnings
+export PYTHONWARNINGS=once
+
+# Set the coverage config file
+export COVERAGE_RCFILE="$BASE_DIR"/.coveragerc
+
+# Launch coverage (see project.settings.test)
+export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
+
+# Clean previous coverage run
+coverage erase
+
+# Run the tests with the test settings
+"$BASE_DIR"/manage.py test --settings project.settings.test -v 2 $KEEPDB "${TESTS[@]}"
+
+coverage combine
+
+coverage html -d coverage_html_report
+echo 'To see the coverage report, execute "firefox coverage_html_report/index.html"'

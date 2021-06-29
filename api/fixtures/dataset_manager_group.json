@@ -1,0 +1,65 @@
+[
+{
+   "model": "auth.group",
+   "fields": {
+      "name": "dataset manager",
+      "permissions": [
+         [
+            "add_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "change_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "delete_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "view_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "change_dataset",
+            "dataset",
+            "dataset"
+         ],
+         [
+            "view_dataset",
+            "dataset",
+            "dataset"
+         ],
+         [
+            "change_keyword",
+            "dataset",
+            "keyword"
+         ],
+         [
+            "view_keyword",
+            "dataset",
+            "keyword"
+         ],
+         [
+            "add_tag",
+            "metadata",
+            "tag"
+         ],
+         [
+            "change_tag",
+            "metadata",
+            "tag"
+         ],
+         [
+            "view_tag",
+            "metadata",
+            "tag"
+         ]
+      ]
+   }
+}
+]

@@ -9,7 +9,8 @@ class Xrt(BaseMetadata):
 	'''Model for the metadata of dataset XRT'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'XRT'
+		verbose_name = 'XRT metadata'
+		verbose_name_plural = 'XRT metadata'
 	
 	achf_ver = models.IntegerField(verbose_name = 'ACHF_VER', help_text='AC Huffman table version', blank=True, null=True)
 	aec_flg = models.TextField(verbose_name = 'AEC_FLG', help_text='Automatic Exposure Control; 1: Off, 2: On', blank=True, null=True)

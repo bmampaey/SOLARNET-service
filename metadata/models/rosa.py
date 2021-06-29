@@ -8,7 +8,8 @@ class Rosa(BaseMetadata):
 	'''Model for the metadata of dataset ROSA'''
 	
 	class Meta(BaseMetadata.Meta):
-		verbose_name = 'ROSA'
+		verbose_name = 'ROSA metadata'
+		verbose_name_plural = 'ROSA metadata'
 	
 	cadence = models.FloatField(verbose_name = 'CADENCE', help_text='', blank=True, null=True)
 	cdelt1 = models.FloatField(verbose_name = 'CDELT1', help_text='Coordinate increment', blank=True, null=True)

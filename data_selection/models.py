@@ -37,8 +37,8 @@ class DataSelection(models.Model):
 	
 	@property
 	def zip_download_url(self):
-		return reverse('data_selection:data_selection_download_zip', kwargs = {'uuid': self.uuid})
+		return '%s%s' % (settings.HTTP_BASE_URL, reverse('data_selection:data_selection_download_zip', kwargs = {'uuid': self.uuid}))
 	
 	@property
 	def ftp_download_url(self):
-		return urljoin(settings.BASE_FTP_URL, str(self.uuid))
+		return '%s/%s' % (settings.FTP_BASE_URL, self.uuid)
