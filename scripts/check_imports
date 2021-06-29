@@ -1,0 +1,11 @@
+#!/bin/bash
+# Check imports in all files
+
+COMMAND="pylint -d all -e C0411,C0412,C0413,E0401,R0401,W0404,W0406,W0611,W0614 --ignore=migrations"
+
+if [ $# -eq 0 ]; then
+	SCRIPTS=$(ls -d */ | cut -f1 -d'/')
+	$COMMAND $SCRIPTS
+else
+	$COMMAND $@
+fi

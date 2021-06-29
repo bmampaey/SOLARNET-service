@@ -1,0 +1,28 @@
+[run]
+branch = True
+source = .
+parallel = True
+# Regexes for files to exclude from consideration
+omit =
+	# Omit the project settings
+	# project/*
+	# Omit manage.py
+	# manage.py
+	# Omit the migrations
+	# */migrations/*
+	# Omit __init__.py
+	# **/__init__.py
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+	# Have to re-enable the standard pragma
+	pragma: no cover
+	# Ignore case that we didn't implement
+	raise NotImplementedError
+	# Ignore __repr__ and __str__
+	def __repr__
+	def __str__
+
+[html]
+directory = coverage_html_report

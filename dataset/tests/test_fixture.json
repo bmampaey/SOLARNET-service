@@ -1,0 +1,123 @@
+[
+{
+   "model": "dataset.dataset",
+   "pk": 1,
+   "fields": {
+      "name": "AIA Level 1",
+      "description": "For testing purpose only <a href=\"http://test.com\">A link</a> <b>Bold</b>",
+      "contact_email": "test@test.com",
+      "archive_url": "http://test.com",
+      "telescope": "SDO",
+      "instrument": "AIA",
+      "user_group": [
+         "aia_lev1"
+      ],
+      "metadata_content_type": [
+         "metadata",
+         "aialev1"
+      ],
+      "characteristics": [
+         "space based",
+         "test"
+      ]
+   }
+},
+{
+   "model": "dataset.dataset",
+   "pk": 2,
+   "fields": {
+      "name": "No metadata",
+      "description": "For testing purpose only",
+      "contact_email": "test@test.com",
+      "archive_url": "http://test.com",
+      "telescope": "Test",
+      "instrument": "Test",
+      "user_group": [
+         "test"
+      ],
+      "metadata_content_type": null,
+      "characteristics": [
+         "test"
+      ]
+   }
+},
+{
+   "model": "dataset.telescope",
+   "pk": "SDO",
+   "fields": {
+      "description": "For testing purpose only"
+   }
+},
+{
+   "model": "dataset.telescope",
+   "pk": "Test",
+   "fields": {
+      "description": "For testing purpose only"
+   }
+},
+{
+   "model": "dataset.instrument",
+   "pk": "AIA",
+   "fields": {
+      "description": "For testing purpose only",
+      "telescope": "SDO"
+   }
+},
+{
+   "model": "dataset.instrument",
+   "pk": "Test",
+   "fields": {
+      "description": "For testing purpose only",
+      "telescope": "Test"
+   }
+},
+{
+   "model": "dataset.characteristic",
+   "pk": "space based",
+   "fields": {}
+},
+{
+   "model": "dataset.characteristic",
+   "pk": "test",
+   "fields": {}
+},
+{
+   "model": "dataset.datalocation",
+   "pk": 2,
+   "fields": {
+      "dataset": 1,
+      "file_url": "http://sdo.oma.be/data/AIA_HMI_1h_synoptic/aia.lev1/4500/2013/11/28/AIA.20131128_200007.4500.image_lev1.fits",
+      "file_size": 100,
+      "file_path": "4500/2013/11/28/AIA.20131128_200007.4500.image_lev1.fits",
+      "thumbnail_url": "http://sdo.oma.be/data/AIA_HMI_1h_synoptic/aia.lev1/4500/2013/11/28/AIA.20131128_200007.4500.image_lev1.png",
+      "update_time": "2021-05-28T08:50:30.531Z",
+      "offline": false
+   }
+},
+{
+   "model": "dataset.datalocation",
+   "pk": 3,
+   "fields": {
+      "dataset": 1,
+      "file_url": "http://sdo.oma.be/data/AIA_HMI_1h_synoptic/aia.lev1/4500/2013/11/28/AIA.20131128_200007.0193.image_lev1.fits",
+      "file_size": 200,
+      "file_path": "4500/2013/11/28/AIA.20131128_200007.0193.image_lev1.fits",
+      "thumbnail_url": null,
+      "update_time": "2021-05-28T08:51:09.035Z",
+      "offline": true
+   }
+},
+{
+   "model": "dataset.datalocation",
+   "pk": 4,
+   "fields": {
+      "dataset": 2,
+      "file_url": "http://test.com",
+      "file_size": 0,
+      "file_path": "test/file",
+      "thumbnail_url": null,
+      "update_time": "2021-05-28T08:52:13.319Z",
+      "offline": false
+   }
+}
+]

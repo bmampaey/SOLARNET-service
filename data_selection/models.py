@@ -41,4 +41,4 @@ class DataSelection(models.Model):
 	
 	@property
 	def ftp_download_url(self):
-		return urljoin(settings.BASE_FTP_URL, str(self.uuid))
+		return urljoin(settings.FTP_BASE_URL, str(self.uuid))

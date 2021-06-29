@@ -1,0 +1,141 @@
+[
+{
+   "model": "auth.group",
+   "fields": {
+      "name": "aia_lev1",
+      "permissions": [
+         [
+            "add_aialev1",
+            "metadata",
+            "aialev1"
+         ],
+         [
+            "change_aialev1",
+            "metadata",
+            "aialev1"
+         ],
+         [
+            "delete_aialev1",
+            "metadata",
+            "aialev1"
+         ],
+         [
+            "view_aialev1",
+            "metadata",
+            "aialev1"
+         ]
+      ]
+   }
+},
+{
+   "model": "auth.group",
+   "fields": {
+      "name": "test",
+      "permissions": []
+   }
+},
+{
+   "model": "auth.group",
+   "fields": {
+      "name": "dataset manager",
+      "permissions": [
+         [
+            "add_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "change_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "delete_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "view_datalocation",
+            "dataset",
+            "datalocation"
+         ],
+         [
+            "change_dataset",
+            "dataset",
+            "dataset"
+         ],
+         [
+            "view_dataset",
+            "dataset",
+            "dataset"
+         ],
+         [
+            "change_keyword",
+            "dataset",
+            "keyword"
+         ],
+         [
+            "view_keyword",
+            "dataset",
+            "keyword"
+         ],
+         [
+            "add_tag",
+            "metadata",
+            "tag"
+         ],
+         [
+            "change_tag",
+            "metadata",
+            "tag"
+         ],
+         [
+            "view_tag",
+            "metadata",
+            "tag"
+         ]
+      ]
+   }
+},
+{
+   "model": "auth.user",
+   "fields": {
+      "password": "pbkdf2_sha256$260000$d3oWx7mIceAkMxqdVX38fP$qinRR1tP9WdRxvAYOR4tuDnqmAIuDudLf6PELfWt1tI=",
+      "last_login": "2021-05-28T08:35:26.237Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "benjamin.mampaey@oma.be",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2021-05-27T14:43:45.824Z",
+      "groups": [],
+      "user_permissions": []
+   }
+},
+{
+   "model": "auth.user",
+   "fields": {
+      "password": "pbkdf2_sha256$260000$cbyIBZrJ59cJH4OpBwEna3$YiShHPTNsphhol6ngL1TuX1dvdG+lzz0rcFGjV2lHsE=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "benjamin",
+      "first_name": "Benjamin",
+      "last_name": "Mampaey",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2021-05-28T08:47:26Z",
+      "groups": [
+         [
+            "aia_lev1"
+         ],
+         [
+            "dataset manager"
+         ]
+      ],
+      "user_permissions": []
+   }
+}
+]

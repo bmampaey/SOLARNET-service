@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Group
 from django.utils.functional import cached_property
@@ -38,6 +38,17 @@ class Dataset(models.Model):
 	
 	def natural_key(self):
 		return self.name
+	
+	@transaction.atomic
+	def save(self, *args, **kwargs):
+		'''Save the current instance'''
+		
+		# If there is no user_group, create one with the permissions to view/add/change/delete the metadata
+		if self.name and self.metadata_content_type and not self.user_group:
+			self.user_group = Group.objects.create(name = '%s manager' % self.name)
+			self.user_group.permissions.add(*self.metadata_content_type.permission_set.all())
+		
+		super().save(*args, **kwargs)
 	
 	@cached_property
 	def metadata_model(self):

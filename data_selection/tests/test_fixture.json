@@ -1,0 +1,44 @@
+[
+{
+   "model": "data_selection.dataselection",
+   "pk": 1,
+   "fields": {
+      "owner": [
+         "benjamin"
+      ],
+      "dataset": 1,
+      "query_string": "",
+      "description": "For testing purpose only",
+      "created": "2021-05-28T08:54:22.513Z",
+      "uuid": "e9a6b17b-a1f4-4862-9b36-48cbbd2bdc31"
+   }
+},
+{
+   "model": "data_selection.dataselection",
+   "pk": 2,
+   "fields": {
+      "owner": [
+         "benjamin"
+      ],
+      "dataset": 2,
+      "query_string": "",
+      "description": "For testing purpose only",
+      "created": "2021-05-28T08:54:52.575Z",
+      "uuid": "1ccfeecc-9844-4020-a7ca-fd7c0939f66c"
+   }
+},
+{
+   "model": "data_selection.dataselection",
+   "pk": 3,
+   "fields": {
+      "owner": [
+         "benjamin"
+      ],
+      "dataset": 1,
+      "query_string": "oid=20000101",
+      "description": "For testing purpose only",
+      "created": "2021-05-28T08:55:20.370Z",
+      "uuid": "4109c5e0-d5fa-43f1-8ba4-499b797994de"
+   }
+}
+]
