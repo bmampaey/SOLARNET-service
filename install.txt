@@ -14,6 +14,7 @@ sudo chown benjmam /var/log/solarnet_service/
 # Configure apache2
 sudo a2enmod ssl
 sudo a2enmod headers
+sudo a2enmod rewrite
 
 # Then install the config files for virtual host 80 and 443 in /etc/apache2/sites-available and enable them
 sudo a2ensite default-ssl

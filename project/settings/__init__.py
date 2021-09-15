@@ -213,7 +213,7 @@ ZIP_ARCHIVE_MISSING_FILE_NAME = 'missing_files.txt'
 ZIP_ARCHIVE_TRUNCATED_WARNING = 'Truncated'
 
 # The base URL of the HTTP server
-HTTP_BASE_URL = 'https://solarnet2.oma.be/service'
+HTTP_BASE_URL = 'https://solarnet.oma.be/'
 
 # The base URL of the FTP server
 FTP_BASE_URL = 'ftp://solarnet2.oma.be/data_selection'
