@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 
 from dataset.models import DataLocation, Dataset
@@ -13,6 +13,7 @@ class DataLocationAdmin(admin.ModelAdmin):
 	search_fields = ['file_url']
 	readonly_fields = ['update_time']
 	date_hierarchy = 'update_time'
+	actions = ['mark_offline', 'mark_online']
 	
 	def get_readonly_fields(self, request, obj=None):
 		'''Return a list or tuple of field names that will be displayed as read-only'''
@@ -74,3 +75,13 @@ class DataLocationAdmin(admin.ModelAdmin):
 				return queryset.get(**{field.name: object_id})
 		except (self.model.DoesNotExist, ValidationError, ValueError):
 					return None
+	
+	@admin.action(description='Mark selected as offline')
+	def mark_offline(self, request, queryset):
+		update_count = queryset.update(offline=True)
+		self.message_user(request, '%d data locations were successfully marked as offline' % update_count, messages.SUCCESS)
+	
+	@admin.action(description='Mark selected as online')
+	def mark_online(self, request, queryset):
+		update_count = queryset.update(offline=False)
+		self.message_user(request, '%d data locations were successfully marked as online' % update_count, messages.SUCCESS)
