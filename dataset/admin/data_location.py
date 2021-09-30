@@ -7,7 +7,7 @@ from dataset.models import DataLocation, Dataset
 @admin.register(DataLocation)
 class DataLocationAdmin(admin.ModelAdmin):
 	'''Admin class for the DataLocation model'''
-	list_display = ['file_url', 'dataset', 'file_size']
+	list_display = ['file_url', 'dataset', 'file_size', 'offline']
 	list_filter = ['dataset']
 	list_select_related = ['dataset']
 	search_fields = ['file_url']
