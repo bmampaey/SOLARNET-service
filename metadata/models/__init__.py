@@ -8,6 +8,7 @@ from .gris_level_1 import *
 from .hmi_magnetogram import *
 from .ibis import *
 from .lyra_level_2 import *
+from .lyra_level_3 import *
 from .rosa import *
 from .swap_level_1 import *
 from .themis import *

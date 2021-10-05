@@ -1,5 +1,5 @@
 from api import svo_api
-from metadata.resources import TagResource, AiaLevel1Resource, ChromisResource, ChrotelResource, CrispResource, EitLevel0Resource, GrisLevel1Resource, HmiMagnetogramResource, IbisResource, LyraLevel2Resource, RosaResource, SwapLevel1Resource, ThemisResource, XrtResource
+from metadata.resources import TagResource, AiaLevel1Resource, ChromisResource, ChrotelResource, CrispResource, EitLevel0Resource, GrisLevel1Resource, HmiMagnetogramResource, IbisResource, LyraLevel2Resource, LyraLevel3Resource, RosaResource, SwapLevel1Resource, ThemisResource, XrtResource
 
 # Register the metadata resources
 svo_api.register(TagResource())
@@ -12,6 +12,7 @@ svo_api.register(GrisLevel1Resource())
 svo_api.register(HmiMagnetogramResource())
 svo_api.register(IbisResource())
 svo_api.register(LyraLevel2Resource())
+svo_api.register(LyraLevel3Resource())
 svo_api.register(RosaResource())
 svo_api.register(SwapLevel1Resource())
 svo_api.register(ThemisResource())
