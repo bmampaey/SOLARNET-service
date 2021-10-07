@@ -4,6 +4,7 @@ from .chromis import *
 from .chrotel import *
 from .crisp import *
 from .eit_level_0 import *
+from .eui_level_1 import *
 from .eui_level_2 import *
 from .gris_level_1 import *
 from .hmi_magnetogram import *
