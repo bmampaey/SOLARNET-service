@@ -41,7 +41,6 @@ class TagResource(ModelResource):
 		serializer = Serializer()
 		# Validate data on submission
 		validation = FormValidation(form_class = modelform_factory(Tag, fields='__all__'))
-
 	
 	def build_filters(self, filters=None, ignore_bad_filters=False):
 		'''Given a dictionary of filters, create the necessary ORM-level filters'''

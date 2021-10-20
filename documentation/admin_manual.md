@@ -19,9 +19,11 @@ Before adding a new dataset, the provider must:
  
  - the person who is responsible: name, email
 
- - a description of the telescope and instrument: simple text, only if not already defined
+ - the name and description of the telescope: simple text, only if not already defined
 
- - a description of the dataset: can be in HTML with links, emphasis, etc.
+ - the name and description of the instrument: simple text, only if not already defined
+
+ - the name and description of the dataset: can be in HTML with links, emphasis, etc.
 
 	In the dataset description, one can explain for example the format of the data, the processing applied, or how to work with the data; whereas the instrument description is more about the physical description of the instrument. It also means that it is possible to have several datasets, e.g with different processing levels, linked to a single instrument.
 
@@ -59,10 +61,10 @@ There is 2 ways of creating the keywords:
 
 1. Register the resource with the svo_api in metadata/urls.py
 
-1. Create the metadata DB tables (replace DATASETNAME by the name of the model)
+1. Create the metadata DB tables (replace MODEL_MODULE by the file name of the model of the new dataset)
 	
 	```
-	./manage.py makemigrations metadata -n add_DATASETNAME
+	./manage.py makemigrations metadata -n add_MODEL_MODULE
 	./manage.py migrate metadata
 	```
 
