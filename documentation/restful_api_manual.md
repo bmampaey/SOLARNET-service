@@ -2,9 +2,9 @@
 
 
 ## Intro
-The SVO service is a catalog of metadata of solar observations grouped into in datasets.
+The SVO service is a catalog of metadata of solar observations grouped into datasets.
 
-The metadata is made accessible for reading to anyone though a [RESTful API](https://en.wikipedia.org/wiki/Representational_state_transfer) at the url https://solarnet2.oma.be/service/api/
+The metadata is made accessible for reading to anyone though a [RESTful API](https://en.wikipedia.org/wiki/Representational_state_transfer) at the url https://solarnet2.oma.be/service/api/svo
 
 It also allows dataset providers to create/update/delete metadata, tags and data location in the catalog.
 
