@@ -23,7 +23,7 @@ Before adding a new dataset, the provider must:
 
  - the name and description of the instrument: simple text, only if not already defined
 
- - the name and description of the dataset: can be in HTML with links, emphasis, etc.
+ - the name and description of the dataset: can be in Markdown with links, emphasis, etc.
 
 	In the dataset description, one can explain for example the format of the data, the processing applied, or how to work with the data; whereas the instrument description is more about the physical description of the instrument. It also means that it is possible to have several datasets, e.g with different processing levels, linked to a single instrument.
 
@@ -79,14 +79,6 @@ If necessary, create the user responsible for the dataset via the [admin interfa
 - __give him staff status__
 - add him to the dataset user_group and to the "dataset manager" group
 
-## Creating/Updating/Deleting metadata, data locations and tags
-
-The proper way of managing these is using the [RESTful api][restful_api]
-
-Alternatively, a dataset admin can also use the [admin interface][admin_interface], but it can be cumbersome to add metadata that way.
-
-Some of the datasets are managed and populated by the server admin, and for these use the [data provider tools][provider_tools].
-
 ## Mounting the data selection file system
 
 The data selection file system is a pseudo file system, that use libfuse to create the directory tree corresponding to the data selections. A FTP server allows users to download the data selections.
@@ -94,6 +86,6 @@ The data selection file system is a pseudo file system, that use libfuse to crea
 To mount the pseudo file system, use the management command `mount_data_selection_filesystem` (TODO be more explicit on the proper args to the command, notably the chosen mountpoint)
 
 
-[admin_interface]: https://solarnet2.oma.be/service/admin/
-[restful_api]: https://solarnet2.oma.be/service/api_doc/
+[admin_interface]: https://solarnet.oma.be/service/admin/
+[restful_api]: https://solarnet.oma.be/service/api_doc/
 [provider_tools]: https://github.com/bmampaey/SOLARNET-provider-tools
