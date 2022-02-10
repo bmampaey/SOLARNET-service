@@ -8,6 +8,7 @@ from metadata.resources import (
 	EitLevel0Resource,
 	EuiLevel1Resource,
 	EuiLevel2Resource,
+	EuviLevel0Resource,
 	GrisLevel1Resource,
 	HmiMagnetogramResource,
 	IbisResource,
@@ -30,6 +31,7 @@ svo_api.register(CrispResource())
 svo_api.register(EitLevel0Resource())
 svo_api.register(EuiLevel1Resource())
 svo_api.register(EuiLevel2Resource())
+svo_api.register(EuviLevel0Resource())
 svo_api.register(GrisLevel1Resource())
 svo_api.register(HmiMagnetogramResource())
 svo_api.register(IbisResource())
