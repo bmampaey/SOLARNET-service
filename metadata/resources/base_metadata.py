@@ -84,20 +84,22 @@ class BaseMetadataResource(ModelResource):
 	def build_filters(self, filters=None, ignore_bad_filters=True):
 		'''Given a dictionary of filters, create the necessary ORM-level filters'''
 		
-		orm_filters = super().build_filters(filters, ignore_bad_filters)
+		# Some keys have a special meaning, so must be excluded from the filters
+		# If one must filter on one of these keywords, then use the __exact suffix, for example offset__exact = 0
+		# Copy the filters as to not modify the function input
+		filters = filters.copy()
+		
+		special_keys = {}
+		for special_key in ('offset', 'limit', 'search'):
+			special_keys[special_key] = filters.pop(special_key, [])
+		
+		filters = super().build_filters(filters, ignore_bad_filters)
+		
 		# Convert the complex search expressions into filters usable by Django ORM
+		if special_keys['search']:
+			filters['search'] = [get_complex_filter(search_expression, ignore_bad_filters) for search_expression in special_keys['search']]
 		
-		# Tastypie will pass a querydict or a dict for the filters keyword, so check for both
-		# And in both case, search will be a list
-		try:
-			search_expressions = filters.getlist('search', None)
-		except AttributeError:
-			search_expressions = filters.get('search', None)
-		
-		if search_expressions is not None:
-			orm_filters['search'] = [get_complex_filter(search_expression, ignore_bad_filters) for search_expression in search_expressions]
-		
-		return orm_filters
+		return filters
 	
 	def apply_filters(self, request, applicable_filters):
 		'''Apply the filters to the object list'''
@@ -109,7 +111,7 @@ class BaseMetadataResource(ModelResource):
 		object_list = super().apply_filters(request, applicable_filters)
 		
 		# Apply the "search" filter and put it back in the applicable_filters for consistency
-		if search_filter is not None:
+		if search_filter:
 			try:
 				object_list = object_list.filter(*search_filter)
 			except FieldError as why:
