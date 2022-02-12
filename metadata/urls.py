@@ -6,6 +6,7 @@ from metadata.resources import (
 	ChrotelResource,
 	CrispResource,
 	EitLevel0Resource,
+	EitSynopticResource,
 	EuiLevel1Resource,
 	EuiLevel2Resource,
 	EuviLevel0Resource,
@@ -29,6 +30,7 @@ svo_api.register(ChromisResource())
 svo_api.register(ChrotelResource())
 svo_api.register(CrispResource())
 svo_api.register(EitLevel0Resource())
+svo_api.register(EitSynopticResource())
 svo_api.register(EuiLevel1Resource())
 svo_api.register(EuiLevel2Resource())
 svo_api.register(EuviLevel0Resource())
