@@ -8,6 +8,7 @@ from .eit_synoptic import *
 from .eui_level_1 import *
 from .eui_level_2 import *
 from .euvi_level_0 import *
+from .gaia_dem import *
 from .gris_level_1 import *
 from .hmi_magnetogram import *
 from .ibis import *

@@ -10,6 +10,7 @@ from metadata.resources import (
 	EuiLevel1Resource,
 	EuiLevel2Resource,
 	EuviLevel0Resource,
+	GaiaDemResource,
 	GrisLevel1Resource,
 	HmiMagnetogramResource,
 	IbisResource,
@@ -34,6 +35,7 @@ svo_api.register(EitSynopticResource())
 svo_api.register(EuiLevel1Resource())
 svo_api.register(EuiLevel2Resource())
 svo_api.register(EuviLevel0Resource())
+svo_api.register(GaiaDemResource())
 svo_api.register(GrisLevel1Resource())
 svo_api.register(HmiMagnetogramResource())
 svo_api.register(IbisResource())
