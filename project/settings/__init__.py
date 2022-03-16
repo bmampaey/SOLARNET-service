@@ -181,9 +181,6 @@ LOGGING['root'] = {
 
 ## Project specific settings
 
-# The minimum value for the estimated_count of the metadata models queries, below that value the actual count is used instead
-MIN_ESTIMATED_COUNT = 1000
-
 # The characters that should not appear in a data location file_path
 FILE_PATH_FORBIDDEN_CHARACTERS = {
 	'\\': 'Backslash',

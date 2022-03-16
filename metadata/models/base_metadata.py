@@ -5,25 +5,6 @@ from django.utils.functional import cached_property
 
 __all__ = ['BaseMetadata']
 
-class MetadataQuerySet(models.QuerySet):
-	'''Metadata QuerySet that adds an estimation of the number of items for a query'''
-	
-	def estimated_count(self):
-		'''Return an estimated count of the number of rows the QuerySet will return'''
-		
-		# Use postgres explain query to estimate the number of rows
-		# if the estimated count is too small, return the actual count, because low estimates are off
-		
-		# HACK: use ast.literal_eval instead of json.loads because there is a bug in Django
-		# the returned value of explain is not actual JSON https://code.djangoproject.com/ticket/32226
-		execution_plan = literal_eval(self.explain(format='JSON'))
-		count = execution_plan[0]['Plan']['Plan Rows']
-		
-		if count < settings.MIN_ESTIMATED_COUNT:
-			count = self.count()
-		
-		return count
-
 class MetadataManager(models.Manager):
 	'''Manager that optimize the queries by selecting the foreign objects'''
 	def get_queryset(self):
@@ -43,7 +24,7 @@ class BaseMetadata(models.Model):
 	wavemin = models.FloatField('WAVEMIN', help_text='Min value of the observation spectral range [nm]', blank=True, null=True, db_index=True)
 	wavemax = models.FloatField('WAVEMAX', help_text='Max value of the observation spectral range [nm]', blank=True, null=True, db_index=True)
 	
-	objects = MetadataManager.from_queryset(MetadataQuerySet)()
+	objects = MetadataManager()
 	
 	class Meta:
 		abstract = True

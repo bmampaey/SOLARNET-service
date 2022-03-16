@@ -67,27 +67,27 @@ class TestDatasetResource(ReadOnlyResourceTestCaseMixin, TestCase):
 		
 		msg = 'When no filter is requested, the metadata field resource_uri must be exactly the metadata ressource list url'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url, 'estimated_count': 1}, None], msg=msg)
+		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url, 'count': 1}, None], msg=msg)
 		
 		msg = 'When a simple filter for the dataset resource is requested, the metadata field resource_uri must be exactly the metadata ressource list url'
 		data = {'characteristics': self.test_characteristic1.name}
 		response = self.api_client.get(self.get_resource_uri(), data=data, format='json', authentication=self.test_user_authentication)
-		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url, 'estimated_count': 1}, None], msg=msg)
+		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url, 'count': 1}, None], msg=msg)
 		
 		msg = 'When a simple filter for the metadata resource is requested, the metadata field resource_uri must include the filter'
 		data = {'oid': self.test_metadata.oid}
 		response = self.api_client.get(self.get_resource_uri(), data=data, format='json',authentication=self.test_user_authentication)
-		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url + '?' + urlencode(data), 'estimated_count': 1}, None], msg=msg)
+		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url + '?' + urlencode(data), 'count': 1}, None], msg=msg)
 		
 		msg = 'When multiple filters for the metadata resource are requested, the metadata field resource_uri must include the filters'
 		data = {'oid': self.test_metadata.oid, 'date_beg__isnull': True}
 		response = self.api_client.get(self.get_resource_uri(), data=data, format='json', authentication=self.test_user_authentication)
-		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url + '?' + urlencode(data), 'estimated_count': 1}, None], msg=msg)
+		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url + '?' + urlencode(data), 'count': 1}, None], msg=msg)
 		
 		msg = 'When mixed filters for the dataset resource and the metadata resource are requested, the metadata field resource_uri must include the filters only for teh metadata resource'
 		data = {'oid': self.test_metadata.oid, 'characteristics': self.test_characteristic1.name}
 		response = self.api_client.get(self.get_resource_uri(), data=data, format='json', authentication=self.test_user_authentication)
-		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url + '?' + urlencode({'oid': self.test_metadata.oid}), 'estimated_count': 1}, None], msg=msg)
+		self.assertGetListResponseContains(response, metadata = [{'resource_uri': metadata_resource_list_url + '?' + urlencode({'oid': self.test_metadata.oid}), 'count': 1}, None], msg=msg)
 	
 	def test_get_detail(self):
 		'''Test a GET on the detail URL'''
@@ -109,7 +109,7 @@ class TestDatasetResource(ReadOnlyResourceTestCaseMixin, TestCase):
 		
 		msg = 'When the dataset metadata_content_type is correctly set, the metadata field must be a dict with the metadata ressource list url and the estimated count'
 		response = self.api_client.get(self.get_resource_uri(self.test_dataset1), format='json', authentication=self.test_user_authentication)
-		self.assertGetDetailResponseContains(response, metadata = {'resource_uri': metadata_resource_list_url, 'estimated_count': 1}, msg=msg)
+		self.assertGetDetailResponseContains(response, metadata = {'resource_uri': metadata_resource_list_url, 'count': 1}, msg=msg)
 		
 		msg = 'When the dataset metadata_content_type is None, the metadata field must be None'
 		response = self.api_client.get(self.get_resource_uri(self.test_dataset2), format='json', authentication=self.test_user_authentication)

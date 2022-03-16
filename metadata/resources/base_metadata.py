@@ -18,14 +18,6 @@ from .tag import TagResource
 __all__ = ['BaseMetadataResource']
 
 
-class MetadataPaginator(Paginator):
-	'''Paginator for the Metadata resources that substitute the count (i.e. the number of items in the list) fo an estimated count'''
-	
-	def get_count(self):
-		'''Return the estimated count'''
-		return self.objects.estimated_count()
-
-
 class BaseMetadataResource(ModelResource):
 	'''Abstract base RESTful resource for the Metadata models'''
 	
@@ -51,7 +43,6 @@ class BaseMetadataResource(ModelResource):
 			'search': FILTERS.COMPLEX_SEARCH_EXPRESSION
 		}
 		max_limit = 100
-		paginator_class = MetadataPaginator
 		serializer = Serializer()
 		# Needed so that in __init__ we know if validation was overriden in a subclass
 		validation = None

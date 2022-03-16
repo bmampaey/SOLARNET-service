@@ -78,13 +78,13 @@ class TestDataSelectionResource(ResourceTestCaseMixin, TestCase):
 		
 		msg = 'When no query_string is specified, the metadata field resource_uri must be exactly the metadata ressource list url'
 		response = self.api_client.get(self.get_resource_uri(self.test_data_selection), format='json', authentication=self.test_user_authentication)
-		self.assertGetDetailResponseContains(response, metadata = {'resource_uri': self.get_resource_uri(resource_name='base_metadata_test_resource'), 'estimated_count': 2}, msg=msg)
+		self.assertGetDetailResponseContains(response, metadata = {'resource_uri': self.get_resource_uri(resource_name='base_metadata_test_resource'), 'count': 2}, msg=msg)
 		
 		msg = 'When a query_string is specified, the metadata field resource_uri must include the query_string'
 		self.test_data_selection.query_string = 'oid=test_metadata1'
 		self.test_data_selection.save()
 		response = self.api_client.get(self.get_resource_uri(self.test_data_selection), format='json', authentication=self.test_user_authentication)
-		self.assertGetDetailResponseContains(response, metadata = {'resource_uri': self.get_resource_uri(resource_name='base_metadata_test_resource') + '?oid=test_metadata1', 'estimated_count': 1}, msg=msg)
+		self.assertGetDetailResponseContains(response, metadata = {'resource_uri': self.get_resource_uri(resource_name='base_metadata_test_resource') + '?oid=test_metadata1', 'count': 1}, msg=msg)
 	
 	def test_patch_detail(self):
 		'''Test a PATCH on the detail URL'''

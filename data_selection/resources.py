@@ -81,5 +81,5 @@ class DataSelectionResource(ModelResource):
 		
 		return {
 			'resource_uri': resource_uri,
-			'estimated_count': metadata.estimated_count()
+			'count': metadata.count()
 		}
