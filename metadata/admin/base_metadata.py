@@ -5,7 +5,7 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 	date_hierarchy = 'date_beg'
 	list_display = ['oid', 'date_beg']
 	list_filter = []
-	readonly_fields = []
+	readonly_fields = ['data_location']
 	
 	def get_readonly_fields(self, request, obj=None):
 		'''Return a list or tuple of field names that will be displayed as read-only'''
@@ -13,7 +13,7 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 		# Allow superuser to change everything
 		# Allow regular user to set the oid once but not change it
 		if request.user.is_superuser:
-			return []
+			return ['data_location']
 		elif obj is None:
 			return super().get_readonly_fields(request, obj)
 		else:
