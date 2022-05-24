@@ -60,6 +60,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'project.utils.middlewares.RequestLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -177,6 +178,24 @@ LOGGING['loggers'].pop('django')
 LOGGING['root'] = {
 	'handlers': ['console', 'file'],
 	'level': 'INFO',
+}
+
+# Add special logger for the RequestLoggingMiddleware
+LOGGING['formatters']['requests'] = {
+	'format': '[%(asctime)s] [%(levelname)s] %(message)s',
+}
+
+LOGGING['handlers']['requests'] = {
+	'class': 'logging.handlers.WatchedFileHandler',
+	'filename': '/var/log/solarnet_service/requests.log',
+	'level': 'INFO',
+	'formatter': 'requests'
+}
+
+LOGGING['loggers']['requests'] = {
+	'level' : 'INFO',
+	'handlers': ['requests'],
+	'propagate': False
 }
 
 ## Project specific settings
