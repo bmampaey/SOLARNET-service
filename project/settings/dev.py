@@ -36,6 +36,9 @@ DATABASES['default']['HOST'] = 'localhost'
 # Disable password validation
 AUTH_PASSWORD_VALIDATORS = []
 
+# Send emails to the console during development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Logging
 
 # Change default formatting of console to match the server format

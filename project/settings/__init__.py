@@ -140,7 +140,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Emails are send in case of server error
 ADMINS = [('Benjamin Mampaey', 'benjamin.mampaey@oma.be')]
 EMAIL_HOST = 'smtp.oma.be'
-SERVER_EMAIL = 'noreply@solarnet2.oma.be'
+SERVER_EMAIL = 'noreply@solarnet.oma.be'
+DEFAULT_FROM_EMAIL = 'noreply@solarnet.oma.be'
+
+# URLs for login and authentication
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/admin/'
 
 # Logging
 

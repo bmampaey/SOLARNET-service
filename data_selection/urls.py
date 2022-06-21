@@ -8,6 +8,7 @@ from data_selection.views import DataSelectionDownloadZipView
 svo_api.register(DataSelectionResource())
 
 app_name = 'data_selection'
+
 urlpatterns = [
 	path('download_zip/<uuid:uuid>/', DataSelectionDownloadZipView.as_view(), name='data_selection_download_zip'),
 ]

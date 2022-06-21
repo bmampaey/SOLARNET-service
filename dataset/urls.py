@@ -14,6 +14,7 @@ svo_api.register(DataLocationResource())
 
 
 app_name = 'dataset'
+
 urlpatterns = [
 	path('data/<str:dataset_name>/<str:metadata_oid>/', DataView.as_view(), name='data'),
 	path('thumbnail/<str:dataset_name>/<str:metadata_oid>/', ThumbnailView.as_view(), name='thumbnail'),

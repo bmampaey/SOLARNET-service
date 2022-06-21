@@ -12,12 +12,12 @@ LOCAL_DB_NAME="dev_solarnet2"
 
 SAMPLE=true
 
-dropdb --host=localhost --username=postgres --if-exists $LOCAL_DB_NAME
+dropdb --if-exists $LOCAL_DB_NAME
 
-if createdb --host=localhost --username=postgres --owner=$LOCAL_DB_USER --encoding=UTF8 "$LOCAL_DB_NAME" "Copy of production database $REMOTE_DB_NAME @ `date "+%Y-%b-%d %H:%M"`"; then
+if createdb --owner=$LOCAL_DB_USER --encoding=UTF8 "$LOCAL_DB_NAME" "Copy of production database $REMOTE_DB_NAME @ `date "+%Y-%b-%d %H:%M"`"; then
 	if $SAMPLE; then
-		../pg_sample/pg_sample --limit="django_migrations=*" --limit="dataset_keyword=*"  --limit=300 --force --host="$REMOTE_DB_SERVER" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=localhost --username=postgres $LOCAL_DB_NAME
+		../pg_sample/pg_sample --limit="django_migrations=*" --limit="dataset_keyword=*"  --limit=300 --force --host="$REMOTE_DB_SERVER" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql $LOCAL_DB_NAME
 	else
-		pg_dump --host="$REMOTE_DB_SERVER" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=localhost --username=postgres $LOCAL_DB_NAME
+		pg_dump --host="$REMOTE_DB_SERVER" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql $LOCAL_DB_NAME
 	fi
 fi
