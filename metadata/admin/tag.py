@@ -1,5 +1,4 @@
-from django.contrib import admin
-
+from project import admin
 from metadata.models import Tag
 
 @admin.register(Tag)

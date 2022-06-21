@@ -1,5 +1,4 @@
-from django.contrib import admin
-
+from project import admin
 from dataset.models import Characteristic
 
 

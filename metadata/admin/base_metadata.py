@@ -1,4 +1,4 @@
-from django.contrib import admin
+from project import admin
 
 class BaseMetadataAdmin(admin.ModelAdmin):
 	'''Base admin class for the metadata models'''

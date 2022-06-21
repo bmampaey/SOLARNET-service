@@ -1,6 +1,7 @@
-from django.contrib import admin, messages
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 
+from project import admin
 from dataset.models import DataLocation, Dataset
 
 

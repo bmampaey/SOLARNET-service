@@ -1,7 +1,5 @@
-from django.contrib import admin
-
+from project import admin
 from data_selection.models import DataSelection
-
 
 @admin.register(DataSelection)
 class DataSelectionAdmin(admin.ModelAdmin):

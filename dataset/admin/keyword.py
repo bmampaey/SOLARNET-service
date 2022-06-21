@@ -1,6 +1,6 @@
-from django.contrib import admin
 from django.core.exceptions import ValidationError
 
+from project import admin
 from dataset.models import Keyword
 
 @admin.register(Keyword)

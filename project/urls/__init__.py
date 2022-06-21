@@ -1,8 +1,8 @@
-from django.contrib import admin
 from django.urls import path, include
 
+# WARNING for some reason auth urls must come before site urls
 urlpatterns = [
-	path('admin/', admin.site.urls),
+	path('admin/', include('project.admin.urls')),
 	path('data_selection/', include('data_selection.urls', namespace='data_selection')),
 	path('', include('dataset.urls', namespace='dataset')),
 	path('', include('api.urls')),
