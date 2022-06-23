@@ -1,0 +1,9 @@
+{% load i18n %}
+
+{% if user.is_active %}
+<a href="{% url 'account:account_update' %}">{% translate 'Account' %}</a> /
+{% endif %}
+{% if user.is_active and user.is_staff %}
+<a href="{% url 'admin:index' %}">{% translate 'Admin' %}</a> /
+{% endif %}
+<a href="{% url 'account:logout' %}">{% translate 'Log out' %}</a>

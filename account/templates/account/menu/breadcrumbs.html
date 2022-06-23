@@ -1,0 +1,6 @@
+{% load i18n %}
+
+<div class="breadcrumbs">
+<a href="{% url 'account:account_update' %}">{% translate 'Home' %}</a>
+{% if title %} &rsaquo; {{ title }}{% endif %}
+</div>

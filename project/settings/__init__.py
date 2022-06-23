@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 	'corsheaders',
 	'tastypie',
 	'tastypie_swagger',
+	'account',
 	'api',
 	'dataset',
 	'metadata',

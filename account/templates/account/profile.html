@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block branding %}
+{% include 'account/menu/branding.html' %}
+{% endblock %}
+
+{% block userlinks %}
+{% include 'account/menu/userlinks.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{% include 'account/menu/breadcrumbs.html' %}
+{% endblock %}
+
+
+{% block content %}
+<p>
+	Your Api Key is {{ request.user.api_key.key }}
+</p>
+<p>
+	To use your Api Key with the RESTful interface, set the <b>Authorization</b> header of your request with the value <b>ApiKey {{ request.user.username }}:{{ request.user.api_key.key }}</b>
+</p>
+{% endblock %}

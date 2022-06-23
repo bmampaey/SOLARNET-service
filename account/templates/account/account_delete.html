@@ -1,0 +1,30 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block branding %}
+{% include 'account/menu/branding.html' %}
+{% endblock %}
+
+{% block userlinks %}
+{% include 'account/menu/userlinks.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{% include 'account/menu/breadcrumbs.html' %}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block content %}
+<div class="delete-confirmation">
+	<p>Are you sure you want to delete your account permanantly ? All of your data selections will also be deleted.</p>
+	<form method="post">
+		{% csrf_token %}
+		<input type="hidden" name="post" value="yes">
+		<input type="submit" value="{% translate 'Yes, I’m sure' %}">
+		<a href="{% url 'account:account_update' %}" class="button cancel-link">{% translate "No, take me back" %}</a>
+	</form>
+</div>
+
+
+{% endblock %}

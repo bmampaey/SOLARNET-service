@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block branding %}
+{% include 'account/menu/branding.html' %}
+{% endblock %}
+
+{% block userlinks %}
+{% include 'account/menu/userlinks.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{% include 'account/menu/breadcrumbs.html' %}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block content %}
+<form method="post" novalidate>
+	{% csrf_token %}
+	{% if errors %}
+	<p class="errornote">
+	{% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+	</p>
+	{{ form.non_field_errors }}
+	{% endif %}
+	
+
+	<fieldset class="module aligned ">
+		<div class="form-row">
+			<label>Email:</label>
+			<div class="readonly">{{ request.user.email }}</div>
+		</div>
+		<div class="form-row">
+			<label>Api Key:</label>
+			<div class="readonly">{{ request.user.api_key.key }}</div>
+			<p>
+				To use your Api Key with the RESTful interface, set the <b>Authorization</b> header of your request with the value <b>ApiKey {{ request.user.username }}:{{ request.user.api_key.key }}</b>
+			</p>
+		</div>
+		{% for field in form %}
+		<div class="form-row{% if field.errors %} errors{% endif %}">
+			{{ field.errors }}
+			<div class="{% if field.errors %}errors{% endif %}">
+				{{ field.label_tag }}
+				{{ field }}
+				{% if field.help_text %}
+				<div class="help">{{ field.help_text|safe }}</div>
+				{% endif %}
+			</div>
+		</div>
+		{% endfor %}
+	</fieldset>
+	<div class="submit-row">
+		<input type="submit" value="Save" class="default" style="float: left;">
+		<a href="{% url 'account:password_change' %}" class="closelink" style="float: left;">Change password</a>
+		<a href="{% url 'account:account_delete' %}" class="deletelink" style="float: right;">Delete</a>
+	</div>
+</form>
+
+{% endblock %}

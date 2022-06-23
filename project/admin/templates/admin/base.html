@@ -1,0 +1,9 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block userlinks %}
+{% if user.is_active %}
+<a href="{% url 'account:account_update' %}">{% translate 'Account' %}</a> /
+{% endif %}
+{{ block.super }}
+{% endblock %}
