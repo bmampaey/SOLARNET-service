@@ -7,7 +7,7 @@ defusedxml
 lxml
 biplist
 python-mimeparse
-Django==3.2.4
+Django==3.2.13
 django-cors-headers==3.7.0
 django-debug-toolbar==3.4
 django-extensions==3.1.3
