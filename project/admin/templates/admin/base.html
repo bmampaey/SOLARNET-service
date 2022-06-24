@@ -5,5 +5,5 @@
 {% if user.is_active %}
 <a href="{% url 'account:account_update' %}">{% translate 'Account' %}</a> /
 {% endif %}
-{{ block.super }}
+<a href="{% url 'admin:logout' %}">{% translate 'Log out' %}</a>
 {% endblock %}
