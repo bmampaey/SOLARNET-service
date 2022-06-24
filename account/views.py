@@ -75,7 +75,6 @@ class AccountDeleteView(LoginRequiredMixin, DeleteView):
 	extra_context = {**extra_context, 'title': 'Account' }
 	template_name = 'account/account_delete.html'
 	login_url = reverse_lazy('account:login')
-	fields = ['first_name', 'last_name', 'email']
 	success_url = '/'
 	
 	def get_object(self, queryset=None):
