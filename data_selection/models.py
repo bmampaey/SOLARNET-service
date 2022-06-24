@@ -1,4 +1,3 @@
-from urllib.parse import urljoin
 from uuid import uuid4
 from django.conf import settings
 from django.db import models

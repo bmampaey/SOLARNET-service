@@ -4,7 +4,6 @@ from django.forms import modelform_factory
 from tastypie.validation import FormValidation
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.paginator import Paginator
 from tastypie.exceptions import InvalidFilterError
 
 from api.authentications import ApiKeyOrAnonymousAuthentication
