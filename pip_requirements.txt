@@ -13,7 +13,7 @@ git+https://github.com/bmampaey/django-tastypie-swagger.git
 
 # Tastypie optional packages
 defusedxml==0.7.1
-lxml==4.9.0
+lxml==4.9.1
 biplist==1.0.3
 
 # For the FUSE filesystem
