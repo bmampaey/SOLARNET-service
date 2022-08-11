@@ -1,4 +1,4 @@
-Django==3.2.13
+Django==3.2.15
 psycopg2==2.9.3
 django-tastypie==0.14.4
 django-cors-headers==3.13.0
