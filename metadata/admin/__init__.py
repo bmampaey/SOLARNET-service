@@ -16,7 +16,6 @@ from .lyra_level_2 import *
 from .lyra_level_3 import *
 from .rosa import *
 from .swap_level_1 import *
-from .themis import *
 from .uset_calciumii_k_level_1 import *
 from .uset_white_light_level_1 import *
 from .xrt import *

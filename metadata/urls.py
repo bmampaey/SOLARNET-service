@@ -18,7 +18,6 @@ from metadata.resources import (
 	LyraLevel3Resource,
 	RosaResource,
 	SwapLevel1Resource,
-	ThemisResource,
 	UsetCalciumiiKLevel1Resource,
 	UsetWhiteLightLevel1Resource,
 	XrtResource
@@ -43,7 +42,6 @@ svo_api.register(LyraLevel2Resource())
 svo_api.register(LyraLevel3Resource())
 svo_api.register(RosaResource())
 svo_api.register(SwapLevel1Resource())
-svo_api.register(ThemisResource())
 svo_api.register(UsetCalciumiiKLevel1Resource())
 svo_api.register(UsetWhiteLightLevel1Resource())
 svo_api.register(XrtResource())

@@ -39,6 +39,13 @@ AUTH_PASSWORD_VALIDATORS = []
 # Send emails to the console during development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Set the cache to dev cache
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+	}
+}
+
 # Logging
 
 # Change default formatting of console to match the server format
