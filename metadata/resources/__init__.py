@@ -13,6 +13,7 @@ from .gaia_dem import *
 from .gris_level_1 import *
 from .hmi_magnetogram import *
 from .ibis import *
+from .lars_level_1 import *
 from .lyra_level_2 import *
 from .lyra_level_3 import *
 from .rosa import *
