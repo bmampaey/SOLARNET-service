@@ -1,7 +1,6 @@
 from .tag import *
 from .aia_level_1 import *
 from .chromis import *
-from .chrotel import *
 from .chrotel_level_1 import *
 from .crisp import *
 from .eit_level_0 import *
