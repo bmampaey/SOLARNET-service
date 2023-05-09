@@ -14,7 +14,6 @@ class MetadataManager(models.Manager):
 class BaseMetadata(models.Model):
 	'''Abstract base model for the Metadata models'''
 	oid = models.TextField('Observation ID', help_text = 'Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS; cannot be modified once it is set', unique=True, db_index=True)
-	fits_header = models.TextField(null=True, blank=True)
 	data_location = models.ForeignKey('dataset.DataLocation', related_name='%(app_label)s_%(class)s', null=True, blank=True, on_delete=models.SET_NULL)
 	tags = models.ManyToManyField('metadata.Tag', related_name='%(app_label)s_%(class)s', blank=True)
 	date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True, db_index=True)

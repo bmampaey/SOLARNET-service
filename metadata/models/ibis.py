@@ -12,6 +12,7 @@ class Ibis(BaseMetadata):
 		verbose_name = 'IBIS metadata'
 		verbose_name_plural = 'IBIS metadata'
 	
+	fits_header = models.TextField(null=True, blank=True)
 	baseclmp = models.BigIntegerField(verbose_name = 'BASECLMP', help_text='Baseline clamp value', blank=True, null=True)
 	binning = models.BigIntegerField(verbose_name = 'BINNING', help_text='BINNING FACTOR', blank=True, null=True)
 	bscale = models.FloatField(verbose_name = 'BSCALE', help_text='TRUE=(FITS VALUE)*BSCALE + BZERO', blank=True, null=True)

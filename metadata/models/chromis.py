@@ -12,6 +12,7 @@ class Chromis(BaseMetadata):
 		verbose_name = 'CHROMIS metadata'
 		verbose_name_plural = 'CHROMIS metadata'
 	
+	fits_header = models.TextField(null=True, blank=True)
 	ao_lock = models.FloatField(verbose_name = 'AO_LOCK', help_text='Fraction of time the AO was locking, 2s average', blank=True, null=True)
 	ao_nmode = models.BigIntegerField(verbose_name = 'AO_NMODE', help_text='Number of AO corrected Mirror modes', blank=True, null=True)
 	atmos_r0 = models.FloatField(verbose_name = 'ATMOS_R0', help_text='Atmospheric coherence length (mean value)', blank=True, null=True)

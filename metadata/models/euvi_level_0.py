@@ -12,6 +12,7 @@ class EuviLevel0(BaseMetadata):
 		verbose_name = 'EUVI level 0 metadata'
 		verbose_name_plural = 'EUVI level 0 metadata'
 	
+	fits_header = models.TextField(null=True, blank=True)
 	apid = models.BigIntegerField(verbose_name = 'APID', help_text='', blank=True, null=True)
 	att_file = models.TextField(verbose_name = 'ATT_FILE', help_text='', blank=True, null=True)
 	biasmean = models.FloatField(verbose_name = 'BIASMEAN', help_text='', blank=True, null=True)

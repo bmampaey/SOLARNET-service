@@ -12,6 +12,7 @@ class EuiLevel2(BaseMetadata):
 		verbose_name = 'EUI level 2 metadata'
 		verbose_name_plural = 'EUI level 2 metadata'
 	
+	fits_header = models.TextField(null=True, blank=True)
 	alu = models.BigIntegerField(verbose_name = 'ALU', help_text='CEB ALU register', blank=True, null=True)
 	alu2 = models.BigIntegerField(verbose_name = 'ALU2', help_text='CEB ALU2 register', blank=True, null=True)
 	apid = models.BigIntegerField(verbose_name = 'APID', help_text='APID number of associated TM', blank=True, null=True)

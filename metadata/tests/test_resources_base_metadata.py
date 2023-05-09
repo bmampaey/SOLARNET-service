@@ -31,7 +31,6 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 		self.test_instance = self.test_metadata1
 		self.test_post_data = {
 			'oid': 'test_metadata3',
-			'fits_header': 'fits header',
 			'date_beg' : datetime(2000, 1, 1, tzinfo = timezone.utc),
 			'date_end': datetime(2000, 1, 1, 0, 0, 1, tzinfo = timezone.utc),
 			'wavemin': 0,
@@ -39,7 +38,6 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 			'data_location': self.test_data_location1
 		}
 		self.test_patch_data = {
-			'fits_header': 'new fits header',
 			'date_beg' : datetime(2000, 1, 1, tzinfo = timezone.utc),
 			'date_end': datetime(2000, 1, 1, 0, 0, 1, tzinfo = timezone.utc),
 			'wavemin': 0,
@@ -51,14 +49,13 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 		'''Test the __init__ method of the resource'''
 		
 		msg = 'When the resource is instanciated, the ordering must contain all regular field names'
-		self.assertCountEqual(self.resource._meta.ordering, ['oid', 'fits_header', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg)
+		self.assertCountEqual(self.resource._meta.ordering, ['oid', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg)
 		
 		msg = 'When the resource is instanciated, the filtering must contain all field names and appropriate filters'
 		self.assertDictEqual(self.resource._meta.filtering, {
 			'tags': FILTERS.RELATIONAL,
 			'search': FILTERS.COMPLEX_SEARCH_EXPRESSION,
 			'oid' : FILTERS.TEXT,
-			'fits_header': FILTERS.TEXT,
 			'date_beg': FILTERS.DATETIME,
 			'date_end': FILTERS.DATETIME,
 			'wavemin': FILTERS.NUMERIC,
@@ -201,12 +198,12 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 		msg = 'When no authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_metadata1), format='json')
 		self.assertValidJSONResponse(response, msg=msg)
-		self.assertResponseHasKeys(response, ['oid', 'fits_header', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg)
+		self.assertResponseHasKeys(response, ['oid', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg)
 		
 		msg = 'When authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_metadata1), format='json', authentication=self.test_user_authentication)
 		self.assertValidJSONResponse(response, msg=msg)
-		self.assertResponseHasKeys(response, ['oid', 'fits_header', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg)
+		self.assertResponseHasKeys(response, ['oid', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg)
 		
 	def test_patch_detail(self):
 		'''Test a PATCH on the detail URL'''

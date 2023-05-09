@@ -141,7 +141,7 @@ class Command(BaseCommand):
 		'''Return the content of the model file'''
 		
 		# Get the keywords of the dataset in alphabetical order and set the appropriate model_field
-		keywords = dataset.keywords.exclude(name__in = ['id', 'oid', 'fits_header', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'])
+		keywords = dataset.keywords.exclude(name__in = ['id', 'oid', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'])
 		
 		keywords = sorted(keywords, key=lambda x: x.name)
 		

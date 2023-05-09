@@ -11,6 +11,7 @@ class SwapLevel1(BaseMetadata):
 		verbose_name = 'SWAP level 1 metadata'
 		verbose_name_plural = 'SWAP level 1 metadata'
 	
+	fits_header = models.TextField(null=True, blank=True)
 	artefx = models.TextField(verbose_name = 'ARTEFX', help_text='(off,on,cosmic rays) on-board artefact removal', blank=True, null=True)
 	bscale = models.FloatField(verbose_name = 'BSCALE', help_text='ratio of physical to array value at 0 offset', blank=True, null=True)
 	bunit = models.TextField(verbose_name = 'BUNIT', help_text='unit of physical value', blank=True, null=True)

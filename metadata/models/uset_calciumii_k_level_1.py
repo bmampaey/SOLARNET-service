@@ -12,6 +12,7 @@ class UsetCalciumiiKLevel1(BaseMetadata):
 		verbose_name = 'USET CalciumII-K level 1 metadata'
 		verbose_name_plural = 'USET CalciumII-K level 1 metadata'
 	
+	fits_header = models.TextField(null=True, blank=True)
 	bscale = models.BigIntegerField(verbose_name = 'BSCALE', help_text='To be multiplied to the data array values', blank=True, null=True)
 	btype = models.TextField(verbose_name = 'BTYPE', help_text='', blank=True, null=True)
 	bunit = models.TextField(verbose_name = 'BUNIT', help_text='', blank=True, null=True)
