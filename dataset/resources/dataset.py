@@ -1,5 +1,6 @@
 from urllib.parse import unquote
 from django.urls import reverse, NoReverseMatch
+from django.db import connection
 from django.db.models.constants import LOOKUP_SEP
 from tastypie import fields
 from tastypie.resources import ModelResource
@@ -65,7 +66,7 @@ class DatasetResource(ModelResource):
 		
 		# Create the query_string from the GET parameters
 		# But remove the one about dataset filtering and also limit and offset
-		excludes = ['name', 'description', 'instrument', 'telescope', 'characteristics', 'limit', 'offset']
+		excludes = ['name', 'description', 'instrument', 'telescope', 'characteristics', 'limit', 'offset', 'format']
 		query_dict = bundle.request.GET.copy()
 		for parameter in list(query_dict.keys()):
 			try:
@@ -79,12 +80,25 @@ class DatasetResource(ModelResource):
 		if query_string:
 			resource_uri += '?' + query_string
 		
-		# Get the metadata query set corresponding to the query string to compute the estimated count
-		metadata = get_metadata_queryset(metadata_model, query_string, bundle.request.user)
+		# Try to get an estimate of the metadata count, if the estimate is too small, use the excat count
+		metadata_count = None
+		
+		# The estimate method use the statistics kept by postgresql about the tables, so cannot be used if there is a where clause
+		if not query_dict:
+			with connection.cursor() as cursor:
+				cursor.execute('SELECT reltuples::bigint AS estimate FROM pg_class where relname = %s;', (metadata_model._meta.db_table,))
+				estimated_count = cursor.fetchone()[0]
+				if estimated_count > 1000:
+					metadata_count = estimated_count
+		
+		if metadata_count is None:
+			# Get the metadata query set corresponding to the query string to compute the exact count
+			metadata = get_metadata_queryset(metadata_model, query_string, bundle.request.user)
+			metadata_count = metadata.count()
 		
 		return {
 			'resource_uri': resource_uri,
-			'count': metadata.count()
+			'count': metadata_count
 		}
 	
 	
