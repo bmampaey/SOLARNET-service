@@ -2,22 +2,24 @@
 # Create a local dev_solarnet2 database as a copy of the production database
 # If SAMPLE is true; then copy only a sample of the data, else copy all the data
 
-REMOTE_DB_SERVER="pgsql-as.oma.be"
+REMOTE_DB_HOST="pgsql-as.oma.be"
 REMOTE_DB_USER="solarnet"
 REMOTE_DB_NAME="solarnet2"
 
+LOCAL_DB_HOST="localhost"
 LOCAL_DB_USER="solarnet"
 LOCAL_DB_NAME="dev_solarnet2"
 
 
 SAMPLE=true
 
-dropdb --if-exists $LOCAL_DB_NAME
+dropdb --if-exists --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAME
 
-if createdb --owner=$LOCAL_DB_USER --encoding=UTF8 "$LOCAL_DB_NAME" "Copy of production database $REMOTE_DB_NAME @ `date "+%Y-%b-%d %H:%M"`"; then
+if createdb --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER  --owner=$LOCAL_DB_USER --encoding=UTF8 "$LOCAL_DB_NAME" "Copy of production database $REMOTE_DB_NAME @ `date "+%Y-%b-%d %H:%M"`"; then
+	#psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER -c "GRANT USAGE, CREATE ON SCHEMA public TO $LOCAL_DB_USER" $LOCAL_DB_NAME
 	if $SAMPLE; then
-		../pg_sample/pg_sample --limit="django_migrations=*" --limit="dataset_keyword=*"  --limit=300 --force --host="$REMOTE_DB_SERVER" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql $LOCAL_DB_NAME
+		../pg_sample/pg_sample --limit="django_migrations=*" --limit="dataset_keyword=*"  --limit="data_selection_dataselection=0" --limit=300 --force --host="$REMOTE_DB_HOST" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAME
 	else
-		pg_dump --host="$REMOTE_DB_SERVER" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql $LOCAL_DB_NAME
+		pg_dump --host="$REMOTE_DB_HOST" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAME
 	fi
 fi

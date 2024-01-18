@@ -1,13 +1,13 @@
 # Development settings - when running under django development web server
 
 import os
-from project.settings import * # pylint: disable=unused-wildcard-import
+from project.settings import *  # pylint: disable=unused-wildcard-import
 
 # Allow debugging
 DEBUG = True
 
 # Allow extra debugging to any ROB client
-INTERNAL_IPS = ['127.0.0.1'] + ['192.168.132.'+str(i) for i in range(1, 256)]
+INTERNAL_IPS = ['127.0.0.1'] + ['192.168.132.' + str(i) for i in range(1, 256)]
 
 # Allow to run on any host
 ALLOWED_HOSTS = ['*']
@@ -56,6 +56,11 @@ LOGGING['formatters']['console'] = {
 
 # Send messages level >= INFO to console
 LOGGING['root']['handlers'] = ['console']
+
+# Change the log file
+LOGGING['handlers']['file']['filename'] = '/tmp/solarnet_service_django.log'
+LOGGING['handlers']['requests']['filename'] = '/tmp/solarnet_service_requests.log'
+
 
 # LOG SQL queries if environment variable LOG_QUERIES is set
 if os.environ.get('LOG_QUERIES', '0') != '0':
