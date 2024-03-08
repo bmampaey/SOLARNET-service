@@ -20,5 +20,6 @@ from .lyra_level_3 import *
 from .rosa import *
 from .swap_level_1 import *
 from .uset_calciumii_k_level_1 import *
+from .uset_h_alpha_level_1 import *
 from .uset_white_light_level_1 import *
 from .xrt import *
