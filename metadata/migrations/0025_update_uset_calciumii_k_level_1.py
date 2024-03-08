@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('metadata', '0022_add_uset_h_alpha_level_1'),
+        ('metadata', '0024_add_uset_h_alpha_level_1'),
     ]
 
     operations = [

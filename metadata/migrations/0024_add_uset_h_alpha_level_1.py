@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('dataset', '0001_initial'),
-        ('metadata', '0021_add_aia_level_2'),
+        ('metadata', '0023_add_hmi_magnetogram_level_1_5'),
     ]
 
     operations = [

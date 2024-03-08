@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('metadata', '0023_update_uset_calciumii_k_level_1'),
+        ('metadata', '0025_update_uset_calciumii_k_level_1'),
     ]
 
     operations = [
