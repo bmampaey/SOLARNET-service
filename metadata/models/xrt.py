@@ -12,7 +12,6 @@ class Xrt(BaseMetadata):
 		verbose_name = 'XRT metadata'
 		verbose_name_plural = 'XRT metadata'
 	
-	fits_header = models.TextField(null=True, blank=True)
 	achf_ver = models.IntegerField(verbose_name = 'ACHF_VER', help_text='AC Huffman table version', blank=True, null=True)
 	aec_flg = models.TextField(verbose_name = 'AEC_FLG', help_text='Automatic Exposure Control; 1: Off, 2: On', blank=True, null=True)
 	aec_rslt = models.IntegerField(verbose_name = 'AEC_RSLT', help_text='Result of AEC calculation used to determine exposure time; 0: Normal, 1: Underexposure, 2: Overexposure, 3: No feedback', blank=True, null=True)
