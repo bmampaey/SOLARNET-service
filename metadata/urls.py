@@ -2,6 +2,7 @@ from api import svo_api
 from metadata.resources import (
 	TagResource,
 	AiaLevel1Resource,
+	AiaLevel15Resource,
 	AiaLevel2Resource,
 	ChromisResource,
 	ChrotelLevel1Resource,
@@ -30,6 +31,7 @@ from metadata.resources import (
 # Register the metadata resources
 svo_api.register(TagResource())
 svo_api.register(AiaLevel1Resource())
+svo_api.register(AiaLevel15Resource())
 svo_api.register(AiaLevel2Resource())
 svo_api.register(ChromisResource())
 svo_api.register(ChrotelLevel1Resource())
