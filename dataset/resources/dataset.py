@@ -32,11 +32,12 @@ class DatasetResource(ModelResource):
 		filtering = {
 			'name': FILTERS.TEXT,
 			'description': FILTERS.TEXT,
+			'doi_url': FILTERS.TEXT,
 			'telescope': FILTERS.RELATIONAL,
 			'instrument': FILTERS.RELATIONAL,
 			'characteristics': FILTERS.RELATIONAL
 		}
-		ordering = ['name', 'description', 'telescope', 'instrument', 'characteristics']
+		ordering = ['name', 'description', 'doi_url', 'telescope', 'instrument', 'characteristics']
 	
 	def apply_filters(self, request, applicable_filters):
 		'''Apply the filters to the object list'''

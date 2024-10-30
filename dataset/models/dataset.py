@@ -21,12 +21,13 @@ class Dataset(models.Model):
 	description = models.TextField(blank = True, null = True, help_text = 'Can contain html with links, emphasis, etc.')
 	contact_email = models.EmailField(help_text = 'Email of the dataset archive contact person', blank = True, null = True)
 	archive_url = models.URLField(help_text = 'Official URL of the dataset archive', max_length = 2000, blank = True, null = True)
+	doi_url = models.URLField('URL to the DOI of the dataset or the reference paper', null=True, blank=True)
 	telescope = models.ForeignKey('Telescope', on_delete = models.PROTECT, related_name = 'datasets')
 	instrument = models.ForeignKey('Instrument', on_delete = models.PROTECT, related_name = 'datasets')
 	characteristics = models.ManyToManyField('Characteristic', related_name = 'datasets', blank = True)
 	user_group = models.ForeignKey('auth.Group', on_delete = models.SET_NULL, related_name = 'user_groups', help_text = 'User of this group can modify the dataset', blank = True, null = True)
 	metadata_content_type = models.OneToOneField(ContentType, on_delete = models.SET_NULL, limit_choices_to = models.Q(app_label = 'metadata') & ~models.Q(model = 'tag'), help_text = 'The model for this dataset metadata', blank = True, null = True, unique=True)
-	
+
 	objects = DatasetManager()
 	
 	class Meta:
