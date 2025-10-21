@@ -13,15 +13,15 @@ git+https://github.com/bmampaey/django-tastypie-swagger.git
 
 # Tastypie optional packages
 defusedxml==0.7.1
-lxml==4.9.0
+lxml
 biplist==1.0.3
 
 # For the FUSE filesystem
 fusepy==3.0.1
 
 # For converting images and FITS files to png
-astropy==5.1
-numpy==1.23.0
+astropy
+numpy
 Pillow==9.1.1
 
 # For testing

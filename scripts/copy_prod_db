@@ -18,7 +18,7 @@ dropdb --if-exists --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAM
 if createdb --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER  --owner=$LOCAL_DB_USER --encoding=UTF8 "$LOCAL_DB_NAME" "Copy of production database $REMOTE_DB_NAME @ `date "+%Y-%b-%d %H:%M"`"; then
 	#psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER -c "GRANT USAGE, CREATE ON SCHEMA public TO $LOCAL_DB_USER" $LOCAL_DB_NAME
 	if $SAMPLE; then
-		../pg_sample/pg_sample --limit="django_migrations=*" --limit="dataset_keyword=*"  --limit="data_selection_dataselection=0" --limit=300 --force --host="$REMOTE_DB_HOST" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAME
+		../pg_sample/pg_sample --verbose  --limit="django_migrations=*" --limit="dataset_keyword=*"  --limit="data_selection_dataselection=0" --limit=300 --force --host="$REMOTE_DB_HOST" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAME
 	else
 		pg_dump --host="$REMOTE_DB_HOST" --username="$REMOTE_DB_USER" "$REMOTE_DB_NAME" | psql --host=$LOCAL_DB_HOST --username=$LOCAL_DB_USER $LOCAL_DB_NAME
 	fi

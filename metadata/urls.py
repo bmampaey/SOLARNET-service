@@ -1,9 +1,8 @@
 from api import svo_api
 from metadata.resources import (
-	TagResource,
 	AiaLevel1Resource,
-	AiaLevel15Resource,
 	AiaLevel2Resource,
+	AiaLevel15Resource,
 	ChromisResource,
 	ChrotelLevel1Resource,
 	CrispResource,
@@ -14,18 +13,21 @@ from metadata.resources import (
 	EuviLevel0Resource,
 	GaiaDemResource,
 	GrisLevel1Resource,
-	HmiMagnetogramResource,
 	HmiMagnetogramLevel15Resource,
+	HmiMagnetogramResource,
 	IbisResource,
 	LarsLevel1Resource,
 	LyraLevel2Resource,
 	LyraLevel3Resource,
 	RosaResource,
 	SwapLevel1Resource,
+	TagResource,
 	UsetCalciumiiKLevel1Resource,
 	UsetHAlphaLevel1Resource,
 	UsetWhiteLightLevel1Resource,
 	XrtResource,
+	ZimpolSpectrographGregorResource,
+	ZimpolSpectrographIrsolResource,
 )
 
 # Register the metadata resources
@@ -54,4 +56,5 @@ svo_api.register(SwapLevel1Resource())
 svo_api.register(UsetCalciumiiKLevel1Resource())
 svo_api.register(UsetHAlphaLevel1Resource())
 svo_api.register(UsetWhiteLightLevel1Resource())
-svo_api.register(XrtResource())
+svo_api.register(ZimpolSpectrographGregorResource())
+svo_api.register(ZimpolSpectrographIrsolResource())
