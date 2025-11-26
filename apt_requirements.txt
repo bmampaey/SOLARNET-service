@@ -1,7 +1,10 @@
 postgresql-client
 libpq-dev
-python3-pip
 apache2
 libapache2-mod-wsgi-py3
 vsftpd
-libfuse
+python3-pip
+python3-venv
+python3-ipython
+python3-requests
+python3-fusepy
