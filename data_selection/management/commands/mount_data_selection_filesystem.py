@@ -5,7 +5,7 @@ import logging
 from pwd import getpwnam
 from pathlib import PurePosixPath
 import requests
-from fuse import FUSE, Operations, FuseOSError
+from fusepy import FUSE, Operations, FuseOSError
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
 from django.db.models import Q, F, Func, Value, CharField

@@ -4,7 +4,6 @@ django-tastypie==0.14.4
 django-cors-headers==3.13.0
 django-extensions==3.1.5
 django-debug-toolbar==3.5.0
-requests==2.28.0
 simplejson==3.17.6
 pyparsing==2.4.7
 
@@ -16,13 +15,10 @@ defusedxml==0.7.1
 lxml
 biplist==1.0.3
 
-# For the FUSE filesystem
-fusepy==3.0.1
-
 # For converting images and FITS files to png
 astropy
 numpy
-Pillow==9.1.1
+Pillow
 
 # For testing
 coverage==6.4.1

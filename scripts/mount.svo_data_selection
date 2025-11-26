@@ -3,6 +3,7 @@
 # by calling the Django management command mount_data_selection_filesystem as user benjmam
 
 BASE_DIR=$(dirname $(dirname $(realpath "$0")))
+PYTHON='/opt/SOLARNET/service/.venv/bin/python3'
 LOG_FILE='/var/log/solarnet_service/svo_data_selection.log'
 
 # First argument will be a device that we map to the user mounting the filesystem
@@ -13,4 +14,4 @@ MOUNT_POINT=$2
 
 echo "$(date) Mounting svo_data_selection with parameters: $@" > $LOG_FILE
 
-su - $USER -c "/usr/bin/python3 ${BASE_DIR}/manage.py mount_data_selection_filesystem $MOUNT_POINT -l $LOG_FILE"
+su - $USER -c "${PYTHON} ${BASE_DIR}/manage.py mount_data_selection_filesystem $MOUNT_POINT -l $LOG_FILE"
