@@ -28,6 +28,7 @@ from metadata.resources import (
 	XrtResource,
 	ZimpolSpectrographGregorResource,
 	ZimpolSpectrographIrsolResource,
+	SpocaCoronalHoleResource,
 )
 
 # Register the metadata resources
@@ -58,3 +59,4 @@ svo_api.register(UsetHAlphaLevel1Resource())
 svo_api.register(UsetWhiteLightLevel1Resource())
 svo_api.register(ZimpolSpectrographGregorResource())
 svo_api.register(ZimpolSpectrographIrsolResource())
+svo_api.register(SpocaCoronalHoleResource())

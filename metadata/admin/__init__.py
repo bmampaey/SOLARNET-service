@@ -26,3 +26,4 @@ from .uset_white_light_level_1 import *
 from .xrt import *
 from .zimpol_spectrograph_gregor import *
 from .zimpol_spectrograph_irsol import *
+from .spoca_coronal_hole import *
