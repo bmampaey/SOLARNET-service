@@ -1,56 +1,75 @@
-from django.db import models, transaction
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
+from django.db import models, transaction
 from django.utils.functional import cached_property
 
 __all__ = ['Dataset']
 
+
 class DatasetManager(models.Manager):
-	'''Manager that optimize the queries by selecting the foreign objects'''
+	"""Manager that optimize the queries by selecting the foreign objects"""
+
 	def get_queryset(self):
 		queryset = super().get_queryset()
 		queryset = queryset.select_related('telescope', 'instrument', 'user_group').prefetch_related('characteristics')
 		return queryset
-		
+
 	def get_by_natural_key(self, name):
 		return self.get(name=name)
 
+
 class Dataset(models.Model):
-	'''Model for the description of a dataset'''
-	name = models.CharField(max_length = 200, unique = True, help_text = 'Can contain any unicode character')
-	description = models.TextField(blank = True, null = True, help_text = 'Can contain html with links, emphasis, etc.')
-	contact_email = models.EmailField(help_text = 'Email of the dataset archive contact person', blank = True, null = True)
-	archive_url = models.URLField(help_text = 'Official URL of the dataset archive', max_length = 2000, blank = True, null = True)
+	"""Model for the description of a dataset"""
+
+	name = models.CharField(max_length=200, unique=True, help_text='Can contain any unicode character')
+	description = models.TextField(blank=True, null=True, help_text='Can contain html with links, emphasis, etc.')
+	contact_email = models.EmailField(help_text='Email of the dataset archive contact person', blank=True, null=True)
+	archive_url = models.URLField(help_text='Official URL of the dataset archive', max_length=2000, blank=True, null=True)
 	doi_url = models.URLField('URL to the DOI of the dataset or the reference paper', null=True, blank=True)
-	telescope = models.ForeignKey('Telescope', on_delete = models.PROTECT, related_name = 'datasets')
-	instrument = models.ForeignKey('Instrument', on_delete = models.PROTECT, related_name = 'datasets')
-	characteristics = models.ManyToManyField('Characteristic', related_name = 'datasets', blank = True)
-	user_group = models.ForeignKey('auth.Group', on_delete = models.SET_NULL, related_name = 'user_groups', help_text = 'User of this group can modify the dataset', blank = True, null = True)
-	metadata_content_type = models.OneToOneField(ContentType, on_delete = models.SET_NULL, limit_choices_to = models.Q(app_label = 'metadata') & ~models.Q(model = 'tag'), help_text = 'The model for this dataset metadata', blank = True, null = True, unique=True)
+	telescope = models.ForeignKey('Telescope', on_delete=models.PROTECT, related_name='datasets')
+	instrument = models.ForeignKey('Instrument', on_delete=models.PROTECT, related_name='datasets')
+	characteristics = models.ManyToManyField('Characteristic', related_name='datasets', blank=True)
+	user_group = models.ForeignKey(
+		'auth.Group',
+		on_delete=models.SET_NULL,
+		related_name='user_groups',
+		help_text='User of this group can modify the dataset',
+		blank=True,
+		null=True,
+	)
+	metadata_content_type = models.OneToOneField(
+		ContentType,
+		on_delete=models.SET_NULL,
+		limit_choices_to=models.Q(app_label='metadata') & ~models.Q(model='tag'),
+		help_text='The model for this dataset metadata',
+		blank=True,
+		null=True,
+		unique=True,
+	)
 
 	objects = DatasetManager()
-	
+
 	class Meta:
 		ordering = ['name']
 		verbose_name = 'Dataset'
-	
+
 	def __str__(self):
 		return self.name
-	
+
 	def natural_key(self):
-		return self.name
-	
+		return (self.name,)
+
 	@transaction.atomic
 	def save(self, *args, **kwargs):
-		'''Save the current instance'''
-		
+		"""Save the current instance"""
+
 		# If there is no user_group, create one with the permissions to view/add/change/delete the metadata
 		if self.name and self.metadata_content_type and not self.user_group:
-			self.user_group = Group.objects.create(name = '%s manager' % self.name)
+			self.user_group = Group.objects.create(name='%s manager' % self.name)
 			self.user_group.permissions.add(*self.metadata_content_type.permission_set.all())
-		
+
 		super().save(*args, **kwargs)
-	
+
 	@cached_property
 	def metadata_model(self):
 		if self.metadata_content_type is None:
