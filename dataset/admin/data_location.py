@@ -21,7 +21,7 @@ class DataLocationAdmin(admin.ModelAdmin):
 		
 		# Allow superuser to change everything
 		if request.user.is_superuser:
-			return []
+			return ['update_time']
 		else:
 			return super().get_readonly_fields(request, obj)
 	
