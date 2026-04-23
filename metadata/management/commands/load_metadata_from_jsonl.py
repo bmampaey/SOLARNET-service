@@ -1,8 +1,9 @@
 import json
+from datetime import datetime, timezone
 
 from django.core.management.base import BaseCommand, CommandError
-from django.core.serializers.python import Deserializer
-from django.db import transaction
+from django.db import models, transaction
+from django.utils.timezone import is_naive, make_aware, utc
 
 from dataset.models import DataLocation, Dataset
 from project.utils import Logger
@@ -15,6 +16,7 @@ class Command(BaseCommand):
 		parser.add_argument('dataset', help='The name of the dataset')
 		parser.add_argument('file_path', metavar='JSONL-FILE', help='The path to the JSONL file')
 		parser.add_argument('--continue-on-fail', '-c', action='store_true', help='If a row fails to save, continue')
+		parser.add_argument('--batch-size', '-b', type=int, default=1000, help='Number of rows to save')
 
 	def handle(self, **options):
 		# Create a logger
@@ -22,36 +24,76 @@ class Command(BaseCommand):
 
 		# Get the dataset
 		try:
-			dataset = Dataset.objects.get(name=options['dataset'])
+			self.dataset = Dataset.objects.get(name=options['dataset'])
 		except Dataset.DoesNotExist:
 			raise CommandError('Dataset %s not found' % options['dataset'])
 
-		metadata_model_name = '{meta.app_label}.{meta.model_name}'.format(meta=dataset.metadata_model._meta)
-		datalocation_model_name = '{meta.app_label}.{meta.model_name}'.format(meta=DataLocation._meta)
+		MetaData = self.dataset.metadata_model
+		now_utc = datetime.now(timezone.utc)
+
+		metadatas = {}
+		data_locations = {}
+		first_line_number = 1
 
 		with open(options['file_path']) as file:
-			with transaction.atomic():
-				for line_number, line in enumerate(file, start=1):
-					metadata = json.loads(line)
-					# Setting all the forign keys is normally done by the RestFull API
-					# So we have to do it manually
-					data_location = metadata.pop('data_location')
-					metadata.setdefault('data_location', (dataset.natural_key(), data_location['file_url']))
-					data_location.setdefault('dataset', dataset.natural_key())
+			for line_number, line in enumerate(file, start=1):
+				metadata = json.loads(line)
+				data_location = metadata.pop('data_location')
+				metadatas[data_location['file_url']] = self.make_timezone_aware(MetaData(**metadata))
+				data_locations[data_location['file_url']] = DataLocation(dataset=self.dataset, update_time=now_utc, **data_location)
 
-					# Use the python Deserializer dunction instead of the json onse so we don't have to re-encode to JSON first
-					# The order is important
+				if len(data_locations) >= options['batch_size']:
 					try:
-						for deserialized in Deserializer([
-							{'model': datalocation_model_name, 'fields': data_location},
-							{'model': metadata_model_name, 'fields': metadata},
-						]):
-							# Altough desiarilized has a save method, it bypasses the normal Model save() methos, and the update_time of DataLocation is now poupulated with the current time
-							deserialized.object.save()
-							self.log.info('Saved object %s', deserialized.object)
+						self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
+						self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
+						first_line_number = line_number + 1
+						metadatas = {}
+						data_locations = {}
 					except Exception as error:
-						if options['continue_on_fail']:
-							self.log.warning('Could not save metadata line %s: %s. Continuing!', line_number, error)
-							continue
-						else:
-							raise CommandError('Could not save metadata line %s: %s!', line_number, error) from error
+						raise CommandError(
+							'Error saving objects between line %s and %s: %s!' % (first_line_number, line_number, error)
+						) from error
+
+		if data_locations:
+			try:
+				self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
+				self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
+			except Exception as error:
+				raise CommandError(
+					'Error saving objects between line %s and %s: %s!' % (first_line_number, line_number, error)
+				) from error
+
+		self.log.info('Finnished loading all %s lines', line_number)
+
+	def make_timezone_aware(self, object, default_timezone=utc):
+		"""Make sure that the times have a timezone set"""
+		for field in object._meta.get_fields():
+			# Check if the field is a DateTimeField (ignores DateField or TimeField)
+			if isinstance(field, models.DateTimeField):
+				value = getattr(object, field.name)
+				if isinstance(value, str):
+					value = datetime.fromisoformat(value)
+				if is_naive(value):
+					value = make_aware(value, timezone=default_timezone)
+				setattr(object, field.name, value)
+		return object
+
+	def save_objects(self, data_locations, metadatas, continue_on_fail=False):
+		"""Save the metadata and their corresponding data location, matching them on the file_url"""
+		with transaction.atomic():
+			DataLocation.objects.bulk_create(data_locations.values(), ignore_conflicts=continue_on_fail)
+			data_locations = dict(
+				DataLocation.objects.filter(dataset=self.dataset, file_url__in=data_locations.keys()).values_list('file_url', 'id')
+			)
+			good_metadatas = []
+			for file_url, metadata in metadatas.items():
+				try:
+					metadata.data_location_id = data_locations[file_url]
+				except KeyError:
+					if continue_on_fail:
+						self.log.warning('Could not find DataLocation for URL %s, ignoring metadata with oid %s', file_url, metadata.oid)
+					else:
+						raise Exception('Could not find DataLocation for URL %s for metadata with oid %s' % (file_url, metadata.oid))
+				else:
+					good_metadatas.append(metadata)
+			return self.dataset.metadata_model.objects.bulk_create(good_metadatas, ignore_conflicts=continue_on_fail)
