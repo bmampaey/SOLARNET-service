@@ -149,7 +149,7 @@ class AiaLevel15(BaseMetadata):
 	trecepoc = models.TextField(verbose_name = 'TRECEPOC', help_text='Reference epoch for T_OBS {T_REC', blank=True, null=True)
 	trecstep = models.FloatField(verbose_name = 'TRECSTEP', help_text='JPS: provide a comment {T_REC_step}', blank=True, null=True)
 	wave_str = models.TextField(verbose_name = 'WAVE_STR', help_text='Wavelength_FilterPosition', blank=True, null=True)
-	wavelnth = models.BigIntegerField(verbose_name = 'WAVELNTH', help_text='Wavelength', blank=True, null=True)
+	wavelnth = models.BigIntegerField(verbose_name = 'WAVELNTH', help_text='Wavelength', blank=True, null=True, db_index=True)
 	waveunit = models.TextField(verbose_name = 'WAVEUNIT', help_text='Wavelength unit: angstrom', blank=True, null=True)
 	x0_mp = models.FloatField(verbose_name = 'X0_MP', help_text='Master pointing X0 sun center in CCD fr', blank=True, null=True)
 	y0_mp = models.FloatField(verbose_name = 'Y0_MP', help_text='Master pointing Y0 sun center in CCD fr', blank=True, null=True)

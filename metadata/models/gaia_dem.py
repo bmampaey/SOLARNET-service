@@ -33,7 +33,7 @@ class GaiaDem(BaseMetadata):
 	emergence_max = models.FloatField(verbose_name = 'emergence_max', help_text='Emergence angle during data acquisition, upper limit', blank=True, null=True)
 	emergence_min = models.FloatField(verbose_name = 'emergence_min', help_text='Emergence angle during data acquisition, lower limit.', blank=True, null=True)
 	file_name = models.TextField(verbose_name = 'file_name', help_text='Name of the data file only, case sensitive', blank=True, null=True)
-	granule_gid = models.TextField(verbose_name = 'granule_gid', help_text='Common to granules of same type (e.g. same map projection, or geometry data products). Can be alphanumeric.', blank=True, null=True)
+	granule_gid = models.TextField(verbose_name = 'granule_gid', help_text='Common to granules of same type (e.g. same map projection, or geometry data products). Can be alphanumeric.', blank=True, null=True, db_index=True)
 	granule_uid = models.TextField(verbose_name = 'granule_uid', help_text='Internal table row index, which must be unique within the table. Can be alphanumeric.', blank=True, null=True)
 	incidence_max = models.FloatField(verbose_name = 'incidence_max', help_text='Incidence angle (solar zenithal angle) during data acquisition, upper limit', blank=True, null=True)
 	incidence_min = models.FloatField(verbose_name = 'incidence_min', help_text='Incidence angle (solar zenithal angle) during data acquisition, lower limit.', blank=True, null=True)

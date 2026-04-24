@@ -83,7 +83,7 @@ class SwapLevel1(BaseMetadata):
 	nprescr = models.IntegerField(verbose_name = 'NPRESCR', help_text='# preserved pixels - cosmic rays', blank=True, null=True)
 	npreslzw = models.IntegerField(verbose_name = 'NPRESLZW', help_text='# preserved pixels - LZW decorrelation', blank=True, null=True)
 	object = models.TextField(verbose_name = 'OBJECT', help_text='object observed', blank=True, null=True)
-	obs_mode = models.TextField(verbose_name = 'OBS_MODE', help_text='sun_cen, fix_off, var_off, cme_track', blank=True, null=True)
+	obs_mode = models.TextField(verbose_name = 'OBS_MODE', help_text='sun_cen, fix_off, var_off, cme_track', blank=True, null=True, db_index=True)
 	origin = models.TextField(verbose_name = 'ORIGIN', help_text='Royal Observatory of Belgium', blank=True, null=True)
 	p2_roll = models.FloatField(verbose_name = 'P2_ROLL', help_text='s/c roll', blank=True, null=True)
 	p2_x0 = models.FloatField(verbose_name = 'P2_X0', help_text='s/c yaw', blank=True, null=True)
