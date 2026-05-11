@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
-__all__ = ['LoginView',' LogoutView',' PasswordChangeView',' PasswordChangeDoneView',' PasswordResetView',' PasswordResetDoneView',' PasswordResetConfirmView', 'PasswordResetCompleteView', 'AccountUpdateView', 'AccountDeleteView']
+__all__ = ['LoginView','LogoutView','PasswordChangeView','PasswordChangeDoneView','PasswordResetView','PasswordResetDoneView','PasswordResetConfirmView', 'PasswordResetCompleteView', 'AccountUpdateView', 'AccountDeleteView']
 
 extra_context = {
 	'site_url' : '/',
