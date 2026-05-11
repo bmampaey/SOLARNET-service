@@ -11,7 +11,7 @@ class Crisp(BaseMetadata):
 		verbose_name = 'CRISP metadata'
 		verbose_name_plural = 'CRISP metadata'
 	
-	fits_header = models.TextField(null=True, blank=True)
+	fits_header = models.TextField(verbose_name = 'FITS header', help_text='Header of the relevant HDU in the FITS file', blank=True, null=True)
 	ao_lock = models.FloatField(verbose_name = 'AO_LOCK', help_text='Fraction of time the AO was locking, 2s average', blank=True, null=True)
 	ao_nmode = models.BigIntegerField(verbose_name = 'AO_NMODE', help_text='Number of AO corrected Mirror modes', blank=True, null=True)
 	atmos_r0 = models.FloatField(verbose_name = 'ATMOS_R0', help_text='Atmospheric coherence length (mean value)', blank=True, null=True)

@@ -12,7 +12,7 @@ class LyraLevel3(BaseMetadata):
 		verbose_name = 'LYRA level 3 metadata'
 		verbose_name_plural = 'LYRA level 3 metadata'
 	
-	fits_header = models.TextField(null=True, blank=True)
+	fits_header = models.TextField(verbose_name = 'FITS header', help_text='Header of the relevant HDU in the FITS file', blank=True, null=True)
 	algor_v = models.TextField(verbose_name = 'ALGOR_V', help_text='LYRA calibration S/W version', blank=True, null=True)
 	datasrc = models.TextField(verbose_name = 'DATASRC', help_text='receiving ground station', blank=True, null=True)
 	date = models.DateTimeField(verbose_name = 'DATE', help_text='Date at which this fits file was processed', blank=True, null=True)
