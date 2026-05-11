@@ -5,6 +5,7 @@ from metadata.resources import (
 	AiaLevel15Resource,
 	ChromisResource,
 	ChrotelLevel1Resource,
+	Crisp2Resource,
 	CrispResource,
 	EitLevel0Resource,
 	EitSynopticResource,
@@ -20,6 +21,7 @@ from metadata.resources import (
 	LyraLevel2Resource,
 	LyraLevel3Resource,
 	RosaResource,
+	SpocaCoronalHoleResource,
 	SwapLevel1Resource,
 	TagResource,
 	UsetCalciumiiKLevel1Resource,
@@ -28,7 +30,6 @@ from metadata.resources import (
 	XrtResource,
 	ZimpolSpectrographGregorResource,
 	ZimpolSpectrographIrsolResource,
-	SpocaCoronalHoleResource,
 )
 
 # Register the metadata resources
@@ -39,6 +40,7 @@ svo_api.register(AiaLevel2Resource())
 svo_api.register(ChromisResource())
 svo_api.register(ChrotelLevel1Resource())
 svo_api.register(CrispResource())
+svo_api.register(Crisp2Resource())
 svo_api.register(EitLevel0Resource())
 svo_api.register(EitSynopticResource())
 svo_api.register(EuiLevel1Resource())
