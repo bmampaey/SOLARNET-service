@@ -27,7 +27,6 @@ from metadata.resources import (
 	UsetCalciumiiKLevel1Resource,
 	UsetHAlphaLevel1Resource,
 	UsetWhiteLightLevel1Resource,
-	XrtResource,
 	ZimpolSpectrographGregorResource,
 	ZimpolSpectrographIrsolResource,
 )
