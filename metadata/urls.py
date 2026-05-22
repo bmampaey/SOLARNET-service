@@ -27,6 +27,7 @@ from metadata.resources import (
 	UsetCalciumiiKLevel1Resource,
 	UsetHAlphaLevel1Resource,
 	UsetWhiteLightLevel1Resource,
+	XrtLevel1Resource,
 	ZimpolSpectrographGregorResource,
 	ZimpolSpectrographIrsolResource,
 )
@@ -54,10 +55,11 @@ svo_api.register(LarsLevel1Resource())
 svo_api.register(LyraLevel2Resource())
 svo_api.register(LyraLevel3Resource())
 svo_api.register(RosaResource())
+svo_api.register(SpocaCoronalHoleResource())
 svo_api.register(SwapLevel1Resource())
 svo_api.register(UsetCalciumiiKLevel1Resource())
 svo_api.register(UsetHAlphaLevel1Resource())
 svo_api.register(UsetWhiteLightLevel1Resource())
+svo_api.register(XrtLevel1Resource())
 svo_api.register(ZimpolSpectrographGregorResource())
 svo_api.register(ZimpolSpectrographIrsolResource())
-svo_api.register(SpocaCoronalHoleResource())
