@@ -40,7 +40,9 @@ class Command(BaseCommand):
 				metadata = json.loads(line)
 				data_location = metadata.pop('data_location')
 				metadatas[data_location['file_url']] = self.make_timezone_aware(MetaData(**metadata))
-				data_locations[data_location['file_url']] = DataLocation(dataset=self.dataset, update_time=now_utc, **data_location)
+				# Force the dataset to the one that was selected by the user
+				data_location['dataset'] = self.dataset
+				data_locations[data_location['file_url']] = DataLocation(update_time=now_utc, **data_location)
 
 				if len(data_locations) >= options['batch_size']:
 					try:
