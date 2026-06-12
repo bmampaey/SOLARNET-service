@@ -1,6 +1,6 @@
-import datetime
+import hashlib
 import logging
-from urllib.parse import unquote, urlencode
+from urllib.parse import quote, unquote, urlencode
 
 from django.core.exceptions import FieldError
 from django.forms import modelform_factory
@@ -23,24 +23,35 @@ logger = logging.getLogger(__name__)
 
 __all__ = ['BaseMetadataResource']
 
+from django.core.cache import cache
+
 
 class CachedPaginator(Paginator):
 	"""Paginator that will cache the total count for 1 day"""
 
-	cache = {}
-
-	def get_cached_count(self):
+	def get_cache_key(self):
+		"""Return a valid key for memcached"""
+		# Memcached requires keys to be encoded in ascii and to be less than 250 chars
 		query_string = urlencode(
 			{key: sorted(set(values)) for key, values in sorted(self.request_data.lists()) if key not in ('limit', 'offset')},
 			doseq=True,
 		)
-		date, count = self.cache.get((self.resource_uri, query_string), (None, None))
-		if date is None or count is None or date < datetime.date.today():
-			count = self.objects.count()
-			self.cache[(self.resource_uri, query_string)] = (datetime.date.today(), count)
-		else:
-			logger.info('used get_cached_count cache for %s, %s', self.resource_uri, query_string)
+		# To keep the key somewhat identifiable, we keep the url in plain text, but hash the parameters to avoid going over 250
+		url_hash = hashlib.md5(
+			((self.resource_uri or '') + query_string).encode('ascii', errors='ignore'), usedforsecurity=False
+		).hexdigest()
+		url_encoded = quote(self.resource_uri or '', encoding='ascii', errors='ignore')
+		return url_encoded[: 250 - len(url_hash)] + url_hash
 
+	def get_cached_count(self):
+		"""Try to return the count from the cache"""
+		cache_key = self.get_cache_key()
+		count = cache.get(cache_key)
+		if count is None:
+			count = self.objects.count()
+			cache.set(cache_key, count)
+		else:
+			logger.info('get_cached_count used cache for %s', cache_key)
 		return count
 
 	def get_count(self):

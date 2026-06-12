@@ -6,6 +6,7 @@ django-extensions==3.1.5
 django-debug-toolbar==3.5.0
 simplejson==3.17.6
 pyparsing==2.4.7
+pymemcache==4.0.0
 
 # Use our version of django-tastypie-swagger, the official one has been abandoned
 git+https://github.com/bmampaey/django-tastypie-swagger.git

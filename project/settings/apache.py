@@ -1,7 +1,7 @@
 # Production settings - when running under apache web server
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-from project.settings import * # pylint: disable=unused-wildcard-import
+from project.settings import *  # pylint: disable=unused-wildcard-import
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -23,3 +23,12 @@ LOGGING['handlers']['console']['level'] = 'WARNING'
 # Send messages level >= WARNING to console (i.e. apache log)
 # Send messages level >= ERROR by mail to the admins
 LOGGING['root']['handlers'] = ['file', 'console', 'mail_admins']
+
+# Use memecached so that all instances of the services share the same cache
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+		'LOCATION': '127.0.0.1:11211',
+		'TIMEOUT': 24 * 60 * 60,
+	}
+}
