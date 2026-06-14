@@ -1,5 +1,3 @@
-from tastypie.cache import SimpleCache
-
 from api.authentications import ApiKeyOrAnonymousAuthentication
 from api.authorizations import AlwaysReadAuthorization
 from api.serializers import Serializer
@@ -14,8 +12,6 @@ class ResourceMeta:
 	always_return_data = True
 	authentication = ApiKeyOrAnonymousAuthentication()
 	authorization = AlwaysReadAuthorization()
-	# Cache for a long time
-	cache = SimpleCache(timeout=24 * 60 * 60)
 	# Disable the hard max limit as the number of dataset resources will remain fairly small
 	max_limit = None
 	serializer = Serializer()

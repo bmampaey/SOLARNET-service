@@ -2,7 +2,6 @@ from urllib.parse import unquote
 from django.forms import modelform_factory
 from tastypie.validation import FormValidation
 from tastypie.resources import ModelResource
-from tastypie.cache import SimpleCache
 
 from api.authentications import ApiKeyOrAnonymousAuthentication
 from api.authorizations import AlwaysReadAuthorization
@@ -24,8 +23,6 @@ class TagResource(ModelResource):
 		always_return_data = True
 		authentication = ApiKeyOrAnonymousAuthentication()
 		authorization = AlwaysReadAuthorization()
-		# Cache for a long time
-		cache = SimpleCache(timeout=24 * 60 * 60)
 		filtering = {
 			'name': FILTERS.TEXT,
 			# Add a filter to allow looking up all tags referenced by the metadata of a specific dataset
