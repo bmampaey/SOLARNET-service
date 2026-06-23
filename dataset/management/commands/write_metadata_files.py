@@ -1,8 +1,9 @@
 import re
 import sys
-from django.core.management.base import BaseCommand, CommandError
-from django.template import Template, Context
+
 from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+from django.template import Context, Template
 
 from dataset.models import Dataset, KeywordType
 from project.utils import Logger

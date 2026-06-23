@@ -1,11 +1,12 @@
+from django.forms import TypedChoiceField, modelform_factory
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.validation import FormValidation
-from django.forms import modelform_factory, TypedChoiceField
 
 from api.constants import FILTERS
-from dataset.models import DataLocation
 from dataset.authorizations import DataLocationAuthorization
+from dataset.models import DataLocation
+
 from .meta import ResourceMeta
 
 __all__ = ['DataLocationResource']

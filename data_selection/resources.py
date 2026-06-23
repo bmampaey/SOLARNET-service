@@ -1,15 +1,15 @@
 from django.forms import modelform_factory
-from django.urls import reverse, NoReverseMatch
+from django.urls import NoReverseMatch, reverse
 from tastypie import fields
-from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
-from tastypie.validation import FormValidation
 from tastypie.exceptions import NotRegistered
+from tastypie.resources import ModelResource
+from tastypie.validation import FormValidation
 
 from api.constants import FILTERS
 from api.serializers import Serializer
-from data_selection.models import DataSelection
 from data_selection.authorizations import OwnerAuthorization
+from data_selection.models import DataSelection
 from metadata.utils import get_metadata_queryset
 
 __all__ = ['DataSelectionResource']

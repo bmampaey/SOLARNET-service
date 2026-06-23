@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 
-from project import admin
 from dataset.models import DataLocation, Dataset
+from project import admin
 
 
 @admin.register(DataLocation)

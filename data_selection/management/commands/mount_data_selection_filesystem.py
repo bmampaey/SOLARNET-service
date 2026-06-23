@@ -1,18 +1,18 @@
-import os
 import errno
-import stat
 import logging
-from pwd import getpwnam
+import os
+import stat
 from pathlib import PurePosixPath
-import requests
-from fusepy import FUSE, Operations, FuseOSError
-from django.core.management.base import BaseCommand, CommandError
-from django.core.exceptions import ValidationError
-from django.db.models import Q, F, Func, Value, CharField
-from django.db import connection
-from django.utils.timezone import now
-from django.conf import settings
+from pwd import getpwnam
 
+import requests
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.management.base import BaseCommand, CommandError
+from django.db import connection
+from django.db.models import CharField, F, Func, Q, Value
+from django.utils.timezone import now
+from fusepy import FUSE, FuseOSError, Operations
 
 from data_selection.models import DataSelection
 from metadata.utils import get_metadata_queryset

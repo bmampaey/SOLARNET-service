@@ -1,7 +1,8 @@
 from django.test import TestCase
 
-from dataset.tests.mixins import TestAdminMixin
 from dataset.models import Dataset
+from dataset.tests.mixins import TestAdminMixin
+
 from .utils import create_test_instrument
 
 

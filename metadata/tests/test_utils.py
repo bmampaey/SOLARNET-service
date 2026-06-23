@@ -1,9 +1,9 @@
+from django.contrib.auth.models import Group, User
+from django.db.models.query import EmptyQuerySet, QuerySet
 from django.test import TestCase
-from django.db.models.query import QuerySet, EmptyQuerySet
-from django.contrib.auth.models import User, Group
 
-from metadata.utils import get_metadata_queryset
 from dataset.tests.utils import create_test_dataset
+from metadata.utils import get_metadata_queryset
 
 
 class TestGetMetadataQueryset(TestCase):

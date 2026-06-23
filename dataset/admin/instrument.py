@@ -1,5 +1,5 @@
-from project import admin
 from dataset.models import Instrument
+from project import admin
 
 
 @admin.register(Instrument)

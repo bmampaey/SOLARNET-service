@@ -1,5 +1,5 @@
-from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
+from django.test import TestCase
 
 from dataset.tests.utils import create_test_dataset
 from metadata.tests.models import BaseMetadataTest

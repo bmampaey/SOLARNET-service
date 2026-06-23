@@ -1,9 +1,10 @@
 from urllib.parse import urlencode
+
 from django.test import TestCase
 
+from api.tests.mixins import ReadOnlyResourceTestCaseMixin
 from dataset.models import Characteristic
 from dataset.tests.utils import create_test_dataset
-from api.tests.mixins import ReadOnlyResourceTestCaseMixin
 
 
 class TestDatasetResource(ReadOnlyResourceTestCaseMixin, TestCase):

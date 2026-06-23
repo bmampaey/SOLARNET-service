@@ -1,14 +1,16 @@
 from urllib.parse import unquote
-from django.urls import reverse, NoReverseMatch
+
 from django.db import connection
 from django.db.models.constants import LOOKUP_SEP
+from django.urls import NoReverseMatch, reverse
 from tastypie import fields
-from tastypie.resources import ModelResource
 from tastypie.exceptions import NotRegistered
+from tastypie.resources import ModelResource
 
 from api.constants import FILTERS
 from dataset.models import Dataset
 from metadata.utils import get_metadata_queryset
+
 from .meta import ResourceMeta
 
 __all__ = ['DatasetResource']

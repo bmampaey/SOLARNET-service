@@ -1,14 +1,15 @@
 from io import BytesIO
 from urllib.parse import urljoin
 from zipfile import ZipFile
-from django.test import override_settings
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.contrib.auth.models import User
-from django.utils.timezone import now
-from django.conf import settings
 
-from dataset.tests.utils import create_test_dataset
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import override_settings
+from django.utils.timezone import now
+
 from data_selection.utils import DataSelectionZipIterator
+from dataset.tests.utils import create_test_dataset
 
 
 class TestDataSelectionZipIterator(StaticLiveServerTestCase):

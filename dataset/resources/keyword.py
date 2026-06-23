@@ -1,8 +1,9 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 
-from dataset.models import Keyword
 from api.constants import FILTERS
+from dataset.models import Keyword
+
 from .meta import ResourceMeta
 
 __all__ = ['KeywordResource']

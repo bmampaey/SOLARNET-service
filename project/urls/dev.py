@@ -1,5 +1,5 @@
 # URLs for dev settings
-from django.urls import path, include
+from django.urls import include, path
 
 from project.urls import urlpatterns
 

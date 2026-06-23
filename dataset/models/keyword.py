@@ -1,7 +1,7 @@
 from django.db import models
 
-from .validators import valid_keyword_name
 from .choices import KeywordType
+from .validators import valid_keyword_name
 
 __all__ = ['Keyword']
 

@@ -3,6 +3,7 @@
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 from pathlib import Path
+
 from django.core.management.utils import get_random_secret_key
 from django.utils.log import DEFAULT_LOGGING
 

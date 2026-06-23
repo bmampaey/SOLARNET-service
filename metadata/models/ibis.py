@@ -2,7 +2,6 @@ from django.db import models
 
 from .base_metadata import BaseMetadata
 
-
 __all__ = ['Ibis']
 
 

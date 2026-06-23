@@ -1,7 +1,7 @@
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
 
-from dataset.models import Dataset, Instrument, Telescope, Characteristic
+from dataset.models import Characteristic, Dataset, Instrument, Telescope
 from metadata.tests.models import BaseMetadataTest
 
 __all__ = ['create_test_dataset', 'create_test_instrument']

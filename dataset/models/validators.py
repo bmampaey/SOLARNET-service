@@ -1,7 +1,8 @@
 from keyword import iskeyword
 from pathlib import PurePosixPath, PureWindowsPath
-from django.core.exceptions import ValidationError
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 __all__ = ['valid_keyword_name', 'valid_file_path']
 

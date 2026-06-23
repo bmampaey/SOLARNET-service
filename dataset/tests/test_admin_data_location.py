@@ -1,8 +1,8 @@
-from django.test import TestCase
 from django.forms import ModelChoiceField
+from django.test import TestCase
 
-from dataset.tests.mixins import TestAdminMixin
 from dataset.models import DataLocation
+from dataset.tests.mixins import TestAdminMixin
 
 
 class TestDataLocationAdmin(TestAdminMixin, TestCase):

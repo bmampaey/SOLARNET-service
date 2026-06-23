@@ -1,7 +1,7 @@
-from django.test import SimpleTestCase
 from django.core.exceptions import ValidationError
+from django.test import SimpleTestCase
 
-from dataset.models.validators import valid_keyword_name, valid_file_path
+from dataset.models.validators import valid_file_path, valid_keyword_name
 
 
 class TestValidKeywordName(SimpleTestCase):

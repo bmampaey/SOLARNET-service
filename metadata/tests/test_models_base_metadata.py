@@ -1,7 +1,7 @@
 from django.test import TransactionTestCase
 
-from metadata.models import Tag
 from dataset.tests.utils import create_test_dataset
+from metadata.models import Tag
 
 
 # Use a TransactionTestCase instead of a TestCase to allow vacuuming the table between tests

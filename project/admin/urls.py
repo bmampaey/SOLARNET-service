@@ -1,11 +1,12 @@
 # URLs for allowing to reset one's password on the admin login page
-from django.urls import path
 from django.contrib.auth.views import (
-	PasswordResetView,
-	PasswordResetDoneView,
-	PasswordResetConfirmView,
 	PasswordResetCompleteView,
+	PasswordResetConfirmView,
+	PasswordResetDoneView,
+	PasswordResetView,
 )
+from django.urls import path
+
 from .site import site
 
 # Do not specify an app_name, the admin login view does not support it

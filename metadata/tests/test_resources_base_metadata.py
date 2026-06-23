@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
-from django.test import TestCase
+
 from django.contrib.auth.models import Permission
+from django.test import TestCase
 
 from api.constants import FILTERS
 from api.tests.mixins import ResourceTestCaseMixin
-from metadata.models import Tag
 from dataset.tests.utils import create_test_dataset
+from metadata.models import Tag
 
 
 class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):

@@ -1,5 +1,7 @@
-from datetime import datetime, time, date, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
+
 from django.test import SimpleTestCase
+
 from api.serializers import Serializer
 
 

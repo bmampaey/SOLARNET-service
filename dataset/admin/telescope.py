@@ -1,5 +1,5 @@
-from project import admin
 from dataset.models import Telescope
+from project import admin
 
 
 @admin.register(Telescope)

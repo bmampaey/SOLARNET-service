@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import include, path
 
 # WARNING for some reason auth urls must come before site urls
 urlpatterns = [

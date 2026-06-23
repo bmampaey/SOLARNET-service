@@ -3,7 +3,6 @@ from tastypie.exceptions import NotRegistered
 
 from api import svo_api
 
-
 __all__ = ['get_metadata_queryset']
 
 

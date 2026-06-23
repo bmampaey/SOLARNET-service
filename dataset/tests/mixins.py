@@ -1,7 +1,6 @@
-from django.contrib.auth.models import User, Group, Permission
-from django.urls import reverse
+from django.contrib.auth.models import Group, Permission, User
 from django.forms.models import model_to_dict
-
+from django.urls import reverse
 
 from .utils import create_test_dataset
 

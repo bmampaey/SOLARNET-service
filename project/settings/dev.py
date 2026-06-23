@@ -1,6 +1,7 @@
 # Development settings - when running under django development web server
 
 import os
+
 from project.settings import *  # pylint: disable=unused-wildcard-import
 
 # Allow debugging

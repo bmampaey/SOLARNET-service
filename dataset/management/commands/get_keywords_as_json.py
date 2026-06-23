@@ -1,10 +1,11 @@
 import json
-from django.core.management.base import BaseCommand, CommandError
+
 from django.core.exceptions import ValidationError
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from project.utils import Logger
 from dataset.models import Dataset, Keyword
+from project.utils import Logger
 
 
 class Command(BaseCommand):

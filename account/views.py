@@ -1,7 +1,7 @@
-from django.views.generic import UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.views.generic import DeleteView, UpdateView
 
 __all__ = [
 	'LoginView',

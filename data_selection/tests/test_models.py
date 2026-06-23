@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
-from django.test import TestCase
+
 from django.contrib.auth.models import User
+from django.test import TestCase
 
 from dataset.tests.utils import create_test_dataset
 

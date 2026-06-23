@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from dataset.tests.mixins import TestAdminMixin
 from dataset.models import Keyword, KeywordType
+from dataset.tests.mixins import TestAdminMixin
 
 
 class TestKeywordAdmin(TestAdminMixin, TestCase):

@@ -1,9 +1,11 @@
 from urllib.parse import unquote
+
 from tastypie import fields
 from tastypie.resources import ModelResource
 
-from dataset.models import Telescope
 from api.constants import FILTERS
+from dataset.models import Telescope
+
 from .meta import ResourceMeta
 
 __all__ = ['TelescopeResource']

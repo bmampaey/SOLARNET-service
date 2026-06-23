@@ -2,14 +2,14 @@ from django.urls import path
 
 from api import svo_api
 from dataset.resources import (
-	DatasetResource,
 	CharacteristicResource,
-	TelescopeResource,
+	DataLocationResource,
+	DatasetResource,
 	InstrumentResource,
 	KeywordResource,
-	DataLocationResource,
+	TelescopeResource,
 )
-from dataset.views import DataView, ThumbnailView, Image2ThumbnailView, Fits2ThumbnailView
+from dataset.views import DataView, Fits2ThumbnailView, Image2ThumbnailView, ThumbnailView
 
 # Register the dataset resources
 svo_api.register(DatasetResource())

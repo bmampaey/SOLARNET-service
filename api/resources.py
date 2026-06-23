@@ -1,12 +1,11 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
-from django.urls import re_path
 from django.db import IntegrityError
-
-from tastypie.resources import Resource
-from tastypie.http import HttpBadRequest, HttpCreated, HttpNoContent
+from django.urls import re_path
 from tastypie.authentication import BasicAuthentication
+from tastypie.http import HttpBadRequest, HttpCreated, HttpNoContent
+from tastypie.resources import Resource
 
 from .serializers import Serializer
 

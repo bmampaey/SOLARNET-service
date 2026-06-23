@@ -1,6 +1,7 @@
-from django.urls import re_path, include
+from django.urls import include, re_path
 
 from api import svo_api
+
 from .resources import BaseMetadataTestResource
 
 # Register the metadata tests resources

@@ -1,10 +1,11 @@
 from base64 import b64encode
-from django.utils.encoding import force_str
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Model
+from django.utils.encoding import force_str
+from tastypie.authentication import ApiKeyAuthentication, BasicAuthentication
 from tastypie.test import TestApiClient
-from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
 
 from api import svo_api
 from api.serializers import Serializer

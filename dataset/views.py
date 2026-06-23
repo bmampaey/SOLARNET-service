@@ -1,12 +1,11 @@
-from django.views.generic import RedirectView, View
+import numpy
+import requests
+from astropy.io import fits
 from django.core.files.base import ContentFile
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.views.generic import RedirectView, View
 from PIL import Image
-from astropy.io import fits
-import requests
-import numpy
-
 
 from dataset.models import Dataset
 

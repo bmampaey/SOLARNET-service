@@ -1,10 +1,9 @@
-from django.urls import path, include
-
-from api import svo_api
-from api.resources import UserResource
+from django.urls import include, path
 
 # Import metadata.urls to register the metadata resources before importing svo_api
 import metadata.urls  # pylint: disable=unused-import
+from api import svo_api
+from api.resources import UserResource
 
 # Register the user resource
 svo_api.register(UserResource())

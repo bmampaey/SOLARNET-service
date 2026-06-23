@@ -1,9 +1,11 @@
 from urllib.parse import unquote
+
 from tastypie import fields
 from tastypie.resources import ModelResource
 
-from dataset.models import Characteristic
 from api.constants import FILTERS
+from dataset.models import Characteristic
+
 from .meta import ResourceMeta
 
 __all__ = ['CharacteristicResource']

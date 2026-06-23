@@ -1,19 +1,20 @@
 from functools import reduce
+
+from django.db.models import Q
 from pyparsing import (
-	infixNotation,
-	opAssoc,
-	Suppress,
 	CharsNotIn,
-	Word,
-	alphas,
-	alphanums,
-	quotedString,
-	removeQuotes,
-	ZeroOrMore,
 	Empty,
 	ParseException,
+	Suppress,
+	Word,
+	ZeroOrMore,
+	alphanums,
+	alphas,
+	infixNotation,
+	opAssoc,
+	quotedString,
+	removeQuotes,
 )
-from django.db.models import Q
 from tastypie.exceptions import InvalidFilterError
 from tastypie.utils import string_to_python
 

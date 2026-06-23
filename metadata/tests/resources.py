@@ -1,4 +1,5 @@
 from metadata.resources.base_metadata import BaseMetadataResource
+
 from .models import BaseMetadataTest
 
 __all__ = ['BaseMetadataTestResource']

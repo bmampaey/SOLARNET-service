@@ -1,9 +1,10 @@
 from io import BytesIO
 from urllib.parse import urljoin
 from zipfile import is_zipfile
-from django.urls import reverse
+
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.urls import reverse
 
 from dataset.tests.utils import create_test_dataset
 

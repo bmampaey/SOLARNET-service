@@ -1,7 +1,7 @@
 # URLs for test settings
 
-from django.urls import path, include
 from django.contrib.staticfiles import views
+from django.urls import include, path
 
 from project.urls import urlpatterns
 

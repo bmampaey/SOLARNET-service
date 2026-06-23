@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from dataset.tests.utils import create_test_dataset
 from api.tests.mixins import ReadOnlyResourceTestCaseMixin
+from dataset.tests.utils import create_test_dataset
 
 
 class TestCharacteristicResource(ReadOnlyResourceTestCaseMixin, TestCase):

@@ -1,9 +1,9 @@
 from zipfile import ZipFile
+
 import requests
 from django.conf import settings
 
 from metadata.utils import get_metadata_queryset
-
 
 __all__ = ['DataSelectionZipIterator']
 

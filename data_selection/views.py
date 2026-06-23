@@ -1,6 +1,7 @@
 from urllib.parse import quote
-from django.views.generic.detail import SingleObjectMixin, View
+
 from django.http import StreamingHttpResponse
+from django.views.generic.detail import SingleObjectMixin, View
 
 from data_selection.models import DataSelection
 from data_selection.utils import DataSelectionZipIterator

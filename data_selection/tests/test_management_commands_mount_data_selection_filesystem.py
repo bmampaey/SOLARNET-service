@@ -1,16 +1,17 @@
-import os
 import errno
+import os
 import stat
 import subprocess
-from pwd import getpwuid
-from uuid import uuid4
 from pathlib import Path
-from tempfile import TemporaryDirectory, NamedTemporaryFile
+from pwd import getpwuid
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 from urllib.parse import urljoin
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.contrib.auth.models import User
+from uuid import uuid4
+
 from django.conf import settings
-from django.db.models import F, Func, Value, CharField
+from django.contrib.auth.models import User
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.db.models import CharField, F, Func, Value
 
 from data_selection.management.commands.mount_data_selection_filesystem import DataSelectionFilesystemOperations
 from dataset.tests.utils import create_test_dataset

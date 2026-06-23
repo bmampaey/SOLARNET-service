@@ -1,5 +1,5 @@
-from project import admin
 from data_selection.models import DataSelection
+from project import admin
 
 
 @admin.register(DataSelection)

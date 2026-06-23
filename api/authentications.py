@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 from django.db.models import signals
 from tastypie.authentication import ApiKeyAuthentication
-from tastypie.models import create_api_key
 from tastypie.http import HttpUnauthorized
+from tastypie.models import create_api_key
 
 __all__ = ['ApiKeyOrAnonymousAuthentication']
 

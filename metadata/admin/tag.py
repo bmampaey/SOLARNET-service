@@ -1,5 +1,5 @@
-from project import admin
 from metadata.models import Tag
+from project import admin
 
 
 @admin.register(Tag)

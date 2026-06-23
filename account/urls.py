@@ -1,15 +1,16 @@
 from django.urls import path
+
 from account.views import (
+	AccountDeleteView,
+	AccountUpdateView,
 	LoginView,
 	LogoutView,
-	PasswordChangeView,
 	PasswordChangeDoneView,
-	PasswordResetView,
-	PasswordResetDoneView,
-	PasswordResetConfirmView,
+	PasswordChangeView,
 	PasswordResetCompleteView,
-	AccountUpdateView,
-	AccountDeleteView,
+	PasswordResetConfirmView,
+	PasswordResetDoneView,
+	PasswordResetView,
 )
 
 # Dictionary of variables to put in the template context for *every* page in the account app

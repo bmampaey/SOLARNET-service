@@ -1,5 +1,5 @@
-from django.test import SimpleTestCase
 from django.db.models import Q
+from django.test import SimpleTestCase
 from tastypie.exceptions import InvalidFilterError
 
 from api.complex_filters import get_complex_filter

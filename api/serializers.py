@@ -1,6 +1,6 @@
-from tastypie.serializers import Serializer as BaseSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from simplejson import dumps
+from tastypie.serializers import Serializer as BaseSerializer
 
 __all__ = ['Serializer']
 

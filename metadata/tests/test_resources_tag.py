@@ -1,9 +1,9 @@
-from django.test import TestCase
 from django.contrib.auth.models import Permission
+from django.test import TestCase
 
-from metadata.models import Tag
 from api.tests.mixins import ReadOnlyResourceTestCaseMixin
 from dataset.tests.utils import create_test_dataset
+from metadata.models import Tag
 
 
 # The TagResource is mainly readonly, the POST method is allowed, but not the PUT/PATCH/DELETE methods

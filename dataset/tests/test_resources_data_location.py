@@ -1,8 +1,8 @@
-from django.test import TestCase
 from django.contrib.auth.models import Permission
+from django.test import TestCase
 
-from dataset.tests.utils import create_test_dataset
 from api.tests.mixins import ResourceTestCaseMixin
+from dataset.tests.utils import create_test_dataset
 
 
 class TestDataLocationResource(ResourceTestCaseMixin, TestCase):

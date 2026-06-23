@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
-from project import admin
 from dataset.models import Dataset
+from project import admin
 
 
 @admin.register(Dataset)
