@@ -45,7 +45,7 @@ class TestDataSelectionResource(ResourceTestCaseMixin, TestCase):
 
 		msg = 'When authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of data selection owned by the user'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, description=[self.test_data_selection.description], msg=msg)
 
 	def test_post_list(self):
@@ -82,7 +82,7 @@ class TestDataSelectionResource(ResourceTestCaseMixin, TestCase):
 		response = self.api_client.get(
 			self.get_resource_uri(self.test_data_selection), format='json', authentication=self.test_user_authentication
 		)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(
 			response,
 			['dataset', 'query_string', 'description', 'creation_time', 'zip_download_url', 'ftp_download_url', 'metadata'],

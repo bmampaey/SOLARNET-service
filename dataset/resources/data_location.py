@@ -3,10 +3,11 @@ from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.validation import FormValidation
 
-from api.constants import FILTERS
+from api.filters import FILTERS, get_relational_filters
 from dataset.authorizations import DataLocationAuthorization
 from dataset.models import DataLocation
 
+from .dataset import DatasetResource
 from .meta import ResourceMeta
 
 __all__ = ['DataLocationResource']
@@ -21,7 +22,7 @@ class DataLocationResource(ModelResource):
 		queryset = DataLocation.objects.all()
 		resource_name = 'data_location'
 		filtering = {
-			'dataset': FILTERS.RELATIONAL,
+			'dataset': get_relational_filters(DatasetResource),
 			'file_url': FILTERS.TEXT,
 			'file_size': FILTERS.NUMERIC,
 			'file_path': FILTERS.TEXT,

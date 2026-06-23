@@ -164,7 +164,7 @@ LOGGING['formatters']['console'] = {
 # And add an additional log file for INFO level messages
 LOGGING['handlers']['file'] = {
 	'class': 'logging.handlers.WatchedFileHandler',
-	'filename': '/var/log/solarnet_service/django.log',
+	'filename': '/tmp/django.log',
 	'level': 'INFO',
 	'formatter': 'file',
 }
@@ -190,7 +190,7 @@ LOGGING['formatters']['requests'] = {
 
 LOGGING['handlers']['requests'] = {
 	'class': 'logging.handlers.WatchedFileHandler',
-	'filename': '/var/log/solarnet_service/requests.log',
+	'filename': '/tmp/requests.log',
 	'level': 'INFO',
 	'formatter': 'requests',
 }

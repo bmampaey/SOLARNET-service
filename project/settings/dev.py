@@ -58,10 +58,6 @@ LOGGING['formatters']['console'] = {
 # Send messages level >= INFO to console
 LOGGING['root']['handlers'] = ['console']
 
-# Change the log file
-LOGGING['handlers']['file']['filename'] = '/tmp/solarnet_service_django.log'
-LOGGING['handlers']['requests']['filename'] = '/tmp/solarnet_service_requests.log'
-
 
 # LOG SQL queries if environment variable LOG_QUERIES is set
 if os.environ.get('LOG_QUERIES', '0') != '0':

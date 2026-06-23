@@ -24,6 +24,10 @@ LOGGING['handlers']['console']['level'] = 'WARNING'
 # Send messages level >= ERROR by mail to the admins
 LOGGING['root']['handlers'] = ['file', 'console', 'mail_admins']
 
+# Set the log file when running on the server
+LOGGING['handlers']['file']['filename'] = '/var/log/solarnet_service/django.log'
+LOGGING['handlers']['requests']['filename'] = '/var/log/solarnet_service/requests.log'
+
 # Use memecached so that all instances of the services share the same cache
 CACHES = {
 	'default': {

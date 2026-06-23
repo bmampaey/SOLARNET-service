@@ -1,8 +1,8 @@
 #!/bin/bash
 
 BASE_DIR=$(dirname $(dirname $(realpath "$0")))
-
-KEEPDB='--keepdb'
+TEST_REPORT_DIR="$BASE_DIR/test_reports"
+KEEPDB="--keepdb"
 TESTS=()
 
 for i in "$@"; do
@@ -16,15 +16,17 @@ for i in "$@"; do
 	esac
 done
 
+# Create ethe directory where the test reports will be written
+mkdir-p "$TEST_REPORT_DIR"
 
 # Display the deprecation warnings
 export PYTHONWARNINGS=once
 
 # Set the coverage config file
-export COVERAGE_RCFILE="$BASE_DIR"/.coveragerc
+export COVERAGE_RCFILE="$BASE_DIR/.coveragerc"
 
 # Launch coverage (see project.settings.test)
-export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
+export COVERAGE_PROCESS_START="$COVERAGE_RCFILE"
 
 # Clean previous coverage run
 coverage erase
@@ -32,7 +34,9 @@ coverage erase
 # Run the tests with the test settings
 "$BASE_DIR"/manage.py test --settings project.settings.test -v 2 $KEEPDB "${TESTS[@]}"
 
+# Generate the reports
 coverage combine
+coverage html -d "$TEST_REPORT_DIR/.coverage_html"
 
-coverage html -d coverage_html_report
-echo 'To see the coverage report, execute "firefox coverage_html_report/index.html"'
+ln -f -s .coverage_html/index.html "$TEST_REPORT_DIR/code_coverage.html"
+echo 'To see the test reports, execute "firefox test_reports/code_test.html test_reports/code_coverage.html"'

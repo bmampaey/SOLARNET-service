@@ -5,13 +5,16 @@ parallel = True
 # Regexes for files to exclude from consideration
 omit =
 	# Omit the project settings
-	# project/*
+	project/*
 	# Omit manage.py
-	# manage.py
+	manage.py
 	# Omit the migrations
-	# */migrations/*
+	*/migrations/*
 	# Omit __init__.py
-	# **/__init__.py
+	**/__init__.py
+	# Omit the test themselves
+	*/tests/*
+	**/tests.py
 
 [report]
 # Regexes for lines to exclude from consideration

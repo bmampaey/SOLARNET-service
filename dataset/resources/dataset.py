@@ -7,11 +7,14 @@ from tastypie import fields
 from tastypie.exceptions import NotRegistered
 from tastypie.resources import ModelResource
 
-from api.constants import FILTERS
+from api.filters import FILTERS, get_relational_filters
 from dataset.models import Dataset
 from metadata.utils import get_metadata_queryset
 
+from .characteristic import CharacteristicResource
+from .instrument import InstrumentResource
 from .meta import ResourceMeta
+from .telescope import TelescopeResource
 
 __all__ = ['DatasetResource']
 
@@ -39,9 +42,9 @@ class DatasetResource(ModelResource):
 			'name': FILTERS.TEXT,
 			'description': FILTERS.TEXT,
 			'doi_url': FILTERS.TEXT,
-			'telescope': FILTERS.RELATIONAL,
-			'instrument': FILTERS.RELATIONAL,
-			'characteristics': FILTERS.RELATIONAL,
+			'telescope': get_relational_filters(TelescopeResource),
+			'instrument': get_relational_filters(InstrumentResource),
+			'characteristics': get_relational_filters(CharacteristicResource),
 		}
 		ordering = ['name', 'description', 'doi_url', 'telescope', 'instrument', 'characteristics']
 

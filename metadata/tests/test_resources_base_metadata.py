@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 
-from api.constants import FILTERS
+from api.filters import FILTERS
 from api.tests.mixins import ResourceTestCaseMixin
 from dataset.tests.utils import create_test_dataset
 from metadata.models import Tag
@@ -63,7 +63,7 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 		self.assertDictEqual(
 			self.resource._meta.filtering,
 			{
-				'tags': FILTERS.RELATIONAL,
+				'tags': ['name', 'name__in', 'dataset', 'dataset__in'],
 				'search': FILTERS.COMPLEX_SEARCH_EXPRESSION,
 				'oid': FILTERS.TEXT,
 				'date_beg': FILTERS.DATETIME,
@@ -79,12 +79,12 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of metadata'
 		response = self.api_client.get(self.get_resource_uri(), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, oid=[self.test_metadata1.oid, self.test_metadata2.oid], msg=msg)
 
 		msg = 'When authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of metadata'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, oid=[self.test_metadata1.oid, self.test_metadata2.oid], msg=msg)
 
 	def test_get_list_filtered(self):
@@ -252,7 +252,7 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_metadata1), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(
 			response, ['oid', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg
 		)
@@ -261,7 +261,7 @@ class TestBaseMetadataResource(ResourceTestCaseMixin, TestCase):
 		response = self.api_client.get(
 			self.get_resource_uri(self.test_metadata1), format='json', authentication=self.test_user_authentication
 		)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(
 			response, ['oid', 'data_location', 'tags', 'date_beg', 'date_end', 'wavemin', 'wavemax'], msg=msg
 		)

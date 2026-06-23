@@ -13,7 +13,7 @@ from tastypie.validation import FormValidation
 from api.authentications import ApiKeyOrAnonymousAuthentication
 from api.authorizations import AlwaysReadAuthorization
 from api.complex_filters import get_complex_filter
-from api.constants import FIELD_FILTERS, FILTERS
+from api.filters import FIELD_FILTERS, FILTERS, get_relational_filters
 from api.serializers import Serializer
 from dataset.resources import DataLocationResource
 
@@ -80,7 +80,7 @@ class BaseMetadataResource(ModelResource):
 		detail_uri_name = 'oid'
 		excludes = ['id']
 		filtering = {
-			'tags': FILTERS.RELATIONAL,
+			'tags': get_relational_filters(TagResource),
 			# Allow metadata filtering using a complex search expression
 			# see buid_filters below for implementation
 			'search': FILTERS.COMPLEX_SEARCH_EXPRESSION,

@@ -38,12 +38,12 @@ class TestDataLocationResource(ResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of data locations'
 		response = self.api_client.get(self.get_resource_uri(), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, file_url=[self.test_data_location.file_url], msg=msg)
 
 		msg = 'When authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of data locations'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, file_url=[self.test_data_location.file_url], msg=msg)
 
 	def test_post_list(self):
@@ -85,7 +85,7 @@ class TestDataLocationResource(ResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_data_location), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(
 			response, ['dataset', 'file_url', 'file_size', 'file_path', 'thumbnail_url', 'update_time', 'offline'], msg=msg
 		)
@@ -94,7 +94,7 @@ class TestDataLocationResource(ResourceTestCaseMixin, TestCase):
 		response = self.api_client.get(
 			self.get_resource_uri(self.test_data_location), format='json', authentication=self.test_user_authentication
 		)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(
 			response, ['dataset', 'file_url', 'file_size', 'file_path', 'thumbnail_url', 'update_time', 'offline'], msg=msg
 		)

@@ -30,7 +30,7 @@ class TestUserResource(SvoApiTestCaseMixin, TransactionTestCase):
 
 		msg = 'When the user exists, and correct authentication is provided, a GET on the list URL must return a valid JSON response with the name and api_key'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertDictEqual(
 			self.deserialize(response),
 			{
@@ -95,7 +95,7 @@ class TestUserResource(SvoApiTestCaseMixin, TransactionTestCase):
 			self.get_resource_uri(), data=data, format='json', authentication=self.test_user_authentication
 		)
 		self.test_user.refresh_from_db()
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertDictEqual(
 			self.deserialize(response),
 			{
@@ -146,7 +146,7 @@ class TestUserResource(SvoApiTestCaseMixin, TransactionTestCase):
 
 		msg = 'A GET on the schema URL must return a valid JSON response with the allowed_list_http_methods'
 		response = self.api_client.get(self.resource.get_resource_uri(url_name='api_get_schema'), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetDetailResponseContains(response, allowed_list_http_methods=['post', 'get', 'patch', 'delete'], msg=msg)
 
 	def test_detail_view(self):

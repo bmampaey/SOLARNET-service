@@ -32,14 +32,14 @@ class TestTagResource(ReadOnlyResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of tags'
 		response = self.api_client.get(self.get_resource_uri(), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(
 			response, name=[self.test_tag1.name, self.test_tag2.name, self.test_tag3.name], msg=msg
 		)
 
 		msg = 'When authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of tags'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(
 			response, name=[self.test_tag1.name, self.test_tag2.name, self.test_tag3.name], msg=msg
 		)
@@ -105,14 +105,14 @@ class TestTagResource(ReadOnlyResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_tag1), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(response, ['name'], msg=msg)
 
 		msg = 'When authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(
 			self.get_resource_uri(self.test_tag1), format='json', authentication=self.test_user_authentication
 		)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(response, ['name'], msg=msg)
 
 	def test_validation_errors(self):
@@ -128,3 +128,16 @@ class TestTagResource(ReadOnlyResourceTestCaseMixin, TestCase):
 		)
 		self.assertHttpBadRequest(response, msg=msg)
 		self.assertIn('name', response.content.decode(response.charset), msg=msg)
+
+	def check_schema_allowed_methods(self, data):
+		# Tag can be created by data providers, but not modified or deleted (they can always remove the tag from their metadata)
+		self.assertCountEqual(
+			data.get('allowed_list_http_methods'),
+			['post', 'get'],
+			msg='The schema data must contain the allowed_list_http_methods to allow to create/read ressources',
+		)
+		self.assertCountEqual(
+			data.get('allowed_detail_http_methods'),
+			['get'],
+			msg='The schema data must contain the allowed_detail_http_methods to ONLY allow to read the ressource',
+		)

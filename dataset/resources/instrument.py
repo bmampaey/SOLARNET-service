@@ -3,10 +3,11 @@ from urllib.parse import unquote
 from tastypie import fields
 from tastypie.resources import ModelResource
 
-from api.constants import FILTERS
+from api.filters import FILTERS, get_relational_filters
 from dataset.models import Instrument
 
 from .meta import ResourceMeta
+from .telescope import TelescopeResource
 
 __all__ = ['InstrumentResource']
 
@@ -19,7 +20,11 @@ class InstrumentResource(ModelResource):
 	class Meta(ResourceMeta):
 		queryset = Instrument.objects.all()
 		resource_name = 'instrument'
-		filtering = {'name': FILTERS.TEXT, 'description': FILTERS.TEXT, 'telescope': FILTERS.RELATIONAL}
+		filtering = {
+			'name': FILTERS.TEXT,
+			'description': FILTERS.TEXT,
+			'telescope': get_relational_filters(TelescopeResource),
+		}
 		ordering = ['name', 'description', 'telescope']
 
 	def get_via_uri(self, uri, request=None):

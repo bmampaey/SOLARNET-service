@@ -131,5 +131,5 @@ dmypy.json
 # Project specific settings
 secret_key.txt
 /static
-coverage_html_report/
 .coverage
+/test_reports

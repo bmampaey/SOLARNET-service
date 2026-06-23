@@ -21,12 +21,12 @@ class TestKeywordResource(ReadOnlyResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of keywords'
 		response = self.api_client.get(self.get_resource_uri(), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, name=[self.test_keyword.name], msg=msg)
 
 		msg = 'When authentication is provided, a GET on the list URL must return a valid JSON response with the complete list of keywords'
 		response = self.api_client.get(self.get_resource_uri(), format='json', authentication=self.test_user_authentication)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertGetListResponseContains(response, name=[self.test_keyword.name], msg=msg)
 
 	def test_get_detail(self):
@@ -34,12 +34,12 @@ class TestKeywordResource(ReadOnlyResourceTestCaseMixin, TestCase):
 
 		msg = 'When no authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_keyword), format='json')
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(response, ['dataset', 'name', 'verbose_name', 'type', 'unit', 'description'], msg=msg)
 
 		msg = 'When authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(
 			self.get_resource_uri(self.test_keyword), format='json', authentication=self.test_user_authentication
 		)
-		self.assertValidJSONResponse(response, msg=msg)
+		self.assertValidJsonResponse(response, msg=msg)
 		self.assertResponseHasKeys(response, ['dataset', 'name', 'verbose_name', 'type', 'unit', 'description'], msg=msg)

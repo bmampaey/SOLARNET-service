@@ -23,6 +23,13 @@ class TestSerializer(Serializer):
 		else:
 			return super().to_simple(data, options)
 
+	def from_etree(self, data):
+		# Tastypie serializer does not handle xml response
+		if data.tag == 'response':
+			return {element.tag: self.from_etree(element) for element in data.getchildren()}
+		else:
+			return super().from_etree(data)
+
 
 # A copy of the tastypie ResourceTestCaseMixin but with some errors fixed
 class SvoApiTestCaseMixin:
@@ -119,7 +126,7 @@ class SvoApiTestCaseMixin:
 		"""Ensures the response has an HTTP status code of 500"""
 		return self.assertEqual(resp.status_code, 500, msg=msg)
 
-	def assertValidJSON(self, data, msg=None):
+	def assertValidJson(self, data, msg=None):
 		"""Ensures that the data is a valid JSON string"""
 		# Just try the load, if it fails it will throw an exception
 		try:
@@ -128,7 +135,7 @@ class SvoApiTestCaseMixin:
 			msg = self._formatMessage(msg, '%s is not valid JSON (%s)' % (data, why))
 			raise self.failureException(msg)
 
-	def assertValidJSONResponse(self, response, msg=None):
+	def assertValidJsonResponse(self, response, msg=None):
 		"""Ensures that the HttpResponse:
 		* has an HTTP status code of 200
 		* has a correct "Content-Type" header (i.e. "application/json")
@@ -136,7 +143,26 @@ class SvoApiTestCaseMixin:
 		"""
 		self.assertHttpOK(response, msg=msg)
 		self.assertTrue(response['Content-Type'].startswith('application/json'), msg=msg)
-		self.assertValidJSON(force_str(response.content), msg=msg)
+		self.assertValidJson(force_str(response.content), msg=msg)
+
+	def assertValidXml(self, data, msg=None):
+		"""Ensures that the data is a valid XML string"""
+		# Just try the load, if it fails it will throw an exception
+		try:
+			self.serializer.from_xml(data)
+		except Exception as why:
+			msg = self._formatMessage(msg, '%s is not valid XML (%s)' % (data, why))
+			raise self.failureException(msg)
+
+	def assertValidXmlResponse(self, response, msg=None):
+		"""Ensures that the HttpResponse:
+		* has an HTTP status code of 200
+		* has a correct "Content-Type" header (i.e. "application/xml")
+		* has a content that is valid XML string
+		"""
+		self.assertHttpOK(response, msg=msg)
+		self.assertTrue(response['Content-Type'].startswith('application/xml'), msg=msg)
+		self.assertValidXml(force_str(response.content), msg=msg)
 
 	def assertResponseHasKeys(self, response, expected_keys, msg=None):
 		"""Ensures that the data in a response has the expected keys"""
@@ -271,6 +297,51 @@ class ResourceTestCaseMixin(SvoApiTestCaseMixin):
 
 		self.fail('No test defined for a DELETE on the detail URL')
 
+	def test_get_schema_json(self):
+		"""Test a GET on the schema URL requesting json format"""
+
+		msg = 'A GET on the schema URL must return a valid JSON response'
+		response = self.api_client.get(self.resource.get_resource_uri(url_name='api_get_schema'), format='json')
+		self.assertValidJsonResponse(response, msg=msg)
+
+		response_data = self.deserialize(response)
+		self.check_schema_allowed_methods(response_data)
+		self.check_schema_filtering(response_data)
+
+	def test_get_schema_xml(self):
+		"""Test a GET on the schema URL requesting xml format"""
+
+		msg = 'A GET on the schema URL must return a valid XML response'
+		response = self.api_client.get(self.resource.get_resource_uri(url_name='api_get_schema'), format='xml')
+		self.assertValidXmlResponse(response, msg=msg)
+
+		response_data = self.deserialize(response)
+		self.check_schema_allowed_methods(response_data)
+		self.check_schema_filtering(response_data)
+
+	def check_schema_allowed_methods(self, data):
+		self.assertCountEqual(
+			data.get('allowed_list_http_methods'),
+			['post', 'get'],
+			msg='The schema data must contain the allowed_list_http_methods to allow to create/read ressources',
+		)
+		self.assertCountEqual(
+			data.get('allowed_detail_http_methods'),
+			['get', 'patch', 'delete'],
+			msg='The schema data must contain the allowed_detail_http_methods to allow to read/update/delete the ressource',
+		)
+
+	def check_schema_filtering(self, data):
+		self.assertCountEqual(
+			data.get('filtering'),
+			self.resource._meta.filtering,
+			msg='The schema data must contain the filtering as defined in the resource Meta class',
+		)
+
+		for key, value in data['filtering'].items():
+			with self.subTest(key=key):
+				self.assertIsInstance(value, list, msg=f'Filtering for field {key} must be a list')
+
 
 class ReadOnlyResourceTestCaseMixin(ResourceTestCaseMixin):
 	"""Test that the HTTP methods POST/PUT/PATCH/DELETE are not allowed on the resource list nor detail URL"""
@@ -306,3 +377,15 @@ class ReadOnlyResourceTestCaseMixin(ResourceTestCaseMixin):
 			self.get_resource_uri(self.get_test_instance()), format='json', authentication=self.test_user_authentication
 		)
 		self.assertHttpMethodNotAllowed(response, msg=msg)
+
+	def check_schema_allowed_methods(self, data):
+		self.assertCountEqual(
+			data.get('allowed_list_http_methods'),
+			['get'],
+			msg='The schema data must contain the allowed_list_http_methods to ONLY allow to read ressources',
+		)
+		self.assertCountEqual(
+			data.get('allowed_detail_http_methods'),
+			['get'],
+			msg='The schema data must contain the allowed_detail_http_methods to ONLY allow to read the ressource',
+		)

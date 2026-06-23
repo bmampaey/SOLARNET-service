@@ -6,7 +6,7 @@ from tastypie.validation import FormValidation
 
 from api.authentications import ApiKeyOrAnonymousAuthentication
 from api.authorizations import AlwaysReadAuthorization
-from api.constants import FILTERS
+from api.filters import FILTERS
 from api.serializers import Serializer
 from dataset.models import Dataset
 from metadata.models import Tag
@@ -29,7 +29,7 @@ class TagResource(ModelResource):
 			'name': FILTERS.TEXT,
 			# Add a filter to allow looking up all tags referenced by the metadata of a specific dataset
 			# see buid_filters below for implementation
-			'dataset': 'exact',
+			'dataset': ['exact'],
 		}
 		ordering = ['name']
 		# Disable the hard and soft limit as the number of tags will remain fairly small

@@ -3,7 +3,7 @@ from urllib.parse import unquote
 from tastypie import fields
 from tastypie.resources import ModelResource
 
-from api.constants import FILTERS
+from api.filters import FILTERS
 from dataset.models import Characteristic
 
 from .meta import ResourceMeta
@@ -31,7 +31,6 @@ class CharacteristicResource(ModelResource):
 		resource_name = 'characteristic'
 		filtering = {
 			'name': FILTERS.TEXT,
-			'datasets': FILTERS.RELATIONAL,
 		}
 		ordering = ['name']
 

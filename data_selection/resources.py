@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.forms import modelform_factory
 from django.urls import NoReverseMatch, reverse
 from tastypie import fields
@@ -6,10 +7,11 @@ from tastypie.exceptions import NotRegistered
 from tastypie.resources import ModelResource
 from tastypie.validation import FormValidation
 
-from api.constants import FILTERS
+from api.filters import FILTERS, get_relational_filters
 from api.serializers import Serializer
 from data_selection.authorizations import OwnerAuthorization
 from data_selection.models import DataSelection
+from dataset.resources import DatasetResource
 from metadata.utils import get_metadata_queryset
 
 __all__ = ['DataSelectionResource']
@@ -34,7 +36,11 @@ class DataSelectionResource(ModelResource):
 	class Meta:
 		queryset = DataSelection.objects.all()
 		resource_name = 'data_selection'
-		filtering = {'dataset': FILTERS.RELATIONAL, 'creation_time': FILTERS.DATETIME, 'description': FILTERS.TEXT}
+		filtering = {
+			'dataset': get_relational_filters(DatasetResource),
+			'creation_time': FILTERS.DATETIME,
+			'description': FILTERS.TEXT,
+		}
 		ordering = ['-creation_time']
 		# Allow only methods corresponding to create/read on the list URL and read/update/delete on the detail URL
 		list_allowed_methods = ['post', 'get']
@@ -87,3 +93,13 @@ class DataSelectionResource(ModelResource):
 		metadata = get_metadata_queryset(metadata_model, bundle.obj.query_string, bundle.obj.owner)
 
 		return {'resource_uri': resource_uri, 'count': metadata.count()}
+
+	def get_schema(self, request, **kwargs):
+		# Override get_schema so that un-authenticated user can still see it
+		self.method_check(request, allowed=['get'])
+		auth_result = self._meta.authentication.is_authenticated(request)
+		if auth_result is not True:
+			request.user = AnonymousUser()
+		self.throttle_check(request)
+		self.log_throttled_access(request)
+		return self.create_response(request, self.build_schema())

@@ -1,8 +1,9 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 
-from api.constants import FILTERS
+from api.filters import FILTERS, get_relational_filters
 from dataset.models import Keyword
+from dataset.resources import DatasetResource
 
 from .meta import ResourceMeta
 
@@ -18,7 +19,7 @@ class KeywordResource(ModelResource):
 		queryset = Keyword.objects.all()
 		resource_name = 'keyword'
 		filtering = {
-			'dataset': FILTERS.RELATIONAL,
+			'dataset': get_relational_filters(DatasetResource),
 			'name': FILTERS.TEXT,
 			'verbose_name': FILTERS.TEXT,
 			'type': FILTERS.TEXT,

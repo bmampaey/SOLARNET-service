@@ -35,3 +35,5 @@ DATABASES['default']['TEST'] = {'NAME': DATABASES['default']['NAME']}
 # Send messages level >= ERROR to console
 LOGGING['root']['level'] = 'ERROR'
 LOGGING['root']['handlers'] = ['console']
+
+TEST_RUNNER = 'project.utils.test_runner.HtmlTestReporter'
