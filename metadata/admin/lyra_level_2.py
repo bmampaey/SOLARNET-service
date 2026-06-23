@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['LyraLevel2Admin']
 
+
 @admin.register(LyraLevel2)
 class LyraLevel2Admin(BaseMetadataAdmin):
 	pass

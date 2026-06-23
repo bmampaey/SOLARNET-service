@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['ZimpolSpectrographIrsolAdmin']
 
+
 @admin.register(ZimpolSpectrographIrsol)
 class ZimpolSpectrographIrsolAdmin(BaseMetadataAdmin):
 	pass

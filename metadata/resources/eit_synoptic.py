@@ -6,8 +6,8 @@ __all__ = ['EitSynopticResource']
 
 
 class EitSynopticResource(BaseMetadataResource):
-	'''RESTful resource for model EitSynoptic'''
-	
+	"""RESTful resource for model EitSynoptic"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = EitSynoptic.objects.all()

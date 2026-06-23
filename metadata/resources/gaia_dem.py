@@ -6,8 +6,8 @@ __all__ = ['GaiaDemResource']
 
 
 class GaiaDemResource(BaseMetadataResource):
-	'''RESTful resource for model GaiaDem'''
-	
+	"""RESTful resource for model GaiaDem"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = GaiaDem.objects.all()

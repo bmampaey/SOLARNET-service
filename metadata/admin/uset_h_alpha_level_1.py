@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['UsetHAlphaLevel1Admin']
 
+
 @admin.register(UsetHAlphaLevel1)
 class UsetHAlphaLevel1Admin(BaseMetadataAdmin):
 	pass

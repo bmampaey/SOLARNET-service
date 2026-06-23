@@ -49,7 +49,7 @@ INSTALLED_APPS = [
 	'api',
 	'dataset',
 	'metadata',
-	'data_selection'
+	'data_selection',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +61,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-#	'project.utils.middlewares.RequestLoggingMiddleware',
+	# 'project.utils.middlewares.RequestLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -92,7 +92,7 @@ DATABASES = {
 		'USER': 'solarnet',
 		'HOST': 'pgsql-as.oma.be',
 		'PORT': '5432',
-		'CONN_MAX_AGE': 10 * 60
+		'CONN_MAX_AGE': 10 * 60,
 		# 'PASSWORD': '*****', # Do not put password here, instead write it in the .pgpass file of the user running django
 	}
 }
@@ -127,9 +127,9 @@ USE_L10N = False
 USE_TZ = True
 
 # Specify ISO time format with timezone
-DATETIME_FORMAT = 'Y-m-d H:i:s e' # e.g. 1999-12-31 00:00:00 UTC
-DATE_FORMAT = 'Y-m-d' # 31 Dec 1999
-TIME_FORMAT = 'H:i:s e' # 00:00:00 UTC
+DATETIME_FORMAT = 'Y-m-d H:i:s e'  # e.g. 1999-12-31 00:00:00 UTC
+DATE_FORMAT = 'Y-m-d'  # 31 Dec 1999
+TIME_FORMAT = 'H:i:s e'  # 00:00:00 UTC
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
@@ -154,11 +154,7 @@ LOGIN_REDIRECT_URL = '/admin/'
 LOGGING = DEFAULT_LOGGING
 
 # Redefine the console handler to allow DEBUG level messages
-LOGGING['handlers']['console'] = {
-	'level': 'DEBUG',
-	'class': 'logging.StreamHandler',
-	'formatter': 'console'
-}
+LOGGING['handlers']['console'] = {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'console'}
 
 LOGGING['formatters']['console'] = {
 	'format': '%(levelname)s %(message)s',
@@ -169,7 +165,7 @@ LOGGING['handlers']['file'] = {
 	'class': 'logging.handlers.WatchedFileHandler',
 	'filename': '/var/log/solarnet_service/django.log',
 	'level': 'INFO',
-	'formatter': 'file'
+	'formatter': 'file',
 }
 
 LOGGING['formatters']['file'] = {
@@ -195,14 +191,10 @@ LOGGING['handlers']['requests'] = {
 	'class': 'logging.handlers.WatchedFileHandler',
 	'filename': '/var/log/solarnet_service/requests.log',
 	'level': 'INFO',
-	'formatter': 'requests'
+	'formatter': 'requests',
 }
 
-LOGGING['loggers']['requests'] = {
-	'level' : 'INFO',
-	'handlers': ['requests'],
-	'propagate': False
-}
+LOGGING['loggers']['requests'] = {'level': 'INFO', 'handlers': ['requests'], 'propagate': False}
 
 ## Project specific settings
 
@@ -213,7 +205,7 @@ FILE_PATH_FORBIDDEN_CHARACTERS = {
 	'*': 'Asterisk',
 	'?': 'QuestionMark',
 	'"': 'QuotationMark',
-	'\'': 'Apostrophe',
+	"'": 'Apostrophe',
 	'<': 'Less-Than Sign',
 	'>': 'Greater-Than Sign',
 	'|': 'Vertical Line',
@@ -223,10 +215,10 @@ FILE_PATH_FORBIDDEN_CHARACTERS = {
 }
 
 # The maximum size of a ZIP archives generated for a data selection (in bytes)
-ZIP_ARCHIVE_MAX_SIZE = 100*1024*1024 # 100 MB
+ZIP_ARCHIVE_MAX_SIZE = 100 * 1024 * 1024  # 100 MB
 
 # The maximum size of a file inside a ZIP archives generated for a data selection (in bytes)
-ZIP_ARCHIVE_MAX_FILE_SIZE = 100*1024*1024 # 100 MB
+ZIP_ARCHIVE_MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB
 
 # The name of the file in a ZIP archive listing files that could not be included
 ZIP_ARCHIVE_MISSING_FILE_NAME = 'missing_files.txt'
@@ -241,4 +233,4 @@ HTTP_BASE_URL = 'https://solarnet.oma.be/'
 FTP_BASE_URL = 'ftp://solarnet2.oma.be/data_selection'
 
 # The maximum size of a file that can be downloaded via FTP (in bytes)
-FTP_MAX_FILE_SIZE = 100*1024*1024 # 100 MB
+FTP_MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB

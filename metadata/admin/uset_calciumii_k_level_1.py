@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['UsetCalciumiiKLevel1Admin']
 
+
 @admin.register(UsetCalciumiiKLevel1)
 class UsetCalciumiiKLevel1Admin(BaseMetadataAdmin):
 	pass

@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['UsetWhiteLightLevel1Admin']
 
+
 @admin.register(UsetWhiteLightLevel1)
 class UsetWhiteLightLevel1Admin(BaseMetadataAdmin):
 	pass

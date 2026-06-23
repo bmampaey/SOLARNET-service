@@ -6,8 +6,8 @@ __all__ = ['ChrotelLevel1Resource']
 
 
 class ChrotelLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model ChrotelLevel1'''
-	
+	"""RESTful resource for model ChrotelLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = ChrotelLevel1.objects.all()

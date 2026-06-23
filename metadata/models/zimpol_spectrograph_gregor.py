@@ -5,11 +5,12 @@ from .base_metadata import BaseMetadata
 
 __all__ = ['ZimpolSpectrographGregor']
 
+
 class ZimpolSpectrographGregor(BaseMetadata):
-	'''Model for the metadata of dataset ZIMPOL+Spectrograph@GREGOR'''
-	
+	"""Model for the metadata of dataset ZIMPOL+Spectrograph@GREGOR"""
+
 	class Meta(BaseMetadata.Meta):
 		verbose_name = 'ZIMPOL+Spectrograph@GREGOR metadata'
 		verbose_name_plural = 'ZIMPOL+Spectrograph@GREGOR metadata'
-	
-	sun_feature = models.TextField(verbose_name = 'SUN_FEATURE', help_text='', blank=True, null=True)
+
+	sun_feature = models.TextField(verbose_name='SUN_FEATURE', help_text='', blank=True, null=True)

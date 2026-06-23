@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['Crisp2Admin']
 
+
 @admin.register(Crisp2)
 class Crisp2Admin(BaseMetadataAdmin):
 	pass

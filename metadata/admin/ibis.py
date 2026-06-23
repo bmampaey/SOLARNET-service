@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['IbisAdmin']
 
+
 @admin.register(Ibis)
 class IbisAdmin(BaseMetadataAdmin):
 	list_filter = BaseMetadataAdmin.list_filter + ['channel']

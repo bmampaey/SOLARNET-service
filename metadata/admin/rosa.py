@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['RosaAdmin']
 
+
 @admin.register(Rosa)
 class RosaAdmin(BaseMetadataAdmin):
 	list_filter = BaseMetadataAdmin.list_filter + ['channel']

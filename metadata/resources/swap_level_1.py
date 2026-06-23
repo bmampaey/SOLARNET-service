@@ -6,8 +6,8 @@ __all__ = ['SwapLevel1Resource']
 
 
 class SwapLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model SwapLevel1'''
-	
+	"""RESTful resource for model SwapLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = SwapLevel1.objects.all()

@@ -6,8 +6,8 @@ __all__ = ['IbisResource']
 
 
 class IbisResource(BaseMetadataResource):
-	'''RESTful resource for model Ibis'''
-	
+	"""RESTful resource for model Ibis"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Ibis.objects.all()

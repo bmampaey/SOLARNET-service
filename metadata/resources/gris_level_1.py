@@ -6,8 +6,8 @@ __all__ = ['GrisLevel1Resource']
 
 
 class GrisLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model GrisLevel1'''
-	
+	"""RESTful resource for model GrisLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = GrisLevel1.objects.all()

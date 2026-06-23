@@ -6,8 +6,8 @@ __all__ = ['HmiMagnetogramLevel15Resource']
 
 
 class HmiMagnetogramLevel15Resource(BaseMetadataResource):
-	'''RESTful resource for model HmiMagnetogramLevel15'''
-	
+	"""RESTful resource for model HmiMagnetogramLevel15"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = HmiMagnetogramLevel15.objects.all()

@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['ChromisAdmin']
 
+
 @admin.register(Chromis)
 class ChromisAdmin(BaseMetadataAdmin):
 	pass

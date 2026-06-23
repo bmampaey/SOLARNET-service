@@ -6,20 +6,20 @@ from tastypie.http import HttpUnauthorized
 
 __all__ = ['ApiKeyOrAnonymousAuthentication']
 
+
 class ApiKeyOrAnonymousAuthentication(ApiKeyAuthentication):
-	'''Authentication for User account using the username and API key but default to AnonymousUser if the credentials couls not be verified'''
-	
+	"""Authentication for User account using the username and API key but default to AnonymousUser if the credentials couls not be verified"""
+
 	def is_authenticated(self, request, **kwargs):
-		'''Finds the user and checks their API key'''
-		
+		"""Finds the user and checks their API key"""
+
 		res = super().is_authenticated(request, **kwargs)
-		
+
 		# In case of authentication error, we receive an HttpUnauthorized, else we received True
 		if isinstance(res, HttpUnauthorized):
-			
 			request.user = AnonymousUser()
 			res = True
-		
+
 		return res
 
 

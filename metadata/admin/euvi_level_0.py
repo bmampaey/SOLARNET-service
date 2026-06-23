@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['EuviLevel0Admin']
 
+
 @admin.register(EuviLevel0)
 class EuviLevel0Admin(BaseMetadataAdmin):
 	pass

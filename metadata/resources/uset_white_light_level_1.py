@@ -6,8 +6,8 @@ __all__ = ['UsetWhiteLightLevel1Resource']
 
 
 class UsetWhiteLightLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model UsetWhiteLightLevel1'''
-	
+	"""RESTful resource for model UsetWhiteLightLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = UsetWhiteLightLevel1.objects.all()

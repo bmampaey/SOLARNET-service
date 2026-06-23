@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['HmiMagnetogramLevel15Admin']
 
+
 @admin.register(HmiMagnetogramLevel15)
 class HmiMagnetogramLevel15Admin(BaseMetadataAdmin):
 	pass

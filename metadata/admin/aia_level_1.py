@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['AiaLevel1Admin']
 
+
 @admin.register(AiaLevel1)
 class AiaLevel1Admin(BaseMetadataAdmin):
 	list_filter = BaseMetadataAdmin.list_filter + ['wavelnth']

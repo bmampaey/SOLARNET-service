@@ -1,6 +1,6 @@
 # Test settings - when running management command "test"
 
-from project.settings import * # pylint: disable=unused-wildcard-import
+from project.settings import *  # pylint: disable=unused-wildcard-import
 
 # Run coverage when testings, will only work if the environment variable COVERAGE_PROCESS_START is set to the path of a coverage settings file
 try:
@@ -29,7 +29,7 @@ STATICFILES_DIRS = ['dataset/tests/static/']
 # it can sees the test data that was created during the test
 DATABASES['default']['HOST'] = 'localhost'
 DATABASES['default']['NAME'] = 'test_solarnet2'
-DATABASES['default']['TEST'] = {'NAME':  DATABASES['default']['NAME']}
+DATABASES['default']['TEST'] = {'NAME': DATABASES['default']['NAME']}
 
 
 # Send messages level >= ERROR to console

@@ -6,8 +6,8 @@ __all__ = ['AiaLevel1Resource']
 
 
 class AiaLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model AiaLevel1'''
-	
+	"""RESTful resource for model AiaLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = AiaLevel1.objects.all()

@@ -6,8 +6,8 @@ __all__ = ['XrtLevel1Resource']
 
 
 class XrtLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model XrtLevel1'''
-	
+	"""RESTful resource for model XrtLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = XrtLevel1.objects.all()

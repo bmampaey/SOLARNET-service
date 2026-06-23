@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['SpocaCoronalHoleAdmin']
 
+
 @admin.register(SpocaCoronalHole)
 class SpocaCoronalHoleAdmin(BaseMetadataAdmin):
 	pass

@@ -6,8 +6,8 @@ __all__ = ['LyraLevel2Resource']
 
 
 class LyraLevel2Resource(BaseMetadataResource):
-	'''RESTful resource for model LyraLevel2'''
-	
+	"""RESTful resource for model LyraLevel2"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = LyraLevel2.objects.all()

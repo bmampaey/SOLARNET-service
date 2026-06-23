@@ -6,8 +6,8 @@ __all__ = ['ChromisResource']
 
 
 class ChromisResource(BaseMetadataResource):
-	'''RESTful resource for model Chromis'''
-	
+	"""RESTful resource for model Chromis"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Chromis.objects.all()

@@ -6,8 +6,8 @@ __all__ = ['LarsLevel1Resource']
 
 
 class LarsLevel1Resource(BaseMetadataResource):
-	'''RESTful resource for model LarsLevel1'''
-	
+	"""RESTful resource for model LarsLevel1"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = LarsLevel1.objects.all()

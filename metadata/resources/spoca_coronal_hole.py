@@ -6,8 +6,8 @@ __all__ = ['SpocaCoronalHoleResource']
 
 
 class SpocaCoronalHoleResource(BaseMetadataResource):
-	'''RESTful resource for model SpocaCoronalHole'''
-	
+	"""RESTful resource for model SpocaCoronalHole"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = SpocaCoronalHole.objects.all()

@@ -4,5 +4,6 @@ from dataset.models import Instrument
 
 @admin.register(Instrument)
 class InstrumentAdmin(admin.ModelAdmin):
-	'''Admin class for the Instrument model'''
+	"""Admin class for the Instrument model"""
+
 	pass

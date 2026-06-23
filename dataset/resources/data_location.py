@@ -10,11 +10,12 @@ from .meta import ResourceMeta
 
 __all__ = ['DataLocationResource']
 
+
 class DataLocationResource(ModelResource):
-	'''RESTful resource for model DataLocation'''
-	
+	"""RESTful resource for model DataLocation"""
+
 	dataset = fields.ToOneField('dataset.resources.DatasetResource', 'dataset')
-	
+
 	class Meta(ResourceMeta):
 		queryset = DataLocation.objects.all()
 		resource_name = 'data_location'
@@ -25,7 +26,7 @@ class DataLocationResource(ModelResource):
 			'file_path': FILTERS.TEXT,
 			'thumbnail_url': FILTERS.TEXT,
 			'update_time': FILTERS.DATETIME,
-			'offline': FILTERS.BOOLEAN
+			'offline': FILTERS.BOOLEAN,
 		}
 		ordering = ['dataset', 'file_url', 'file_size', 'file_path', 'thumbnail_url', 'update_time', 'offline']
 		# Allow only methods corresponding to create/read on the list URL and read/update/delete on the detail URL
@@ -37,4 +38,12 @@ class DataLocationResource(ModelResource):
 		max_limit = 1000
 		# Validate data on submission
 		# HACK: override offline so that it only accepts True or False
-		validation = FormValidation(form_class = modelform_factory(DataLocation, fields='__all__', field_classes = {'offline': lambda *args, **kwargs: TypedChoiceField(*args, choices = [(True, 'true'), (False, 'false')], **kwargs)}))
+		validation = FormValidation(
+			form_class=modelform_factory(
+				DataLocation,
+				fields='__all__',
+				field_classes={
+					'offline': lambda *args, **kwargs: TypedChoiceField(*args, choices=[(True, 'true'), (False, 'false')], **kwargs)
+				},
+			)
+		)

@@ -6,8 +6,8 @@ __all__ = ['EuviLevel0Resource']
 
 
 class EuviLevel0Resource(BaseMetadataResource):
-	'''RESTful resource for model EuviLevel0'''
-	
+	"""RESTful resource for model EuviLevel0"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = EuviLevel0.objects.all()

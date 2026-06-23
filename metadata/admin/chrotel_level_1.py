@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['ChrotelLevel1Admin']
 
+
 @admin.register(ChrotelLevel1)
 class ChrotelLevel1Admin(BaseMetadataAdmin):
 	pass

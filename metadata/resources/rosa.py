@@ -6,8 +6,8 @@ __all__ = ['RosaResource']
 
 
 class RosaResource(BaseMetadataResource):
-	'''RESTful resource for model Rosa'''
-	
+	"""RESTful resource for model Rosa"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Rosa.objects.all()

@@ -7,11 +7,12 @@ from .meta import ResourceMeta
 
 __all__ = ['KeywordResource']
 
+
 class KeywordResource(ModelResource):
-	'''RESTful resource for model Keyword'''
-	
+	"""RESTful resource for model Keyword"""
+
 	dataset = fields.ToOneField('dataset.resources.DatasetResource', 'dataset')
-	
+
 	class Meta(ResourceMeta):
 		queryset = Keyword.objects.all()
 		resource_name = 'keyword'

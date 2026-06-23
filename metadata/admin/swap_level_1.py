@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['SwapLevel1Admin']
 
+
 @admin.register(SwapLevel1)
 class SwapLevel1Admin(BaseMetadataAdmin):
 	pass

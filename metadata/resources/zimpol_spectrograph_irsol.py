@@ -6,8 +6,8 @@ __all__ = ['ZimpolSpectrographIrsolResource']
 
 
 class ZimpolSpectrographIrsolResource(BaseMetadataResource):
-	'''RESTful resource for model ZimpolSpectrographIrsol'''
-	
+	"""RESTful resource for model ZimpolSpectrographIrsol"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = ZimpolSpectrographIrsol.objects.all()

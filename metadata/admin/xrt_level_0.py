@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['XrtLevel0Admin']
 
+
 @admin.register(XrtLevel0)
 class XrtLevel0Admin(BaseMetadataAdmin):
 	pass

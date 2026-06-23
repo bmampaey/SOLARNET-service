@@ -6,8 +6,8 @@ __all__ = ['CrispResource']
 
 
 class CrispResource(BaseMetadataResource):
-	'''RESTful resource for model Crisp'''
-	
+	"""RESTful resource for model Crisp"""
+
 	class Meta(BaseMetadataResource.Meta):
 		abstract = False
 		queryset = Crisp.objects.all()

@@ -5,6 +5,7 @@ from .base_metadata import BaseMetadataAdmin
 
 __all__ = ['GaiaDemAdmin']
 
+
 @admin.register(GaiaDem)
 class GaiaDemAdmin(BaseMetadataAdmin):
 	pass

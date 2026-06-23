@@ -13,15 +13,30 @@ class RelationalFilters(int):
 
 
 class FILTERS:
-	'''Define the possible applicable filters per ressource field category'''
+	"""Define the possible applicable filters per ressource field category"""
+
 	# Select among 'exact', 'iexact', 'contains', 'icontains', 'in', 'gt', 'gte', 'lt', 'lte', 'startswith', 'istartswith', 'endswith', 'iendswith', 'range', 'date', 'year', 'iso_year', 'month', 'day', 'week', 'week_day', 'iso_week_day', 'quarter', 'time', 'hour', 'minute', 'second', 'isnull', 'regex', 'iregex'
 	BOOLEAN = ['exact', 'isnull']
 	NUMERIC = ['exact', 'in', 'gt', 'gte', 'lt', 'lte', 'range', 'isnull']
-	TEXT = ['exact', 'iexact', 'contains', 'icontains', 'in', 'startswith', 'istartswith', 'endswith', 'iendswith', 'isnull', 'regex', 'iregex']
+	TEXT = [
+		'exact',
+		'iexact',
+		'contains',
+		'icontains',
+		'in',
+		'startswith',
+		'istartswith',
+		'endswith',
+		'iendswith',
+		'isnull',
+		'regex',
+		'iregex',
+	]
 	# Tastypie does not support datetime casting filters like __hour, __date, etc.
 	DATETIME = ['exact', 'in', 'gt', 'gte', 'lt', 'lte', 'range', 'isnull']
 	RELATIONAL = RelationalFilters(ALL_WITH_RELATIONS)
 	COMPLEX_SEARCH_EXPRESSION = 'complex search expression'
+
 
 FIELD_FILTERS = {
 	models.AutoField: FILTERS.NUMERIC,

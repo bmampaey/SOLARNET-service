@@ -7,5 +7,5 @@ from project.urls import urlpatterns
 
 urlpatterns += [
 	path('', include('metadata.tests.urls')),
-	path('static/<path:path>', views.serve, kwargs = {'insecure': True})
+	path('static/<path:path>', views.serve, kwargs={'insecure': True}),
 ]
