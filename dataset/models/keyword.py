@@ -35,6 +35,9 @@ class Keyword(models.Model):
 	)
 	unit = models.CharField(max_length=30, help_text='Physical unit (SI compliant) of the keyword', blank=True, null=True)
 	description = models.TextField(help_text='Full description of the keyword', blank=True, null=True)
+	constant_value = models.TextField(
+		help_text='Value of the keyword if it is identical for every metadata of the dataset', blank=True, null=True
+	)
 
 	objects = KeywordManager()
 

@@ -9,7 +9,7 @@ class KeywordAdmin(admin.ModelAdmin):
 	"""Admin class for the Keyword model"""
 
 	list_display = ['verbose_name', 'dataset', 'type', 'unit']
-	list_filter = ['dataset']
+	list_filter = ['dataset', 'type', 'unit']
 	list_select_related = ['dataset']
 	search_fields = ['name', 'verbose_name', 'description']
 	readonly_fields = ['dataset', 'name', 'type']
