@@ -5,7 +5,7 @@ from django.core.files.base import ContentFile
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import RedirectView, View
-from PIL import Image
+from PIL import Image, ImageOps
 
 from dataset.models import Dataset
 
@@ -61,18 +61,21 @@ class Fits2ThumbnailView(View):
 			# Read the  image data from the FITS file (astropy.io.fits.open accepts an URL)
 			fits_file = fits.open(request.GET['url'])
 			hdu = fits_file[int(request.GET.get('hdu', 0))]
-			data = hdu.data
+			# Convert the data to a PIL image
+			data = numpy.nan_to_num(hdu.data, nan=0.0, posinf=0.0, neginf=0.0)
+			data_min, data_max = data.min(), data.max()
+			data = (data - data_min) / (data_max - data_min) * 255.0
+			image = Image.fromarray(data.astype('uint8'))
+
+			# Use PIL to adjust the contrast
 			# Remove the percentiles
-			min_percentile, max_percentile = numpy.percentile(
-				data, [float(request.GET.get('min_percentile', 0)), float(request.GET.get('max_percentile', 100))]
-			)
-			data[data < min_percentile] = min_percentile
-			data[data > max_percentile] = max_percentile
-			# Rescale the data to the 0..255 range
-			scaled_data = ((data - min_percentile) * (255.0 / (max_percentile - min_percentile))).round()
-			# Create a thumbnail from the rescaled data
-			image = Image.fromarray(scaled_data.astype('uint8'))
+			cutoff = (float(request.GET.get('min_percentile', 0)), 100 - float(request.GET.get('max_percentile', 100)))
+			image = ImageOps.autocontrast(image, cutoff=cutoff)
+			# Histo Equalize
+			if request.GET.get('histo_equalize', False):
+				image = ImageOps.equalize(image)
 			image.thumbnail((512, 512))
+
 			# Write the thumbnail to the in memory file
 			thumbnail = ContentFile(b'', name='thumbnail.jpg')
 			image.save(thumbnail, format='jpeg')
