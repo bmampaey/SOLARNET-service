@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
 	def add_arguments(self, parser):
 		parser.add_argument('dataset', help='The name of the dataset')
-		parser.add_argument('file_path', metavar='JSONL-FILE', help='The path to the JSONL file')
+		parser.add_argument('file_paths', nargs='+', metavar='JSONL-FILE', help='The path to the JSONL file')
 		parser.add_argument('--continue-on-fail', '-c', action='store_true', help='If a row fails to save, continue')
 		parser.add_argument('--batch-size', '-b', type=int, default=1000, help='Number of rows to save')
 
@@ -35,37 +35,39 @@ class Command(BaseCommand):
 		data_locations = {}
 		first_line_number = 1
 
-		with open(options['file_path']) as file:
-			for line_number, line in enumerate(file, start=1):
-				metadata = json.loads(line)
-				data_location = metadata.pop('data_location')
-				metadatas[data_location['file_url']] = self.make_timezone_aware(MetaData(**metadata))
-				# Force the dataset to the one that was selected by the user
-				data_location['dataset'] = self.dataset
-				data_locations[data_location['file_url']] = DataLocation(update_time=now_utc, **data_location)
+		for file_path in options['file_paths']:
+			with open(file_path) as file:
+				self.log.info('Loading JSON lines from file %s', file_path)
+				for line_number, line in enumerate(file, start=1):
+					metadata = json.loads(line)
+					data_location = metadata.pop('data_location')
+					metadatas[data_location['file_url']] = self.make_timezone_aware(MetaData(**metadata))
+					# Force the dataset to the one that was selected by the user
+					data_location['dataset'] = self.dataset
+					data_locations[data_location['file_url']] = DataLocation(update_time=now_utc, **data_location)
 
-				if len(data_locations) >= options['batch_size']:
-					try:
-						self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
-						self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
-						first_line_number = line_number + 1
-						metadatas = {}
-						data_locations = {}
-					except Exception as error:
-						raise CommandError(
-							'Error saving objects between line %s and %s: %s!' % (first_line_number, line_number, error)
-						) from error
+					if len(data_locations) >= options['batch_size']:
+						try:
+							self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
+							self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
+							first_line_number = line_number + 1
+							metadatas = {}
+							data_locations = {}
+						except Exception as error:
+							raise CommandError(
+								'Error saving objects between line %s and %s: %s!' % (first_line_number, line_number, error)
+							) from error
 
-		if data_locations:
-			try:
-				self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
-				self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
-			except Exception as error:
-				raise CommandError(
-					'Error saving objects between line %s and %s: %s!' % (first_line_number, line_number, error)
-				) from error
+			if data_locations:
+				try:
+					self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
+					self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
+				except Exception as error:
+					raise CommandError(
+						'Error saving objects between line %s and %s: %s!' % (first_line_number, line_number, error)
+					) from error
 
-		self.log.info('Finnished loading all %s lines', line_number)
+			self.log.info('Finnished loading all %s lines', line_number)
 
 	def make_timezone_aware(self, object, default_timezone=utc):
 		"""Make sure that the times have a timezone set"""
