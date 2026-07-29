@@ -1,6 +1,7 @@
 from .aia_level_1 import *
 from .aia_level_1_5 import *
 from .aia_level_2 import *
+from .aspiics_level_2 import *
 from .chromis import *
 from .chrotel_level_1 import *
 from .crisp import *

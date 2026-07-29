@@ -3,6 +3,7 @@ from metadata.resources import (
 	AiaLevel1Resource,
 	AiaLevel2Resource,
 	AiaLevel15Resource,
+	AspiicsLevel2Resource,
 	ChromisResource,
 	ChrotelLevel1Resource,
 	Crisp2Resource,
@@ -38,6 +39,7 @@ svo_api.register(TagResource())
 svo_api.register(AiaLevel1Resource())
 svo_api.register(AiaLevel15Resource())
 svo_api.register(AiaLevel2Resource())
+svo_api.register(AspiicsLevel2Resource())
 svo_api.register(ChromisResource())
 svo_api.register(ChrotelLevel1Resource())
 svo_api.register(CrispResource())
