@@ -10,9 +10,7 @@ from .crisp2 import *
 from .eit_level_0 import *
 from .eit_synoptic import *
 from .eui_level_1 import *
-from .eui_level_1_release_7_0 import *
 from .eui_level_2 import *
-from .eui_level_2_release_7_0 import *
 from .euvi_level_0 import *
 from .gaia_dem import *
 from .gris_level_1 import *

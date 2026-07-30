@@ -13,12 +13,12 @@ class EuiLevel2(BaseMetadata):
 		verbose_name = 'EUI level 2 metadata'
 		verbose_name_plural = 'EUI level 2 metadata'
 
-	fits_header = models.TextField(
-		verbose_name='FITS header', help_text='Header of the relevant HDU in the FITS file', blank=True, null=True
-	)
 	alu = models.BigIntegerField(verbose_name='ALU', help_text='CEB ALU register', blank=True, null=True)
 	alu2 = models.BigIntegerField(verbose_name='ALU2', help_text='CEB ALU2 register', blank=True, null=True)
 	apid = models.BigIntegerField(verbose_name='APID', help_text='APID number of associated TM', blank=True, null=True)
+	att_dist = models.TextField(
+		verbose_name='ATT_DIST', help_text='type of attitude disturbance during exposure', blank=True, null=True
+	)
 	att_skd = models.TextField(
 		verbose_name='ATT_SKD', help_text='attitude SKD version, +flown/+predicted', blank=True, null=True
 	)
@@ -28,26 +28,28 @@ class EuiLevel2(BaseMetadata):
 	badpxrem = models.TextField(
 		verbose_name='BADPXREM', help_text='commanded bad pixel removal on or off', blank=True, null=True
 	)
+	blank = models.BigIntegerField(
+		verbose_name='BLANK', help_text='value undefined pixels before BSCALE,BZERO', blank=True, null=True
+	)
+	bscale = models.FloatField(verbose_name='BSCALE', help_text='', blank=True, null=True)
 	btype = models.TextField(verbose_name='BTYPE', help_text='type of data', blank=True, null=True)
 	bunit = models.TextField(
 		verbose_name='BUNIT', help_text='units of physical value, after BSCALE, BZERO', blank=True, null=True
 	)
+	bzero = models.FloatField(verbose_name='BZERO', help_text='', blank=True, null=True)
 	car_rot = models.FloatField(verbose_name='CAR_ROT', help_text='carrington rotation number', blank=True, null=True)
 	cdelt1 = models.FloatField(verbose_name='CDELT1', help_text='pixel scale along axis 1', blank=True, null=True)
 	cdelt2 = models.FloatField(verbose_name='CDELT2', help_text='pixel scale along axis 2', blank=True, null=True)
 	combitpp = models.BigIntegerField(
 		verbose_name='COMBITPP', help_text='WICOM compression bpp ( COMBITPP*0.04=bpp)', blank=True, null=True
 	)
+	comment = models.TextField(verbose_name='COMMENT', help_text='', blank=True, null=True)
 	comp_rat = models.FloatField(
 		verbose_name='COMP_RAT', help_text='compression ratio: uncompressed/compressed size', blank=True, null=True
 	)
 	complete = models.TextField(verbose_name='COMPLETE', help_text='C or I for complete/incomplete', blank=True, null=True)
 	compress = models.TextField(
-		verbose_name='COMPRESS',
-		help_text='data compression quality (None/Lossless/Lossy)',
-		blank=True,
-		null=True,
-		db_index=True,
+		verbose_name='COMPRESS', help_text='data compression quality (None/Lossless/Lossy)', blank=True, null=True
 	)
 	comsize = models.BigIntegerField(
 		verbose_name='COMSIZE', help_text='number of bytes onboard compressed image', blank=True, null=True
@@ -91,11 +93,27 @@ class EuiLevel2(BaseMetadata):
 	ctype2 = models.TextField(verbose_name='CTYPE2', help_text='helioprojective latitude (Solar Y)', blank=True, null=True)
 	cunit1 = models.TextField(verbose_name='CUNIT1', help_text='units along axis 1', blank=True, null=True)
 	cunit2 = models.TextField(verbose_name='CUNIT2', help_text='units along axis 2', blank=True, null=True)
+	dat50mea = models.FloatField(
+		verbose_name='DAT50MEA', help_text='average pixel value across central 50% image', blank=True, null=True
+	)
+	dat50med = models.FloatField(
+		verbose_name='DAT50MED', help_text='median pixel value across central 50% image', blank=True, null=True
+	)
 	datamax = models.FloatField(verbose_name='DATAMAX', help_text='maximum valid physical value', blank=True, null=True)
 	datamean = models.FloatField(
 		verbose_name='DATAMEAN', help_text='average pixel value across image', blank=True, null=True
 	)
 	datamin = models.FloatField(verbose_name='DATAMIN', help_text='minimum valid physical value', blank=True, null=True)
+	datap01 = models.FloatField(verbose_name='DATAP01', help_text='1st percentile pixel value', blank=True, null=True)
+	datap05 = models.FloatField(verbose_name='DATAP05', help_text='5th percentile pixel value', blank=True, null=True)
+	datap25 = models.FloatField(verbose_name='DATAP25', help_text='25th percentile pixel value', blank=True, null=True)
+	datap50 = models.FloatField(verbose_name='DATAP50', help_text='50th percentile pixel value', blank=True, null=True)
+	datap75 = models.FloatField(verbose_name='DATAP75', help_text='75th percentile pixel value', blank=True, null=True)
+	datap95 = models.FloatField(verbose_name='DATAP95', help_text='95th percentile pixel value', blank=True, null=True)
+	datap99 = models.FloatField(verbose_name='DATAP99', help_text='99th percentile pixel value', blank=True, null=True)
+	datapsun = models.FloatField(
+		verbose_name='DATAPSUN', help_text='half solar percentile pixel value', blank=True, null=True
+	)
 	date = models.DateTimeField(verbose_name='DATE', help_text='FITS file creation date', blank=True, null=True)
 	date_avg = models.DateTimeField(
 		verbose_name='DATE-AVG', help_text='average time of observation', blank=True, null=True
@@ -109,9 +127,9 @@ class EuiLevel2(BaseMetadata):
 	date_sun = models.DateTimeField(
 		verbose_name='DATE_SUN', help_text='start time of observation Sun', blank=True, null=True
 	)
-	detector = models.TextField(
-		verbose_name='DETECTOR', help_text='instrument subunit or sensor', blank=True, null=True, db_index=True
-	)
+	dcrval1 = models.FloatField(verbose_name='DCRVAL1', help_text='delta CRVAL1', blank=True, null=True)
+	dcrval2 = models.FloatField(verbose_name='DCRVAL2', help_text='delta CRVAL2', blank=True, null=True)
+	detector = models.TextField(verbose_name='DETECTOR', help_text='instrument subunit or sensor', blank=True, null=True)
 	detgainh = models.FloatField(verbose_name='DETGAINH', help_text='commanded high-gain value', blank=True, null=True)
 	detgainl = models.FloatField(verbose_name='DETGAINL', help_text='commanded low gain value', blank=True, null=True)
 	detreg20 = models.BigIntegerField(verbose_name='DETREG20', help_text='REG20_VDAC_CLIPP', blank=True, null=True)
@@ -204,7 +222,10 @@ class EuiLevel2(BaseMetadata):
 	filename = models.TextField(verbose_name='FILENAME', help_text='FITS filename', blank=True, null=True)
 	filter = models.TextField(verbose_name='FILTER', help_text='physical filter during acquisition', blank=True, null=True)
 	filtpos = models.BigIntegerField(
-		verbose_name='FILTPOS', help_text='(0-199) filter wheel position service5', blank=True, null=True
+		verbose_name='FILTPOS', help_text='filter wheel position service5', blank=True, null=True
+	)
+	fits_header = models.TextField(
+		verbose_name='FITS header', help_text='Header of HDU 1 in the FITS file', blank=True, null=True
 	)
 	gaincomb = models.TextField(
 		verbose_name='GAINCOMB', help_text='commanded low/high gain combination', blank=True, null=True
@@ -217,7 +238,6 @@ class EuiLevel2(BaseMetadata):
 	gaofstat = models.TextField(
 		verbose_name='GAOFSTAT', help_text='status of the CEB gain and offset correction', blank=True, null=True
 	)
-	gcount = models.BigIntegerField(verbose_name='GCOUNT', help_text='number of groups', blank=True, null=True)
 	gsex_obs = models.FloatField(
 		verbose_name='GSEX_OBS', help_text='s/c Geocentric Solar Ecliptic X', blank=True, null=True
 	)
@@ -270,6 +290,7 @@ class EuiLevel2(BaseMetadata):
 	hglt_obs = models.FloatField(
 		verbose_name='HGLT_OBS', help_text='s/c Heliographic latitude (B0 angle)', blank=True, null=True
 	)
+	history = models.TextField(verbose_name='HISTORY', help_text='', blank=True, null=True)
 	imgtype = models.TextField(
 		verbose_name='IMGTYPE', help_text='type of image; solar, calib., engineering', blank=True, null=True
 	)
@@ -291,15 +312,17 @@ class EuiLevel2(BaseMetadata):
 	lyaimcp = models.FloatField(verbose_name='LYAIMCP', help_text='measured MCP current', blank=True, null=True)
 	lyavmcp = models.FloatField(verbose_name='LYAVMCP', help_text='measured MCP voltage', blank=True, null=True)
 	lyavscr = models.FloatField(verbose_name='LYAVSCR', help_text='measured MCP+screen voltage', blank=True, null=True)
-	naxis = models.BigIntegerField(verbose_name='NAXIS', help_text='number of axes in data cube', blank=True, null=True)
+	naxis = models.BigIntegerField(verbose_name='NAXIS', help_text='number of array dimensions', blank=True, null=True)
 	naxis1 = models.BigIntegerField(verbose_name='NAXIS1', help_text='length of data axis 1', blank=True, null=True)
 	naxis2 = models.BigIntegerField(verbose_name='NAXIS2', help_text='length of data axis 2', blank=True, null=True)
-	nbin = models.BigIntegerField(verbose_name='NBIN', help_text='total binning factor', blank=True, null=True)
+	nbin = models.BigIntegerField(
+		verbose_name='NBIN', help_text='total binning factor; NBIN1 x NBIN2', blank=True, null=True
+	)
 	nbin1 = models.BigIntegerField(
 		verbose_name='NBIN1', help_text='on-board binning factor in dim 1', blank=True, null=True
 	)
 	nbin2 = models.BigIntegerField(
-		verbose_name='NBIN2', help_text='on-board binning factor in dim 1', blank=True, null=True
+		verbose_name='NBIN2', help_text='on-board binning factor in dim 2', blank=True, null=True
 	)
 	obs_id = models.TextField(
 		verbose_name='OBS_ID', help_text='unique ID of the individual observation', blank=True, null=True
@@ -331,7 +354,6 @@ class EuiLevel2(BaseMetadata):
 	pc2_2 = models.FloatField(
 		verbose_name='PC2_2', help_text='WCS coordinate transformation matrix', blank=True, null=True
 	)
-	pcount = models.BigIntegerField(verbose_name='PCOUNT', help_text='number of group parameters', blank=True, null=True)
 	priority = models.BigIntegerField(
 		verbose_name='PRIORITY', help_text='priority # of image/histogram when downloaded', blank=True, null=True
 	)
@@ -363,6 +385,7 @@ class EuiLevel2(BaseMetadata):
 	rsun_arc = models.FloatField(
 		verbose_name='RSUN_ARC', help_text='apparent photospheric solar radius', blank=True, null=True
 	)
+	rsun_lf = models.FloatField(verbose_name='RSUN_LF', help_text='limb fit Solar radius', blank=True, null=True)
 	rsun_obs = models.FloatField(
 		verbose_name='RSUN_OBS', help_text='apparent photospheric solar radius', blank=True, null=True
 	)
@@ -382,9 +405,7 @@ class EuiLevel2(BaseMetadata):
 	solar_p0 = models.FloatField(
 		verbose_name='SOLAR_P0', help_text='s/c celestial North to solar North angle', blank=True, null=True
 	)
-	soopname = models.TextField(
-		verbose_name='SOOPNAME', help_text='name of the SOOP Campaign that the data belong', blank=True, null=True
-	)
+	soopname = models.TextField(verbose_name='SOOPNAME', help_text='name of the SOOP Campaign', blank=True, null=True)
 	sooptype = models.TextField(
 		verbose_name='SOOPTYPE', help_text='campaign ID(s) that the data belong to', blank=True, null=True
 	)
@@ -412,7 +433,8 @@ class EuiLevel2(BaseMetadata):
 	)
 	version = models.TextField(verbose_name='VERSION', help_text='incremental version number', blank=True, null=True)
 	wavelnth = models.BigIntegerField(
-		verbose_name='WAVELNTH', help_text='characteristic wavelength observation', blank=True, null=True, db_index=True
+		verbose_name='WAVELNTH', help_text='characteristic wavelength of observation', blank=True, null=True
 	)
+	waveunit = models.TextField(verbose_name='WAVEUNIT', help_text='Wavelength unit', blank=True, null=True)
 	wcsname = models.TextField(verbose_name='WCSNAME', help_text='name of coordinate system', blank=True, null=True)
 	xposure = models.FloatField(verbose_name='XPOSURE', help_text='total effective exposure time', blank=True, null=True)
