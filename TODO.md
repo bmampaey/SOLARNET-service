@@ -19,9 +19,9 @@ This is being implemented in branch constant_value
 
 ## Finish processing XRT level 1
 
-Process from year **2011.bis** to **2026**, in **order** :
+Process from year **2017** to **2026**, in **order** :
 
-- On yama, check that each year has finished first, then reprocess it with re_extract_xrt.sh to redownload errored files
+- On yama, check that each year has finished first, then reprocess the corresponding log with re_extract_xrt.sh to redownload errored files
 - On solarnet : use management command load_metadata_from_jsonl to load the json files
 
 ## Improve performance of date filtering
@@ -29,26 +29,37 @@ Process from year **2011.bis** to **2026**, in **order** :
 Currently if a user want to search between 2 dates date_min and date_max, such that date_min < date_max, PostgreSQL is performing very poorly.
 
 ```sql
-select * from metadata_aia_level_1_5 where date_min < date_end and date_start < date_max;
+select * from metadata_aia_level_1_5 where date_min < date_end and date_beg < date_max;
 ```
 
 If we ANALYZE such a query, we see that PostgreSQL considers both comparison as distinct, and thinks that there will be twice as many rows as there should be :
-(row count for date_min < date_end) + (row count for date_start < date_max)
+(row count for date_min < date_end) + (row count for date_beg < date_max)
 
 One solution to envisage is to use a GIST index on the date range
 
 ```sql
 CREATE INDEX mytable_date_range_idx
 ON mytable
-USING gist (daterange(date_start, date_end, '[]'));
+USING gist (daterange(date_beg, date_end, '[]'));
 ```
 
 And in Django or Tastypie, intercept this type of request and replace it with
 
 ```sql
 SELECT * FROM mytable
-WHERE daterange(date_start, date_end, '[]') && daterange(date_min, date_max, '[]');
+WHERE daterange(date_beg, date_end, '[]') && daterange(date_min, date_max, '[]');
 ```
+
+An other solution is to be explicit, define a computed column called date_range as the range [date_beg, date_end]
+
+```sql
+date_range daterange GENERATED ALWAYS AS (
+        daterange(date_beg, date_end, '[]')
+    ) STORED
+```
+
+And add it to the read only fields of Tastypie and Admin, and add specific filters in tastypie `?date_range_min=2026-07-01&date_range_max=2026-07-15`
+Allowing for specifying only one of the two.
 
 ## Decrease size of dataset EUVI level 0
 
