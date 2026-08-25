@@ -9,4 +9,4 @@ __all__ = ['GrisLevel1Admin']
 
 @admin.register(GrisLevel1)
 class GrisLevel1Admin(BaseMetadataAdmin):
-	list_display = BaseMetadataAdmin.list_display + ['waveleng']
+	pass
