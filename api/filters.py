@@ -1,4 +1,5 @@
 from django.db import models
+from tastypie import fields
 from tastypie.constants import ALL_WITH_RELATIONS
 
 __all__ = ['FILTERS', 'FIELD_FILTERS', 'get_relational_filters']
@@ -33,30 +34,14 @@ class FILTERS:
 
 
 FIELD_FILTERS = {
-	models.AutoField: FILTERS.NUMERIC,
-	models.BigAutoField: FILTERS.NUMERIC,
-	models.BigIntegerField: FILTERS.NUMERIC,
-	models.BooleanField: FILTERS.BOOLEAN,
-	models.CharField: FILTERS.TEXT,
-	models.DateField: FILTERS.DATETIME,
-	models.DateTimeField: FILTERS.DATETIME,
-	models.DecimalField: FILTERS.NUMERIC,
-	models.DurationField: FILTERS.NUMERIC,
-	models.EmailField: FILTERS.TEXT,
-	models.FilePathField: FILTERS.TEXT,
-	models.FloatField: FILTERS.NUMERIC,
-	models.IntegerField: FILTERS.NUMERIC,
-	models.GenericIPAddressField: FILTERS.TEXT,
-	models.PositiveBigIntegerField: FILTERS.NUMERIC,
-	models.PositiveIntegerField: FILTERS.NUMERIC,
-	models.PositiveSmallIntegerField: FILTERS.NUMERIC,
-	models.SlugField: FILTERS.TEXT,
-	models.SmallAutoField: FILTERS.NUMERIC,
-	models.SmallIntegerField: FILTERS.NUMERIC,
-	models.TextField: FILTERS.TEXT,
-	models.TimeField: FILTERS.DATETIME,
-	models.URLField: FILTERS.TEXT,
-	models.UUIDField: FILTERS.TEXT,
+	fields.BooleanField: FILTERS.BOOLEAN,
+	fields.CharField: FILTERS.TEXT,
+	fields.DateField: FILTERS.DATETIME,
+	fields.DateTimeField: FILTERS.DATETIME,
+	fields.DecimalField: FILTERS.NUMERIC,
+	fields.FloatField: FILTERS.NUMERIC,
+	fields.IntegerField: FILTERS.NUMERIC,
+	fields.TimeField: FILTERS.DATETIME,
 }
 
 

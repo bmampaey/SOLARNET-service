@@ -11,12 +11,20 @@ class TestKeywordAdmin(TestAdminMixin, TestCase):
 		super().setUp()
 		# Create a keyword for the test dataset
 		self.test_dataset_keyword = self.test_dataset.keywords.create(
-			name='test', verbose_name='Test', type=KeywordType.TEXT, description='A test keyword'
+			name='test',
+			verbose_name='Test',
+			type=KeywordType.TEXT,
+			description='A test keyword',
+			constant_value=None,
 		)
 
 		# Create a keyword for the other dataset
 		self.other_dataset_keyword = self.other_dataset.keywords.create(
-			name='other_test', verbose_name='Other Test', type=KeywordType.TEXT, description='An other test keyword'
+			name='other_test',
+			verbose_name='Other Test',
+			type=KeywordType.TEXT,
+			description='An other test keyword',
+			constant_value=None,
 		)
 
 	def test_index(self):
@@ -115,6 +123,7 @@ class TestKeywordAdmin(TestAdminMixin, TestCase):
 			'type': KeywordType.INTEGER,
 			'unit': 'other unit 1',
 			'description': 'other description 1',
+			'constant_value': '1',
 		}
 
 		test_post_data2 = {
@@ -124,24 +133,40 @@ class TestKeywordAdmin(TestAdminMixin, TestCase):
 			'type': KeywordType.REAL,
 			'unit': 'other unit 2',
 			'description': 'other description 2',
+			'constant_value': '1',
 		}
 
-		msg = 'The other user may NOT change the dataset, name, verbose_name, type, unit, and description of a keyword of the test dataset'
+		msg = 'The other user may NOT change the dataset, name, verbose_name, type, unit, description, and constant_value of a keyword of the test dataset'
 		self.client.force_login(self.other_user)
 		response = self.client.post(self.get_change_url(self.test_dataset_keyword), data=test_post_data1)
 		self.assertHttpForbidden(response, msg=msg)
 		self.assertObjectUpdated(self.test_dataset_keyword, msg=msg)
 
-		msg = 'The test user may change the verbose_name, unit, and description BUT not the dataset, name, and type of a keyword of the test dataset'
+		msg = 'The test user may change the verbose_name, unit, and description BUT not the dataset, name, type, and constant_value of a keyword of the test dataset'
 		self.client.force_login(self.test_user)
 		response = self.client.post(self.get_change_url(self.test_dataset_keyword), data=test_post_data1)
 		self.assertRedirects(response, self.get_list_url(Keyword), msg_prefix=msg)
 		self.assertObjectUpdated(self.test_dataset_keyword, 'verbose_name', 'unit', 'description', msg=msg)
 
-		msg = 'The super user may change the dataset, name, verbose_name, type, unit, and description of any keyword'
+		msg = 'The super user may change the dataset, name, verbose_name, type, unit, description, and constant_value of any keyword'
 		self.client.force_login(self.super_user)
 		response = self.client.post(self.get_change_url(self.test_dataset_keyword), data=test_post_data2)
 		self.assertRedirects(response, self.get_list_url(Keyword), msg_prefix=msg)
 		self.assertObjectUpdated(
-			self.test_dataset_keyword, 'dataset', 'name', 'verbose_name', 'type', 'unit', 'description', msg=msg
+			self.test_dataset_keyword,
+			'dataset',
+			'name',
+			'verbose_name',
+			'type',
+			'unit',
+			'description',
+			'constant_value',
+			msg=msg,
 		)
+
+		msg = 'If the constant_value is left blank, it is set to None'
+		response = self.client.post(
+			self.get_change_url(self.test_dataset_keyword), data={**test_post_data2, 'constant_value': ''}
+		)
+		self.test_dataset_keyword.refresh_from_db()
+		self.assertIsNone(self.test_dataset_keyword.constant_value, msg=msg)

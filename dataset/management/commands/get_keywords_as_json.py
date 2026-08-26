@@ -27,19 +27,18 @@ class Command(BaseCommand):
 		print(json.dumps(self.get_keyword_infos(dataset), indent='\t'))
 
 	def get_keyword_infos(self, dataset):
-		"""Return a list of all keyword info {name, verbose_name, type, unit, description}"""
+		"""Return a list of all keyword info {name, verbose_name, type, unit, description, constant_value}"""
 
 		keyword_infos = list()
 
 		for keyword in dataset.keywords.exclude(name__in=['id']):
-			keyword_infos.append(
-				{
-					'name': keyword.name,
-					'verbose_name': keyword.verbose_name,
-					'type': keyword.type,
-					'unit': keyword.unit,
-					'description': keyword.description,
-				}
-			)
+			keyword_infos.append({
+				'name': keyword.name,
+				'verbose_name': keyword.verbose_name,
+				'type': keyword.type,
+				'unit': keyword.unit,
+				'description': keyword.description,
+				'constant_value': keyword.constant_value,
+			})
 
 		return keyword_infos

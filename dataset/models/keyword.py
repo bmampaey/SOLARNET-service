@@ -1,6 +1,7 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
-from .choices import KeywordType
+from .choices import KEYWORD_TYPE_CONVERTERS, KeywordType
 from .validators import valid_keyword_name
 
 __all__ = ['Keyword']
@@ -35,6 +36,9 @@ class Keyword(models.Model):
 	)
 	unit = models.CharField(max_length=30, help_text='Physical unit (SI compliant) of the keyword', blank=True, null=True)
 	description = models.TextField(help_text='Full description of the keyword', blank=True, null=True)
+	constant_value = models.TextField(
+		help_text='Value of the keyword if it is identical for every metadata of the dataset', blank=True, null=True
+	)
 
 	objects = KeywordManager()
 
@@ -44,3 +48,27 @@ class Keyword(models.Model):
 
 	def __str__(self):
 		return self.verbose_name
+
+	@property
+	def converted_constant_value(self):
+		if self.constant_value is None:
+			return None
+
+		return KEYWORD_TYPE_CONVERTERS[self.type](self.constant_value)
+
+	# We need to make sure that the value passed to constant_value can be converted to the keyword type
+	def clean(self):
+		super().clean()
+
+		try:
+			self.converted_constant_value
+		except ValueError as error:
+			raise ValidationError({
+				'constant_value': (f'"{self.constant_value}" is not a valid value for type "{self.type}": {error}')
+			})
+
+	# By default save does not run the clean methods
+	# Note that this method will not be ran if calling bulk_create, bulk_update, update, etc.
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)

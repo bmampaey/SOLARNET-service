@@ -35,11 +35,15 @@ class TestKeywordResource(ReadOnlyResourceTestCaseMixin, TestCase):
 		msg = 'When no authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(self.get_resource_uri(self.test_keyword), format='json')
 		self.assertValidJsonResponse(response, msg=msg)
-		self.assertResponseHasKeys(response, ['dataset', 'name', 'verbose_name', 'type', 'unit', 'description'], msg=msg)
+		self.assertResponseHasKeys(
+			response, ['dataset', 'name', 'verbose_name', 'type', 'unit', 'description', 'constant_value'], msg=msg
+		)
 
 		msg = 'When authentication is provided, a GET on the detail URL must return a valid JSON response'
 		response = self.api_client.get(
 			self.get_resource_uri(self.test_keyword), format='json', authentication=self.test_user_authentication
 		)
 		self.assertValidJsonResponse(response, msg=msg)
-		self.assertResponseHasKeys(response, ['dataset', 'name', 'verbose_name', 'type', 'unit', 'description'], msg=msg)
+		self.assertResponseHasKeys(
+			response, ['dataset', 'name', 'verbose_name', 'type', 'unit', 'description', 'constant_value'], msg=msg
+		)

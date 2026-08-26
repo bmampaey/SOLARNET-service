@@ -94,20 +94,20 @@ class BaseMetadataResource(ModelResource):
 	def __init__(self):
 		super().__init__()
 
-		# Add filtering and ordering for all regular fields
+		# Add filtering and ordering for all fields that correspond to a database column (attribute is not None)
 		# Copy them before modifying to avoid affecting other metadata ressources definitions
 		self._meta.ordering = set(self._meta.ordering)
 		self._meta.filtering = dict(self._meta.filtering)
 
-		for field in self._meta.object_class._meta.get_fields():
-			if not field.is_relation and not field.auto_created:
+		for field_name, field in self.fields.items():
+			if field.attribute is not None:
 				try:
-					filter = FIELD_FILTERS[type(field)]
+					field_filter = FIELD_FILTERS[type(field)]
 				except KeyError:
 					pass
 				else:
-					self._meta.ordering.add(field.name)
-					self._meta.filtering[field.name] = filter
+					self._meta.ordering.add(field_name)
+					self._meta.filtering[field_name] = field_filter
 
 		# Add default form validation here, because this is an abstract ressource so the object_class is only known when subclassed
 		if self._meta.validation is None:

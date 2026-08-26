@@ -8,11 +8,11 @@ from project import admin
 class KeywordAdmin(admin.ModelAdmin):
 	"""Admin class for the Keyword model"""
 
-	list_display = ['verbose_name', 'dataset', 'type', 'unit']
-	list_filter = ['dataset']
+	list_display = ['name', 'verbose_name', 'dataset', 'constant_value', 'type', 'unit']
+	list_filter = ['dataset', 'type', 'unit']
 	list_select_related = ['dataset']
 	search_fields = ['name', 'verbose_name', 'description']
-	readonly_fields = ['dataset', 'name', 'type']
+	readonly_fields = ['dataset', 'name', 'type', 'constant_value']
 
 	def get_readonly_fields(self, request, obj=None):
 		"""Return a list or tuple of field names that will be displayed as read-only"""
@@ -54,3 +54,14 @@ class KeywordAdmin(admin.ModelAdmin):
 			return queryset.get(**{field.name: object_id})
 		except (self.model.DoesNotExist, ValidationError, ValueError):
 			return None
+
+	# Override the form so that if the constant_value is left empty it is converted to None
+	# because form.CharField convert an empty value to '', which would interpreted as constant_value being set
+	def get_form(self, request, obj=None, **kwargs):
+		BaseForm = super().get_form(request, obj, **kwargs)
+
+		class Form(BaseForm):
+			def clean_constant_value(self):
+				return self.cleaned_data.get('constant_value') or None
+
+		return Form
