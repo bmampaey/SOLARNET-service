@@ -5,7 +5,7 @@ from dataset.tests.utils import create_test_dataset
 from metadata.tests.models import BaseMetadataTest
 
 
-class TestBaseMetadataModel(TestCase):
+class TestDatasetaModel(TestCase):
 	"""Test the Dataset model"""
 
 	def test_metadata_model(self):
