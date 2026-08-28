@@ -14,8 +14,8 @@ class DataLocationAdmin(admin.ModelAdmin):
 	list_select_related = ['dataset']
 	search_fields = ['file_url']
 	readonly_fields = ['update_time']
-	date_hierarchy = 'update_time'
 	actions = ['mark_offline', 'mark_online']
+	show_full_result_count = False
 
 	def get_readonly_fields(self, request, obj=None):
 		"""Return a list or tuple of field names that will be displayed as read-only"""
