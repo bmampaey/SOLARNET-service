@@ -214,8 +214,9 @@ class Command(BaseCommand):
 		print(f'[C] {keyword.constant_value}')
 		for i, (value, count) in enumerate(options):
 			print(f'[{i}] "{value}" {count} occurences')
-		print('[U] Remove the constant value')
+		print('[U] Unset constant (None)')
 		print('[M] Manual input')
+		print('[D] Delete keyword')
 
 		new_constant_value = keyword.constant_value
 
@@ -232,6 +233,9 @@ class Command(BaseCommand):
 			elif selection.isdecimal() and int(selection) < len(options):
 				new_constant_value = options[int(selection)][0]
 				break
+			elif selection == 'D':
+				if self.delete_keyword(keyword):
+					return
 			else:
 				print('Invalid selection', selection)
 
@@ -247,6 +251,20 @@ class Command(BaseCommand):
 				self.set_keyword_constant_value(keyword, distinct_values)
 		else:
 			self.log.info('Not changing keyword %s constant value "%s"', keyword, keyword.constant_value)
+
+	def delete_keyword(self, keyword):
+		"""Ask confirmation and delete a keyword in the Database"""
+		while True:
+			selection = input(f'Are you sure you want to delete the keyword {keyword.name} ? [Y/N] ')
+			if selection == 'Y':
+				keyword.delete()
+				self.log.info('Deleted keyword %s', keyword.name)
+				return True
+			elif selection == 'N':
+				self.log.info('Kept keyword %s', keyword.name)
+				return False
+			else:
+				print('Invalid selection', selection)
 
 	def restore_backup_file(self, backup_file):
 		data = {}
