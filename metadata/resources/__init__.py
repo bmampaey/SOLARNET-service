@@ -5,6 +5,7 @@ from .aspiics_level_2 import *
 from .aspiics_level_3 import *
 from .chromis import *
 from .chrotel_level_1 import *
+from .co5bold_irsol import *
 from .crisp import *
 from .crisp2 import *
 from .eit_level_0 import *
