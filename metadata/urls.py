@@ -7,6 +7,7 @@ from metadata.resources import (
 	AspiicsLevel3Resource,
 	ChromisResource,
 	ChrotelLevel1Resource,
+	Co5BoldIrsolResource,
 	Crisp2Resource,
 	CrispResource,
 	EitLevel0Resource,
@@ -44,6 +45,7 @@ svo_api.register(AspiicsLevel2Resource())
 svo_api.register(AspiicsLevel3Resource())
 svo_api.register(ChromisResource())
 svo_api.register(ChrotelLevel1Resource())
+svo_api.register(Co5BoldIrsolResource())
 svo_api.register(CrispResource())
 svo_api.register(Crisp2Resource())
 svo_api.register(EitLevel0Resource())
