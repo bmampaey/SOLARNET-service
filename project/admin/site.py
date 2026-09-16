@@ -3,6 +3,7 @@ from functools import partial
 from django.contrib import admin
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group, User
+from django.urls import reverse
 from django.utils.html import format_html, format_html_join
 from tastypie.admin import ApiKeyInline
 
@@ -22,7 +23,24 @@ site = AdminSite(name='admin')
 
 # Add the Tastypie API key inline
 class TastypieUserAdmin(UserAdmin):
-	inlines = UserAdmin.inlines + [ApiKeyInline]
+	inlines = [*UserAdmin.inlines, ApiKeyInline]
+	readonly_fields = UserAdmin.readonly_fields + ('data_selections',)
+	fieldsets = UserAdmin.fieldsets + (('Data Selections', {'fields': ('data_selections',)}),)
+
+	def data_selections(self, obj):
+		selections = obj.data_selections.all()
+		if not selections:
+			return 'No data selections'
+		return format_html(
+			'<ul>{}</ul>',
+			format_html_join(
+				'\n',
+				'<li><a href="{}">{} }</a></li>',
+				((reverse('admin:data_selection_dataselection_change', args=[ds.pk]), ds.dataset, ds.uuid) for ds in selections),
+			),
+		)
+
+	data_selections.short_description = 'Data selections'
 
 
 class CustomGroupAdmin(GroupAdmin):
@@ -36,8 +54,14 @@ class CustomGroupAdmin(GroupAdmin):
 			'<ul>{}</ul>',
 			format_html_join(
 				'\n',
-				'<li>{}</li>',
-				((u.email,) for u in users),
+				'<li><a href="{}">{}</a></li>',
+				(
+					(
+						reverse('admin:auth_user_change', args=[u.pk]),
+						u.email,
+					)
+					for u in users
+				),
 			),
 		)
 
