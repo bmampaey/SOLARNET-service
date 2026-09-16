@@ -46,7 +46,7 @@ class Command(BaseCommand):
 			default=MAX_DISTINCT_VALUES,
 			type=int,
 			metavar='MAX',
-			help='Maximum number of distinct values for a field to be considered constant (default {MAX_DISTINCT_VALUES})',
+			help=f'Maximum number of distinct values for a field to be considered constant (default {MAX_DISTINCT_VALUES})',
 		)
 		parser.add_argument(
 			'--print-only',
