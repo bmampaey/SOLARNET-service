@@ -29,9 +29,12 @@ class Command(BaseCommand):
 			raise CommandError('Dataset %s not found' % options['dataset'])
 
 		MetaData = self.dataset.metadata_model
+		if MetaData is None:
+			raise CommandError('Metadata model is nt set for dataset %s' % self.dataset)
+
 		now_utc = datetime.now(timezone.utc)
 
-		metadatas = {}
+		metadatas = []
 		data_locations = {}
 		first_line_number = 1
 
@@ -41,7 +44,7 @@ class Command(BaseCommand):
 				for line_number, line in enumerate(file, start=1):
 					metadata = json.loads(line)
 					data_location = metadata.pop('data_location')
-					metadatas[data_location['file_url']] = self.make_timezone_aware(MetaData(**metadata))
+					metadatas.append((data_location['file_url'], self.make_timezone_aware(MetaData(**metadata))))
 					# Force the dataset to the one that was selected by the user
 					data_location['dataset'] = self.dataset
 					data_locations[data_location['file_url']] = DataLocation(update_time=now_utc, **data_location)
@@ -51,7 +54,7 @@ class Command(BaseCommand):
 							self.save_objects(data_locations, metadatas, continue_on_fail=options['continue_on_fail'])
 							self.log.info('Saved objects from line %s to line %s', first_line_number, line_number)
 							first_line_number = line_number + 1
-							metadatas = {}
+							metadatas = []
 							data_locations = {}
 						except Exception as error:
 							raise CommandError(
@@ -82,17 +85,19 @@ class Command(BaseCommand):
 				setattr(object, field.name, value)
 		return object
 
-	def save_objects(self, data_locations, metadatas, continue_on_fail=False):
+	def save_objects(self, data_location_ids, metadatas, continue_on_fail=False):
 		"""Save the metadata and their corresponding data location, matching them on the file_url"""
 		with transaction.atomic():
-			DataLocation.objects.bulk_create(data_locations.values(), ignore_conflicts=continue_on_fail)
-			data_locations = dict(
-				DataLocation.objects.filter(dataset=self.dataset, file_url__in=data_locations.keys()).values_list('file_url', 'id')
+			DataLocation.objects.bulk_create(data_location_ids.values(), ignore_conflicts=True)
+			data_location_ids = dict(
+				DataLocation.objects.filter(dataset=self.dataset, file_url__in=data_location_ids.keys()).values_list(
+					'file_url', 'id'
+				)
 			)
 			good_metadatas = []
-			for file_url, metadata in metadatas.items():
+			for file_url, metadata in metadatas:
 				try:
-					metadata.data_location_id = data_locations[file_url]
+					metadata.data_location_id = data_location_ids[file_url]
 				except KeyError:
 					if continue_on_fail:
 						self.log.warning('Could not find DataLocation for URL %s, ignoring metadata with oid %s', file_url, metadata.oid)
@@ -100,4 +105,6 @@ class Command(BaseCommand):
 						raise Exception('Could not find DataLocation for URL %s for metadata with oid %s' % (file_url, metadata.oid))
 				else:
 					good_metadatas.append(metadata)
-			return self.dataset.metadata_model.objects.bulk_create(good_metadatas, ignore_conflicts=continue_on_fail)
+			result = self.dataset.metadata_model.objects.bulk_create(good_metadatas, ignore_conflicts=continue_on_fail)
+
+		return result
