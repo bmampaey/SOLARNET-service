@@ -1,6 +1,5 @@
 from api import svo_api
 from metadata.resources import (
-	AiaLevel1Resource,
 	AiaLevel2Resource,
 	AiaLevel15Resource,
 	AspiicsLevel2Resource,
@@ -31,7 +30,6 @@ from metadata.resources import (
 	UsetCalciumiiKLevel1Resource,
 	UsetHAlphaLevel1Resource,
 	UsetWhiteLightLevel1Resource,
-	XrtLevel0Resource,
 	XrtLevel1Resource,
 	ZimpolSpectrographGregorResource,
 	ZimpolSpectrographIrsolResource,
@@ -39,7 +37,6 @@ from metadata.resources import (
 
 # Register the metadata resources
 svo_api.register(TagResource())
-svo_api.register(AiaLevel1Resource())
 svo_api.register(AiaLevel15Resource())
 svo_api.register(AiaLevel2Resource())
 svo_api.register(AspiicsLevel2Resource())
@@ -69,7 +66,6 @@ svo_api.register(SwapLevel1Resource())
 svo_api.register(UsetCalciumiiKLevel1Resource())
 svo_api.register(UsetHAlphaLevel1Resource())
 svo_api.register(UsetWhiteLightLevel1Resource())
-svo_api.register(XrtLevel0Resource())
 svo_api.register(XrtLevel1Resource())
 svo_api.register(ZimpolSpectrographGregorResource())
 svo_api.register(ZimpolSpectrographIrsolResource())

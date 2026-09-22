@@ -1,4 +1,3 @@
-from .aia_level_1 import *
 from .aia_level_1_5 import *
 from .aia_level_2 import *
 from .aspiics_level_2 import *
@@ -29,7 +28,6 @@ from .tag import *
 from .uset_calciumii_k_level_1 import *
 from .uset_h_alpha_level_1 import *
 from .uset_white_light_level_1 import *
-from .xrt_level_0 import *
 from .xrt_level_1 import *
 from .zimpol_spectrograph_gregor import *
 from .zimpol_spectrograph_irsol import *
