@@ -7,6 +7,7 @@ from metadata.resources import (
 	ChromisResource,
 	ChrotelLevel1Resource,
 	Co5BoldIrsolResource,
+	CompSLevel1Resource,
 	Crisp2Resource,
 	CrispResource,
 	EitLevel0Resource,
@@ -20,7 +21,6 @@ from metadata.resources import (
 	HmiMagnetogramResource,
 	IbisResource,
 	LarsLevel1Resource,
-	LsoCompSLevel1Resource,
 	LyraLevel2Resource,
 	LyraLevel3Resource,
 	RosaResource,
@@ -57,7 +57,7 @@ svo_api.register(HmiMagnetogramResource())
 svo_api.register(HmiMagnetogramLevel15Resource())
 svo_api.register(IbisResource())
 svo_api.register(LarsLevel1Resource())
-svo_api.register(LsoCompSLevel1Resource())
+svo_api.register(CompSLevel1Resource())
 svo_api.register(LyraLevel2Resource())
 svo_api.register(LyraLevel3Resource())
 svo_api.register(RosaResource())

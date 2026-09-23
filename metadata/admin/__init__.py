@@ -5,6 +5,7 @@ from .aspiics_level_3 import *
 from .chromis import *
 from .chrotel_level_1 import *
 from .co5bold_irsol import *
+from .comp_s_level_1 import *
 from .crisp import *
 from .crisp2 import *
 from .eit_level_0 import *
@@ -18,7 +19,6 @@ from .hmi_magnetogram import *
 from .hmi_magnetogram_level_1_5 import *
 from .ibis import *
 from .lars_level_1 import *
-from .lso_comp_s_level_1 import *
 from .lyra_level_2 import *
 from .lyra_level_3 import *
 from .rosa import *
