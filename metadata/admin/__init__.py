@@ -18,6 +18,7 @@ from .gris_level_1 import *
 from .hmi_magnetogram import *
 from .hmi_magnetogram_level_1_5 import *
 from .ibis import *
+from .ibis_level_2 import *
 from .lars_level_1 import *
 from .lyra_level_2 import *
 from .lyra_level_3 import *

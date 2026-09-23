@@ -19,6 +19,7 @@ from metadata.resources import (
 	GrisLevel1Resource,
 	HmiMagnetogramLevel15Resource,
 	HmiMagnetogramResource,
+	IbisLevel2Resource,
 	IbisResource,
 	LarsLevel1Resource,
 	LyraLevel2Resource,
@@ -55,6 +56,7 @@ svo_api.register(GaiaDemResource())
 svo_api.register(GrisLevel1Resource())
 svo_api.register(HmiMagnetogramResource())
 svo_api.register(HmiMagnetogramLevel15Resource())
+svo_api.register(IbisLevel2Resource())
 svo_api.register(IbisResource())
 svo_api.register(LarsLevel1Resource())
 svo_api.register(CompSLevel1Resource())
